@@ -13,4 +13,4 @@ pip install \
     git+git://github.com/widdershin/flask-desktop.git \
     pyinstaller
 
-echo "To activate the virtual environment next time, use: \n. venv/bin/activate"
+echo "To activate the virtual environment, use: . venv/bin/activate"
