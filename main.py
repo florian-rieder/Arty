@@ -1,21 +1,15 @@
-"""
-Entrypoint for the flask app
-Launches the app in a standalone window
-"""
+from PicturesApp import PicturesApp
 
-from flask import Flask
-from webui import WebUI
-
-# launch our flask app
-app = Flask(__name__)
-# launch our app's window
-ui = WebUI(app, debug=True)
-
-
-@app.route("/")
-def hello():
-    "say hello"
-    return "Hello World !"
+def reset():
+    import kivy.core.window as window
+    from kivy.base import EventLoop
+    if not EventLoop.event_listeners:
+        from kivy.cache import Cache
+        window.Window = window.core_select_lib('window', window.window_impl, True)
+        Cache.print_usage()
+        for cat in Cache._categories:
+            Cache._objects[cat] = {}
 
 if __name__ == '__main__':
-    ui.run()
+    reset()
+    PicturesApp().run()

@@ -1,41 +1,36 @@
-# -*- mode: python ; coding: utf-8 -*-
+# -*- mode: python -*-
 
 block_cipher = None
-
+from kivy.tools.packaging.pyinstaller_hooks import get_deps_all, hookspath, runtime_hooks
 
 a = Analysis(['main.py'],
-             pathex=['venv/lib/python3.8/site-packages', '/Users/frieder/Documents/GitHub/visio-image'],
+             pathex=['/Users/frieder/Documents/kivy_test'],
              binaries=[],
-             datas=[('templates', 'templates'), ('static', 'static')],
-             hiddenimports=[],
-             hookspath=[],
-             runtime_hooks=[],
-             excludes=[],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher,
-             noarchive=False)
+             hookspath=hookspath(),
+             runtime_hooks=runtime_hooks(),
+             **get_deps_all())
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          [],
           exclude_binaries=True,
-          name='main',
+          name='Arty',
           debug=False,
-          bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           console=False )
-coll = COLLECT(exe,
+coll = COLLECT(exe, Tree('.'),
+               Tree('/Library/Frameworks/SDL2_ttf.framework/Versions/A/Frameworks/FreeType.framework'),
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
                upx=True,
-               upx_exclude=[],
-               name='main')
+               name='Arty')
 app = BUNDLE(coll,
-             name='main.app',
+             name='Arty.app',
              icon=None,
-             bundle_identifier=None)
+         bundle_identifier=None)
