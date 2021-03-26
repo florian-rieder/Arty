@@ -1,9 +1,8 @@
 from glob import glob
-from random import randint
 from os.path import join, dirname
-import os
 from kivy.app import App
 from kivy.logger import Logger
+import os
 
 from widgets.Picture import Picture
 
@@ -17,14 +16,14 @@ class PicturesApp(App):
         root = self.root
 
         if not os.listdir(PROJECT_DIRECTORY):
-            raise(FileNotFoundError)
+            raise FileNotFoundError
 
         # get any files into images directory
         curdir = dirname(__file__)
         for filename in glob(join(PROJECT_DIRECTORY, '*')):
             try:
                 # load the image
-                picture = Picture(source=filename, rotation=randint(-30, 30))
+                picture = Picture(source=filename)
                 # add to the main field
                 root.add_widget(picture)
             except Exception as e:

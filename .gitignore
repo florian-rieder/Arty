@@ -5,10 +5,7 @@
 *.pyo
 venv/
 venv*
-dist/
-build/
-*.egg
-*.egg-info/
+
 _mailinglist
 .tox/
 .cache/
@@ -24,3 +21,6 @@ htmlcov/
 # build ignores
 dist
 build
+*.spec
+*.egg
+*.egg-info/
