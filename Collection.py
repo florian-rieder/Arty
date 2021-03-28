@@ -11,7 +11,7 @@ from CollectionImage import CollectionImage
 
 
 AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
-META_FILENAME = "collection.arty"
+META_FILENAME = ".collection"
 
 
 @dataclass_json
@@ -64,6 +64,8 @@ class Collection():
         # check if there is already a project file in this directory
         if META_FILENAME in os.listdir(self.work_directory):
             self.__load_meta()
+        else:
+            self.__create_meta()
 
         # check the images in the directory and update the collection
         # and meta
@@ -124,14 +126,17 @@ class Collection():
             json_data = json.loads(self.to_json())
             formatted_json = json.dumps(json_data, indent=4)
             meta_file.write(formatted_json)
-
-
-        # make that file hidden -- doesn't work
-        # st = os.stat(meta_file_path)
-        # os.chflags(meta_file_path, st.st_flags ^ stat.UF_HIDDEN)
-        # on windows i guess ? -- also doesn't work
-        # p = os.popen('attrib +h ' + META_FILENAME)
-        # p.close()
+    
+    def __create_meta(self):
+        path = os.path.join(self.work_directory, META_FILENAME)
+        open(path, "a").close()
+    
+    def get_collection(self):
+        return self.collection
+    
+    def set_collection(self, coll_list):
+        self.collection = coll_list
+        self.__write_meta()
 
 
 if __name__ == "__main__":

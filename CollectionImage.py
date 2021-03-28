@@ -1,8 +1,10 @@
 """ Represents an image in the corpus, with all its metadata
 """
 
+from typing import Optional
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+
 
 @dataclass_json
 @dataclass
@@ -30,13 +32,13 @@ class CollectionImage():
         Date format to discuss
     """
 
-    filename : str
-    title : str = None
-    artist : str = None
-    year : str = None
-    support : str = None
-    technique : str = None
-    conservation_site : str = None
+    filename :              str
+    title :                 Optional[str] = None
+    artist :                Optional[str] = None
+    year :                  Optional[str] = None
+    support :               Optional[str] = None
+    technique :             Optional[str] = None
+    conservation_site :     Optional[str] = None
 
     def __eq__(self, other):
         """ overloads the == operator so that two CollectionImages with
