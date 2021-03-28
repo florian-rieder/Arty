@@ -7,7 +7,7 @@ import json
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
 
-from CollectionImage import CollectionImage
+from collection.CollectionImage import CollectionImage
 
 
 AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
@@ -34,6 +34,11 @@ class Collection():
 
         Methods
         -------
+        get_collection()
+            getter for the collection attribute
+        set_collection(coll_list)
+            setter for the collection attribute
+        
         __post_init__()
         __initialize_collection()
         __write_meta()
@@ -95,6 +100,7 @@ class Collection():
 
         self.title = coll_dict["title"]
         self.collection = [
+            # pylint says it's an error. It's not.
             CollectionImage.from_dict(item) for item in coll_dict["collection"]
         ]
 
@@ -123,18 +129,21 @@ class Collection():
         # create metadata file in the project directory
         meta_file_path = os.path.join(self.work_directory, META_FILENAME)
         with open(meta_file_path, "w") as meta_file:
+            # pylint says it's an error. It's not.
             json_data = json.loads(self.to_json())
             formatted_json = json.dumps(json_data, indent=4)
             meta_file.write(formatted_json)
-    
+
     def __create_meta(self):
         path = os.path.join(self.work_directory, META_FILENAME)
         open(path, "a").close()
-    
+
     def get_collection(self):
+        """getter for the collection list"""
         return self.collection
-    
+
     def set_collection(self, coll_list):
+        """setter for the collection list"""
         self.collection = coll_list
         self.__write_meta()
 

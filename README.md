@@ -13,6 +13,8 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+To run the application, use `python main.py`
+
 # Building the application
 ## MacOS
 `main.spec`

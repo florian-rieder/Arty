@@ -35,3 +35,23 @@ FloatLayout:
                 border: (36,36,36,36)
                 size:(self.width+72, self.height+72)
                 pos: (-36,-36)
+
+<CollectionScreen>:
+    BoxLayout:
+        Button:
+            text: 'Goto settings'
+            on_press:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'Settings'
+        Button:
+            text: 'Quit'
+
+<SettingsScreen>:
+    BoxLayout:
+        Button:
+            text: 'My settings button'
+        Button:
+            text: 'Back to menu'
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'Collection'

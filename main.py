@@ -1,4 +1,4 @@
-from PicturesApp import PicturesApp
+from ArtyApp import ArtyApp
 
 def reset():
     import kivy.core.window as window
@@ -12,4 +12,4 @@ def reset():
 
 if __name__ == '__main__':
     reset()
-    PicturesApp().run()
+    ArtyApp().run()
