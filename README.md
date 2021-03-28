@@ -16,6 +16,10 @@ pip install -r requirements.txt
 To run the application, use `python main.py`
 
 # Building the application
+1. Create a `main.spec` file at the root of this repository and paste the appropriate content depending on your OS.
+2. Replace the `pathex` in the `Analysis` part of the spec file with the path to this repository on your machine.
+3. Then run the command `pyinstaller main.spec` to build the executable.
+
 ## MacOS
 `main.spec`
 ```
@@ -55,8 +59,52 @@ app = BUNDLE(coll,
          bundle_identifier=None)
 ```
 
-Then run the command `pyinstaller main.spec`
+## Windows
+`main.spec`
+```
+# -*- mode: python ; coding: utf-8 -*-
 
+block_cipher = None
+
+from kivy_deps import sdl2, glew
+
+a = Analysis(['main.py'],
+             pathex=['C:\\path\\to\\this\\repo'],
+             binaries=[],
+             datas=[],
+             hiddenimports=[],
+             hookspath=[],
+             runtime_hooks=[],
+             excludes=[],
+             win_no_prefer_redirects=False,
+             win_private_assemblies=False,
+             cipher=block_cipher,
+             noarchive=False)
+pyz = PYZ(a.pure, a.zipped_data,
+             cipher=block_cipher)
+exe = EXE(pyz,
+          a.scripts,
+          [],
+          exclude_binaries=True,
+          name='Arty',
+          debug=False,
+          bootloader_ignore_signals=False,
+          strip=False,
+          upx=True,
+          console=True )
+coll = COLLECT(exe, Tree('.'),
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
+               strip=False,
+               upx=True,
+               name='Arty')
+```
+
+## Note
+Pyinstaller is incapable of cross-compiling. It means that you can only build the app for the OS of the machine you're compiling it with.
+For better compatibility, build with the oldest version of the OS you want to support.
 
 # Contributors
 - Florian Rieder
