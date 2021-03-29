@@ -1,8 +1,8 @@
-class CollectionPannel():
+class CollectionPanel():
     """
         Summary
         -------
-        Pannel for each image in wich you can edit the metadata.
+        Panel for each image in wich you can edit the metadata.
 
         Attributes
         ----------
