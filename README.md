@@ -107,7 +107,7 @@ Pyinstaller is incapable of cross-compiling. It means that you can only build th
 For better compatibility, build with the oldest version of the OS you want to support.
 
 # Unit testing
-Use the command `python -m test.Tests` to run unit tests.
+Use the command `python -m tests.Tests` to run unit tests.
 
 # Contributors
 - Florian Rieder

@@ -14,6 +14,7 @@ class TestCollectionImage(unittest.TestCase):
         self.assertEqual(img1, img3)
         self.assertIn(img1, [img1, img2])
         self.assertIn(img3, [img1, img2])
+        self.assertNotIn(img2, [img1, img3])
         self.assertNotEqual(img1, img2)
 
 
