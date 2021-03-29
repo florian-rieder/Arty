@@ -106,6 +106,9 @@ coll = COLLECT(exe, Tree('.'),
 Pyinstaller is incapable of cross-compiling. It means that you can only build the app for the OS of the machine you're compiling it with.
 For better compatibility, build with the oldest version of the OS you want to support.
 
+# Unit testing
+Use the command `python -m test.Tests` to run unit tests.
+
 # Contributors
 - Florian Rieder
 - Caroline Roxana Rohrbach

@@ -5,9 +5,10 @@
 import os
 import json
 from dataclasses import dataclass, field
+
 from dataclasses_json import dataclass_json
 
-from collection.CollectionImage import CollectionImage
+from api.CollectionImage import CollectionImage
 
 
 AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
@@ -149,5 +150,5 @@ class Collection():
 
 
 if __name__ == "__main__":
-    coll = Collection("test", "/Users/frieder/Documents/images")
+    coll = Collection("test", "./images")
     print(coll)

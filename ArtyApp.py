@@ -1,17 +1,19 @@
-# external imports
-from os.path import join
+""" Arty is an image viewer for Art History
+"""
+import os
+
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
-import os
 
-# internal imports
 from widgets.Picture import Picture
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
-from collection.Collection import Collection
+from api.Collection import Collection
 
-PROJECT_DIRECTORY="/Users/frieder/Documents/images"
+
+PROJECT_DIRECTORY="./images"
+
 
 class ArtyApp(App):
     """ The main class of our app
@@ -38,7 +40,7 @@ class ArtyApp(App):
         # add all images in the collection to display
         for collection_image in coll.get_collection():
             try:
-                path = join(PROJECT_DIRECTORY, collection_image.filename)
+                path = os.path.join(PROJECT_DIRECTORY, collection_image.filename)
                 # load the image
                 picture = Picture(source=path)
                 # add to the main field
