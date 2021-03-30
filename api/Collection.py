@@ -150,5 +150,5 @@ class Collection():
 
 
 if __name__ == "__main__":
-    coll = Collection("test", "./images")
+    coll = Collection("test", "./testimages")
     print(coll)

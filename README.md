@@ -2,16 +2,20 @@
 
 # Installation
 
-```
-python -m venv venv
+1. create a virtual environment:
+```python -m venv venv```
 
-# on unix systems
-. venv/bin/activate
-# on windows
-venv\Scripts\activate
+2. activate the environment:
 
-pip install -r requirements.txt
-```
+- on unix
+```. venv/bin/activate```
+
+- on windows
+```venv\Scripts\activate```
+
+3. install dependencies :
+```pip install -r requirements.txt```
+
 
 To run the application, use `python main.py`
 

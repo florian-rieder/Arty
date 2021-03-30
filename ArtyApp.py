@@ -12,7 +12,7 @@ from screens.SettingsScreen import SettingsScreen
 from api.Collection import Collection
 
 
-PROJECT_DIRECTORY="./images"
+PROJECT_DIRECTORY="./testimages"
 
 
 class ArtyApp(App):
