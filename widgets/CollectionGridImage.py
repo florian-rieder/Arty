@@ -1,4 +1,7 @@
-class CollectiongridImage():
+from kivy.uix.image import Image
+from kivy.properties import StringProperty
+
+class CollectiongridImage(Image):
     """
         Summary
         -------
@@ -11,4 +14,4 @@ class CollectiongridImage():
         -------
 
     """
-    pass
+    self.source = StringProperty(None)

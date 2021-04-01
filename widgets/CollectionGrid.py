@@ -1,4 +1,6 @@
-class CollectionGrid():
+from kivy.uix.gridlayout import GridLayout
+
+class CollectionGrid(GridLayout):
     """
         Summary
         -------
@@ -11,4 +13,3 @@ class CollectionGrid():
         -------
 
     """
-    pass

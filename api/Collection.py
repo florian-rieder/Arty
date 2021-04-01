@@ -4,6 +4,8 @@
 
 import os
 import json
+import ntpath
+import shutil
 from dataclasses import dataclass, field
 
 from dataclasses_json import dataclass_json
@@ -63,6 +65,7 @@ class Collection():
         FileNotFoundError
             if the collection's work directory is not found
         """
+
         # check if the path given is valid
         if not os.listdir(self.work_directory):
             raise FileNotFoundError
@@ -80,20 +83,15 @@ class Collection():
 
 
     def __load_meta(self):
-        """ Deserializes the data from the meta file and updates the
-        collection
+        """ 
+            Summary
+            -------
+            Deserializes the data from the meta file and updates the
+            collection
 
-        Notes
-        -----
-        In the current state of things, this throws the warning:
-
-            RuntimeWarning: `NoneType` object value of non-optional
-            type < all CollectionImage attributes > detected when
-            decoding CollectionImage.
-
-        There's probably stuff to study about dataclasses_json but
-        for now it just works. Perhaps it has to do with the fact
-        that for now most of them are None...
+            NOTE
+            ----
+            I'm sure that there is a better way to do this...
         """
         with open(os.path.join(self.work_directory, META_FILENAME), "r") as meta:
             coll_json = meta.read()
@@ -135,20 +133,63 @@ class Collection():
             formatted_json = json.dumps(json_data, indent=4)
             meta_file.write(formatted_json)
 
+
     def __create_meta(self):
         path = os.path.join(self.work_directory, META_FILENAME)
         open(path, "a").close()
+
 
     def get_collection(self):
         """getter for the collection list"""
         return self.collection
 
+
     def set_collection(self, coll_list):
         """setter for the collection list"""
         self.collection = coll_list
         self.__write_meta()
+    
+
+    def add_image(self, source):
+        """ Summary
+            -------
+            Function to add an image to the collection
+
+            Returns
+            -------
+            CollectionImage
+                The image that was inserted in the collection
+        
+        """
+        # cleaning the input if necessary
+        source = str(source)
+        if source.startswith("b'") and source.endswith("'"):
+            source = source[2:-1]
+        
+        # get the file name with ntpath
+        file_name = ntpath.basename(source)
+
+        # check that the file sent is of accepted format
+        if not file_name.lower().endswith(AUTHORIZED_IMAGE_FORMATS):
+            print("UnauthorizedFileFormat: %s" % file_name)
+            raise ValueError
+
+        # copy the file to the working directory
+        # NOTE: should verify if the user is not dragging a file from
+        # the working directory
+        try:
+            shutil.copyfile(source, os.path.join(self.work_directory, file_name))
+        except shutil.SameFileError:
+            print("SameFileError: %s" % file_name)
+            raise ValueError
+
+        
+        new_image = CollectionImage(file_name)
+        self.collection.append(new_image)
+
+        return new_image
 
 
 if __name__ == "__main__":
-    coll = Collection("test", "./testimages")
+    coll = Collection("test", "testimages")
     print(coll)
