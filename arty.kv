@@ -56,3 +56,38 @@ FloatLayout:
             on_press:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'Collection'
+
+<StartScreen>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        Label:
+            text: "Select a work directory:"
+            size_hint_y: None
+            height: 50
+
+        BoxLayout:
+            size_hint_y: None
+            height: sp(52)
+
+            Button:
+                text: 'Icon View'
+                on_press: fc.view_mode = 'icon'
+            Button:
+                text: 'List View'
+                on_press: fc.view_mode = 'list'
+            
+        FileChooser:
+            id: fc
+            FileChooserIconLayout
+            FileChooserListLayout
+
+        BoxLayout:
+            size_hint_y: None
+            height: 80
+
+            Button:
+                text: "Load"
+                on_release: root.load_collection(fc.path)

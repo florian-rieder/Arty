@@ -6,6 +6,7 @@ import os
 import json
 import ntpath
 import shutil
+from typing import Optional
 from dataclasses import dataclass, field
 
 from dataclasses_json import dataclass_json
@@ -47,8 +48,8 @@ class Collection():
         __write_meta()
         __load_meta()
     """
-    title : str
     work_directory : str
+    title : Optional[str] = "Untitled Collection"
     # ignore collection from dataclass __init__, we are going to
     # initialize it in the __post_init__ method.
     collection: list = field(default_factory=list, init=False)
