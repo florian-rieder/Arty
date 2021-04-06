@@ -21,6 +21,20 @@ class CollectionImage():
         filename : str
             the local file name, not the path to the file.
             (eg. "image.png")
+        title : str, optional
+            title of the image
+        artist : str, optional
+            artist name
+        year : str, optional
+            production year (eg. "c. 1875")
+        technique : str, optional
+            technique (eg. "Oil on canvas")
+        conservation_site : str, optional
+            conservation site (eg. "Musée du Louvre, Paris")
+        production_site : str, optional
+            production site
+        dimensions : str, optional
+            dimensions of the work (eg. "300x200cm" or "20x30x25cm")
 
         Methods
         -------

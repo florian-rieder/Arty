@@ -69,18 +69,32 @@ FloatLayout:
             height: 50
 
         BoxLayout:
+            # Container for FileChooser options
             size_hint_y: None
-            height: sp(52)
+            height: 50
 
+            # FileChooser view selection
             Button:
                 text: 'Icon View'
                 on_press: fc.view_mode = 'icon'
             Button:
                 text: 'List View'
                 on_press: fc.view_mode = 'list'
-            
+
+        Label:
+            # dynamically shows the current selected path
+            text: fc.path
+            text_size: self.size
+            padding: (50, 2)
+            halign: 'left'
+            valign: 'middle'
+            size_hint_y: None
+            height: 40
+
         FileChooser:
             id: fc
+            # change the default path to the user's home directory
+            path: root.get_home_directory()
             FileChooserIconLayout
             FileChooserListLayout
 

@@ -29,11 +29,11 @@ class Collection():
 
         Attributes
         ----------
-        title : str
+        title : str, optional
             User entered name for the collection
         working_directory : str
             path to this collection's directory
-        collection : list(CollectionImage)
+        collection : list(CollectionImage), optional
             list of the images in the collection
 
         Methods
@@ -47,6 +47,10 @@ class Collection():
         __initialize_collection()
         __write_meta()
         __load_meta()
+
+        TODO
+        ----
+        Make loading times faster
     """
     work_directory : str
     title : Optional[str] = "Untitled Collection"
