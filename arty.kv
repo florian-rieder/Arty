@@ -39,6 +39,9 @@ FloatLayout:
 <CollectionScreen>:
     BoxLayout:
         CollectionGrid:
+            cols: 3
+            spacing: 16,33
+
         Button:
             text: 'Goto settings'
             on_press:
@@ -105,3 +108,23 @@ FloatLayout:
             Button:
                 text: "Load"
                 on_release: root.load_collection(fc.path)
+
+<CollectionGridImage>:
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+
+        canvas:            
+            Rectangle:
+                source: root.source
+                pos: self.pos
+                size: self.size
+
+        #Image:
+        #    source: root.source
+        #    size_hint: 1,1
+
+        CheckBox:
+            id: select_image
+            color: (0,1,0)
+            size_hint: (0.1,0.1)
