@@ -6,6 +6,7 @@ from kivy.uix.gridlayout import GridLayout
 
 from api.Collection import Collection
 from widgets.CollectionGridImage import CollectionGridImage
+
 class CollectionGrid(GridLayout):
     """
         Summary
@@ -22,6 +23,8 @@ class CollectionGrid(GridLayout):
     def __init__(self, **kwargs):
         super(CollectionGrid, self).__init__(**kwargs)
 
+        # not the right way to do it, I'll come back to this
+        # - Florian
         self.PROJECT_DIRECTORY = App.get_running_app().PROJECT_DIRECTORY
         self.CURRENT_COLLECTION = Collection(self.PROJECT_DIRECTORY)
         self.collection = self.CURRENT_COLLECTION.get_collection()

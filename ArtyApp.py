@@ -13,7 +13,7 @@ from widgets.CollectionGrid import CollectionGrid
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
-from api.Collection import Collection
+from api.Collection import CollectionManager, Collection
 
 
 class ArtyApp(App):
@@ -67,7 +67,7 @@ class ArtyApp(App):
 
         # load or create collection at specified project directory
         try:
-            self.CURRENT_COLLECTION = Collection(self.PROJECT_DIRECTORY)
+            self.CURRENT_COLLECTION = CollectionManager.load(self.PROJECT_DIRECTORY)
         except FileNotFoundError:
             Logger.exception(
                 "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY
@@ -124,6 +124,8 @@ class ArtyApp(App):
             collection_image = self.CURRENT_COLLECTION.add_image(file_path)
             # add image to display
             self._add_collection_image(collection_image)
+            
+            CollectionManager.save(self.CURRENT_COLLECTION)
         except ValueError:
             Logger.exception("The file %s couldn't be added to the collection." % file_path)
 
