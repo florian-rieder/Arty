@@ -124,8 +124,6 @@ class ArtyApp(App):
             collection_image = self.CURRENT_COLLECTION.add_image(file_path)
             # add image to display
             self._add_collection_image(collection_image)
-            
-            CollectionManager.save(self.CURRENT_COLLECTION)
         except ValueError:
             Logger.exception("The file %s couldn't be added to the collection." % file_path)
 

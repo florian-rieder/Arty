@@ -13,10 +13,6 @@ from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
 
 
-AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
-META_FILENAME = ".collection"
-
-
 class CollectionManager():
     """ Summary
         -------
@@ -35,6 +31,9 @@ class CollectionManager():
         - JSON format optimisation by minifying and aliasing the property
           names to take less space on disk.
     """
+
+    AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
+    META_FILENAME = ".collection"
 
     @classmethod
     def load(self, path):
@@ -67,9 +66,12 @@ class CollectionManager():
 
 
         # check if there is already a project file in this directory
-        if META_FILENAME in os.listdir(path):
+        if CollectionManager.META_FILENAME in os.listdir(path):
+            # if it's the case, load it.
             collection = self.__load_meta(path)
         else:
+            # if it's not the case, create a new one and start with a
+            # default collection
             self.__create_meta(path)
             # create a default collection
             collection = Collection(path, "Untitled Collection", list())
@@ -85,10 +87,12 @@ class CollectionManager():
     def save(self, collection):
         """ Summary
             -------
-            This method saves a collection to disk
+            This method saves a collection to disk.
 
             Parameters
             ----------
+            collection: Collection
+                the Collection object to save
         
         """
         self.__write_meta(collection)
@@ -106,7 +110,7 @@ class CollectionManager():
             ----
             I'm sure there's a better way to do this...
         """
-        with open(os.path.join(path, META_FILENAME), "r") as meta:
+        with open(os.path.join(path, CollectionManager.META_FILENAME), "r") as meta:
             coll_json = meta.read()
             coll_dict = json.loads(coll_json)
 
@@ -131,13 +135,16 @@ class CollectionManager():
                 will be added to the collection, and the updated
                 collection is returned)
         """
+        # type safety check
         if not isinstance(collection, Collection):
-            raise ValueError("collection must be of type Collection.")
+            raise ValueError("collection must be of type Collection, not %s" 
+                % type(collection)
+            )
 
         for filename in os.listdir(collection.work_directory):
             # reject all files with the wrong extension (case
             # insensitive)
-            if filename.lower().endswith(AUTHORIZED_IMAGE_FORMATS):
+            if filename.lower().endswith(CollectionManager.AUTHORIZED_IMAGE_FORMATS):
                 new_image = CollectionImage(filename)
 
                 # this works since we overloaded the equal operator in
@@ -154,14 +161,18 @@ class CollectionManager():
         """ Serializes this collection and saves it in the project meta
             file in the work directory
         """
-
+        # type safety check
         if not isinstance(collection, Collection):
             raise ValueError(
                 "collection must be of type Collection, not %s" 
                 % type(collection)
             )
         
-        meta_file_path = os.path.join(collection.work_directory, META_FILENAME)
+        meta_file_path = os.path.join(
+            collection.work_directory,
+            CollectionManager.META_FILENAME
+        )
+
         # create metadata file in the project directory
         with open(meta_file_path, "w") as meta_file:
             # pylint says it's an error. It's not.
@@ -174,7 +185,7 @@ class CollectionManager():
 
     @classmethod
     def __create_meta(self, path):
-        path = os.path.join(path, META_FILENAME)
+        path = os.path.join(path, CollectionManager.META_FILENAME)
         open(path, "a").close()
 
 
@@ -215,7 +226,7 @@ class Collection():
     def set_collection(self, coll_list):
         """setter for the collection list"""
         self.collection = coll_list
-        CollectionManager.save_collection(self)
+        CollectionManager.save(self)
     
 
     def add_image(self, source):
@@ -238,7 +249,9 @@ class Collection():
         file_name = ntpath.basename(source)
 
         # check that the file sent is of accepted format
-        if not file_name.lower().endswith(AUTHORIZED_IMAGE_FORMATS):
+        if not file_name.lower().endswith(
+            CollectionManager.AUTHORIZED_IMAGE_FORMATS
+        ):
             raise ValueError("Unauthorized file format for: %s" % file_name)
 
         # copy the file to the working directory
@@ -248,12 +261,33 @@ class Collection():
             shutil.copyfile(source, os.path.join(self.work_directory, file_name))
         except shutil.SameFileError:
             raise shutil.SameFileError(file_name)
-
         
         new_image = CollectionImage(file_name)
         self.collection.append(new_image)
+        CollectionManager.save(self)
 
         return new_image
+
+
+    def get_absolute_path(self, collection_image):
+        """ Summary
+            -------
+            Gives the absolute path to an image.
+
+            Parameters
+            ----------
+            collection_image: CollectionImage
+                an image
+            
+            Returns
+            -------
+            absolute_path: str
+                absolute path to the image file
+        """
+        if not isinstance(collection_image, CollectionImage):
+            raise ValueError("collection_image must be of type CollectionImage")
+
+        return os.path.join(self.work_directory, collection_image.filename)
 
 
 
@@ -270,8 +304,7 @@ class CollectionImage():
         Attributes
         ----------
         filename : str
-            absolute path to the file.
-            (eg. "C/documents/image.png")
+            relative path to the file (eg. "image.png").
         title : str, optional
             title of the image
         artist : str, optional
@@ -294,7 +327,11 @@ class CollectionImage():
 
         NOTE
         ----
-        Date format to discuss
+        - filename is deliberately a relative path, this prevents
+          everything breaking in the case the directory is moved.
+          To get the absolute path, use:
+            os.path.join(collection.work_directory)
+        - Date format to discuss.
     """
 
     filename :              str
