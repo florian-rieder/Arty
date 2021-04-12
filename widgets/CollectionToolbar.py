@@ -1,6 +1,5 @@
 class Toolbar():
-    """
-        Summary
+    """ Summary
         -------
         Toolbar to access other pages (Comparison).
 

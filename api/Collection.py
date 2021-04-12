@@ -1,6 +1,6 @@
 """ Collection module
     Handles the datastructure of a collection, and saving and loading of
-    metadata in a project folder
+    metadata in a project folder.
 """
 
 import os
@@ -322,15 +322,15 @@ class CollectionImage():
 
         Methods
         -------
-        __eq__
-            overloads the == operator
+        to_reference()
+            generates a reference string (legend)
 
         NOTE
         ----
         - filename is deliberately a relative path, this prevents
-          everything breaking in the case the directory is moved.
+          everything from breaking in the case the directory is moved.
           To get the absolute path, use:
-            os.path.join(collection.work_directory)
+            collection.get_absolute_path(collection_image)
         - Date format to discuss.
     """
 
@@ -355,11 +355,11 @@ class CollectionImage():
         """
         ref_string = "{artist_if_artist}{title}{production_site_if_no_artist}{date}{technique}{dimensions}{conservation_site}".format(
             artist_if_artist = self.artist + ", " if self.artist else "",
-            title = self.title + ", ", # TODO: see about italics
+            title = self.title + ", " if self.title else "Untitled,", # TODO: see about italics
             production_site_if_no_artist = self.production_site + ", " if not self.artist else "",
-            date = self.year + ", ",
-            technique = self.technique + ", ",
-            dimensions = self.dimensions + ", ",
+            date = self.year + ", " if self.year else "",
+            technique = self.technique + ", " if self.technique else "",
+            dimensions = self.dimensions + ", " if self.dimensions else "",
             conservation_site = self.conservation_site
         )
 
