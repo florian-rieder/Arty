@@ -1,3 +1,5 @@
+from kivy.config import Config
+
 from ArtyApp import ArtyApp
 
 # def reset():
@@ -12,4 +14,19 @@ from ArtyApp import ArtyApp
 
 if __name__ == '__main__':
     #reset()
+
+    # Configuration
+
+    # set min and max size of the window
+    Config.set('graphics',  'width',            '1200')
+    Config.set('graphics',  'height',           '800')
+    Config.set('graphics',  'minimum_width',    '800')
+    Config.set('graphics',  'minimum_height',   '600')
+
+    # prevent quitting when ESCAPE is pressed
+    Config.set('kivy',      'exit_on_escape',   '0')
+
+    #Config.write()
+
+    # run the app
     ArtyApp().run()
