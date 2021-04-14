@@ -25,6 +25,7 @@ class ArtyApp(App):
     CURRENT_COLLECTION = ObjectProperty(None)
     SCREENS = DictProperty(dict())
     SCREEN_MANAGER = ObjectProperty(None)
+    GRID = ObjectProperty(None)
 
     def build(self):
         # the root is created in pictures.kv
@@ -38,6 +39,9 @@ class ArtyApp(App):
         start_screen      =     StartScreen(name="Start")
         collection_screen =     CollectionScreen(name='Collection')
         settings_screen   =     SettingsScreen(name='Settings')
+
+        # reference grid
+        self.GRID = collection_screen.ids.grid
 
         # keep reference to all the screens in the app
         self.SCREENS["START"]      =    start_screen
@@ -77,7 +81,7 @@ class ArtyApp(App):
         # add all images in the collection to display
         for collection_image in self.CURRENT_COLLECTION.get_collection():
             try:
-                self._add_collection_image(collection_image)
+                self.GRID.add_image(collection_image, self.CURRENT_COLLECTION)
             except ValueError:
                 Logger.exception(
                     'Pictures: Unable to load <%s>' % collection_image
@@ -88,23 +92,6 @@ class ArtyApp(App):
             self.SCREENS["COLLECTION"], 
             direction="down"
         )
-
-
-    def _add_collection_image(self, collection_image):
-        """ Summary
-            -------
-            Add a collection image to the current collection and display
-
-            Parameters
-            ----------
-            collection_image : CollectionImage
-                the collection image to add
-        """
-        path = os.path.join(self.PROJECT_DIRECTORY, collection_image.filename)
-        # load the image
-        picture = Picture(source=path)
-        # add to the main field
-        self.SCREENS["COLLECTION"].add_widget(picture)
 
 
     def _on_file_drop(self, _window, file_path):
@@ -123,7 +110,7 @@ class ArtyApp(App):
             # add image to the collection
             collection_image = self.CURRENT_COLLECTION.add_image(file_path)
             # add image to display
-            self._add_collection_image(collection_image)
+            self.GRID.add_image(collection_image, self.CURRENT_COLLECTION)
         except ValueError:
             Logger.exception("The file %s couldn't be added to the collection." % file_path)
 

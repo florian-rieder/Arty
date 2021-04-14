@@ -1,7 +1,7 @@
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 
 class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
     """
@@ -19,3 +19,4 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
 
     """
     source = StringProperty(None)
+    collection_image = ObjectProperty(None)

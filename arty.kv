@@ -39,16 +39,15 @@ FloatLayout:
 <CollectionScreen>:
     BoxLayout:
         CollectionGrid:
-            cols: 3
-            spacing: 16,33
+            id: grid
 
         Button:
             text: 'Goto settings'
             on_press:
                 root.manager.transition.direction = 'left'
                 root.manager.current = 'Settings'
-        Button:
-            text: 'Quit'
+        # Button:
+        #     text: 'Quit'
 
 <SettingsScreen>:
     BoxLayout:

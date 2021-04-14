@@ -1,8 +1,6 @@
-from os.path import join
-from glob import glob
-
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
+from kivy.lang import Builder
 
 from api.Collection import Collection
 from widgets.CollectionGridImage import CollectionGridImage
@@ -12,28 +10,15 @@ class CollectionGrid(GridLayout):
         Summary
         -------
         Displays the collection in grid format.
-        
-        Attributes
-        ----------
 
         Methods
         -------
-
+        add_image(collection_image, collection)
+            Adds a CollectionImage to the grid display
     """
-    def __init__(self, **kwargs):
-        super(CollectionGrid, self).__init__(**kwargs)
 
-        # not the right way to do it, I'll come back to this
-        # - Florian
-        self.PROJECT_DIRECTORY = App.get_running_app().PROJECT_DIRECTORY
-        self.CURRENT_COLLECTION = Collection(self.PROJECT_DIRECTORY)
-        self.collection = self.CURRENT_COLLECTION.get_collection()
+    Builder.load_file('templates/CollectionGrid.kv')
 
-        
-        for collection_image in self.collection:
-            for filename in glob(join(self.PROJECT_DIRECTORY, collection_image.filename)):
-                print(collection_image.filename)
-                self.image_button = CollectionGridImage(source = filename)
-                print(self.image_button)
-                self.add_widget(self.image_button)
-
+    def add_image(self, collection_image, collection):
+        self.image_button = CollectionGridImage(source = collection.get_absolute_path(collection_image))
+        self.add_widget(self.image_button)
