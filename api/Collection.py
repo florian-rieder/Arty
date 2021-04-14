@@ -66,7 +66,7 @@ class CollectionManager():
 
 
         # check if there is already a project file in this directory
-        if CollectionManager.META_FILENAME in os.listdir(path):
+        if self.META_FILENAME in os.listdir(path):
             # if it's the case, load it.
             collection = self.__load_meta(path)
         else:
@@ -110,13 +110,13 @@ class CollectionManager():
             ----
             I'm sure there's a better way to do this...
         """
-        with open(os.path.join(path, CollectionManager.META_FILENAME), "r") as meta:
+        with open(os.path.join(path, self.META_FILENAME), "r") as meta:
             coll_json = meta.read()
             coll_dict = json.loads(coll_json)
 
         title = coll_dict["title"]
         collection = [
-            # pylint says it's an error. It's not.
+            # pylint says it's an error. Let's just say I disagree
             CollectionImage.from_dict(item) for item in coll_dict["collection"]
         ]
 
@@ -144,7 +144,7 @@ class CollectionManager():
         for filename in os.listdir(collection.work_directory):
             # reject all files with the wrong extension (case
             # insensitive)
-            if filename.lower().endswith(CollectionManager.AUTHORIZED_IMAGE_FORMATS):
+            if filename.lower().endswith(self.AUTHORIZED_IMAGE_FORMATS):
                 new_image = CollectionImage(filename)
 
                 # this works since we overloaded the equal operator in
@@ -170,7 +170,7 @@ class CollectionManager():
         
         meta_file_path = os.path.join(
             collection.work_directory,
-            CollectionManager.META_FILENAME
+            self.META_FILENAME
         )
 
         # create metadata file in the project directory
@@ -185,7 +185,7 @@ class CollectionManager():
 
     @classmethod
     def __create_meta(self, path):
-        path = os.path.join(path, CollectionManager.META_FILENAME)
+        path = os.path.join(path, self.META_FILENAME)
         open(path, "a").close()
 
 
@@ -215,7 +215,7 @@ class Collection():
             setter for the collection attribute
     """
     work_directory : str
-    title : Optional[str] = "Untitled Collection"
+    title : str
     collection: list = field(default_factory=list)
 
     def get_collection(self):
