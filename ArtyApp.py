@@ -13,7 +13,7 @@ from widgets.CollectionGrid import CollectionGrid
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
-from api.Collection import CollectionManager, Collection
+from api.collection import CollectionManager, Collection
 
 
 class ArtyApp(App):
@@ -69,23 +69,17 @@ class ArtyApp(App):
         """
         self.PROJECT_DIRECTORY = path
 
-        # load or create collection at specified project directory
         try:
+            # load or create collection at specified project directory
             self.CURRENT_COLLECTION = CollectionManager.load(self.PROJECT_DIRECTORY)
+            # give the collection to the CollectionGrid, which will in turn
+            # display the images on the screen
+            self.GRID.set_collection(self.CURRENT_COLLECTION)
         except FileNotFoundError:
             Logger.exception(
                 "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY
             )
             return
-
-        # add all images in the collection to display
-        for collection_image in self.CURRENT_COLLECTION.get_collection():
-            try:
-                self.GRID.add_image(collection_image, self.CURRENT_COLLECTION)
-            except ValueError:
-                Logger.exception(
-                    'Pictures: Unable to load <%s>' % collection_image
-                )
 
         # switch to the collection screen
         self.SCREEN_MANAGER.switch_to(
@@ -108,9 +102,9 @@ class ArtyApp(App):
 
         try:
             # add image to the collection
-            collection_image = self.CURRENT_COLLECTION.add_image(file_path)
-            # add image to display
-            self.GRID.add_image(collection_image, self.CURRENT_COLLECTION)
+            self.CURRENT_COLLECTION.add_image(file_path)
+            # refresh the CollectionGrid
+            self.GRID.set_collection(self.CURRENT_COLLECTION)
         except ValueError:
             Logger.exception("The file %s couldn't be added to the collection." % file_path)
 

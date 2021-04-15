@@ -26,7 +26,8 @@ if __name__ == '__main__':
     # prevent quitting when ESCAPE is pressed
     Config.set('kivy',      'exit_on_escape',   '0')
 
-    #Config.write()
+    # apply configuration
+    Config.write()
 
     # run the app
     ArtyApp().run()

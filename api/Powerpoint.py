@@ -1,6 +1,6 @@
 from pptx import Presentation
 
-from api.CollectionImage import CollectionImage
+from api.collection import CollectionImage
 
 class Powerpoint():
     """ Summary
@@ -39,9 +39,11 @@ class Powerpoint():
         
         # TODO: Create a slide with an image and its legend
         legend = image.to_reference()
-        
+
+        slide = None
+
         # return the slide
-        return
+        return slide
 
 if __name__ == "__main__":
     pass

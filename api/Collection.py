@@ -7,6 +7,7 @@ import os
 import json
 import ntpath
 import shutil
+from functools import lru_cache
 from typing import Optional
 from dataclasses import dataclass, field
 
@@ -30,13 +31,20 @@ class CollectionManager():
         - Make loading times faster
         - JSON format optimisation by minifying and aliasing the property
           names to take less space on disk.
+        - Proof the loading so:
+            1. we can have the absolute path to an image in a
+               CollectionImage
+            2. The system doesn't break when the user:
+                - moves the directory between sessions
+                - removes an image from the directory between sessions
+                - drags an image from the work directory to the window
     """
 
     AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
     META_FILENAME = ".collection"
 
     @classmethod
-    def load(self, path):
+    def load(cls, path):
         """ Summary
             -------
             This function loads a collection from a path. If there is no
@@ -59,32 +67,30 @@ class CollectionManager():
                 if the collection's work directory is not found
 
         """
-                # check if the path given is valid
+        # check if the path given is valid
         if not os.listdir(path):
             raise FileNotFoundError
-        
-
 
         # check if there is already a project file in this directory
-        if self.META_FILENAME in os.listdir(path):
+        if cls.META_FILENAME in os.listdir(path):
             # if it's the case, load it.
-            collection = self.__load_meta(path)
+            collection = cls.__load_meta(path)
         else:
             # if it's not the case, create a new one and start with a
             # default collection
-            self.__create_meta(path)
+            cls.__create_meta(path)
             # create a default collection
             collection = Collection(path, "Untitled Collection", list())
 
         # check the images in the directory and update the collection
         # and meta
-        collection = self.__check_files(collection)
-        self.__write_meta(collection)
+        collection = cls.__check_files(collection)
+        cls.__write_meta(collection)
 
         return collection
 
     @classmethod
-    def save(self, collection):
+    def save(cls, collection):
         """ Summary
             -------
             This method saves a collection to disk.
@@ -93,15 +99,13 @@ class CollectionManager():
             ----------
             collection: Collection
                 the Collection object to save
-        
         """
-        self.__write_meta(collection)
+        cls.__write_meta(collection)
 
-    
+
     @classmethod
-    def __load_meta(self, path):
-        """ 
-            Summary
+    def __load_meta(cls, path):
+        """ Summary
             -------
             Deserializes the data from the meta file and updates the
             collection
@@ -110,12 +114,16 @@ class CollectionManager():
             ----
             I'm sure there's a better way to do this...
         """
-        with open(os.path.join(path, self.META_FILENAME), "r") as meta:
+        with open(os.path.join(path, cls.META_FILENAME), "r") as meta:
             coll_json = meta.read()
             coll_dict = json.loads(coll_json)
 
+        # retrieve the title of the collection
         title = coll_dict["title"]
+
+        # retrieve the collection list
         collection = [
+            # cast each object in the JSON list to a CollectionImage
             # pylint says it's an error. Let's just say I disagree
             CollectionImage.from_dict(item) for item in coll_dict["collection"]
         ]
@@ -124,7 +132,7 @@ class CollectionManager():
 
 
     @classmethod
-    def __check_files(self, collection):
+    def __check_files(cls, collection):
         """ Runs through the files in the work directory and adds any
             image that is not yet in our collection.
 
@@ -137,14 +145,20 @@ class CollectionManager():
         """
         # type safety check
         if not isinstance(collection, Collection):
-            raise ValueError("collection must be of type Collection, not %s" 
+            raise ValueError("collection must be of type Collection, not %s"
                 % type(collection)
             )
 
-        for filename in os.listdir(collection.work_directory):
+        dir_contents = os.listdir(collection.work_directory)
+
+        # filter the collection list to remove from the collection 
+        # references to files that no longer exist
+        collection.collection = [i for i in collection.collection if i.filename in dir_contents]
+
+        for filename in dir_contents:
             # reject all files with the wrong extension (case
             # insensitive)
-            if filename.lower().endswith(self.AUTHORIZED_IMAGE_FORMATS):
+            if filename.lower().endswith(cls.AUTHORIZED_IMAGE_FORMATS):
                 new_image = CollectionImage(filename)
 
                 # this works since we overloaded the equal operator in
@@ -157,35 +171,35 @@ class CollectionManager():
 
 
     @classmethod
-    def __write_meta(self, collection):
+    def __write_meta(cls, collection):
         """ Serializes this collection and saves it in the project meta
             file in the work directory
         """
         # type safety check
         if not isinstance(collection, Collection):
             raise ValueError(
-                "collection must be of type Collection, not %s" 
+                "collection must be of type Collection, not %s"
                 % type(collection)
             )
-        
+
         meta_file_path = os.path.join(
             collection.work_directory,
-            self.META_FILENAME
+            cls.META_FILENAME
         )
 
         # create metadata file in the project directory
         with open(meta_file_path, "w") as meta_file:
-            # pylint says it's an error. It's not.
+            # convert the collection to JSON
             json_data = json.loads(collection.to_json())
-            # format json file (temporary)
+            # format JSON file (temporary)
             formatted_json = json.dumps(json_data, indent=4)
 
             meta_file.write(formatted_json)
 
 
     @classmethod
-    def __create_meta(self, path):
-        path = os.path.join(path, self.META_FILENAME)
+    def __create_meta(cls, path):
+        path = os.path.join(path, cls.META_FILENAME)
         open(path, "a").close()
 
 
@@ -227,7 +241,7 @@ class Collection():
         """setter for the collection list"""
         self.collection = coll_list
         CollectionManager.save(self)
-    
+
 
     def add_image(self, source):
         """ Summary
@@ -238,13 +252,13 @@ class Collection():
             -------
             CollectionImage
                 The image that was inserted in the collection
-        
         """
-        # cleaning the input if necessary
-        source = str(source)
+        # cleaning the input if necessary (format <b'path/to/file'>
+        # coming from ArtyApp._on_file_drop())
+        source = str(source.decode('utf-8'))
         if source.startswith("b'") and source.endswith("'"):
             source = source[2:-1]
-        
+
         # get the file name, using ntpath
         file_name = ntpath.basename(source)
 
@@ -252,17 +266,27 @@ class Collection():
         if not file_name.lower().endswith(
             CollectionManager.AUTHORIZED_IMAGE_FORMATS
         ):
-            raise ValueError("Unauthorized file format for: %s" % file_name)
+            raise ValueError("Unauthorized file format %s" % file_name)
 
         # copy the file to the working directory
         # NOTE: should verify if the user is not dragging a file from
         # the working directory
         try:
             shutil.copyfile(source, os.path.join(self.work_directory, file_name))
-        except shutil.SameFileError:
-            raise shutil.SameFileError(file_name)
-        
+        except shutil.SameFileError as err:
+            raise ValueError(
+                "This image already exists in the work directory %s" %
+                file_name
+            ) from err
+
         new_image = CollectionImage(file_name)
+
+        if new_image in self.collection:
+            raise ValueError(
+                "This image already exists in the collection %s" %
+                file_name
+            )
+
         self.collection.append(new_image)
         CollectionManager.save(self)
 
@@ -278,7 +302,7 @@ class Collection():
             ----------
             collection_image: CollectionImage
                 an image
-            
+
             Returns
             -------
             absolute_path: str
@@ -319,6 +343,8 @@ class CollectionImage():
             production site
         dimensions : str, optional
             dimensions of the work (eg. "300x200cm" or "20x30x25cm")
+        user_notes : str, optional
+            Text block for the user to write anything they want
 
         Methods
         -------
@@ -332,6 +358,8 @@ class CollectionImage():
           To get the absolute path, use:
             collection.get_absolute_path(collection_image)
         - Date format to discuss.
+        - Other fields ?
+        - Tag system ?
     """
 
     filename :              str
@@ -342,6 +370,7 @@ class CollectionImage():
     conservation_site :     Optional[str] = None
     production_site :       Optional[str] = None
     dimensions :            Optional[str] = None
+    user_notes:             Optional[str] = None
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :
@@ -353,9 +382,11 @@ class CollectionImage():
             Maybe allow for using different formattings ?
             This code assumes all fields are filled correctly
         """
-        ref_string = "{artist_if_artist}{title}{production_site_if_no_artist}{date}{technique}{dimensions}{conservation_site}".format(
+
+        reference = "{artist_if_artist}{title}{production_site_if_no_artist}"\
+            "{date}{technique}{dimensions}{conservation_site}".format(
             artist_if_artist = self.artist + ", " if self.artist else "",
-            title = self.title + ", " if self.title else "Untitled,", # TODO: see about italics
+            title = self.title + ", " if self.title else "Untitled,",
             production_site_if_no_artist = self.production_site + ", " if not self.artist else "",
             date = self.year + ", " if self.year else "",
             technique = self.technique + ", " if self.technique else "",
@@ -363,7 +394,7 @@ class CollectionImage():
             conservation_site = self.conservation_site
         )
 
-        return ref_string
+        return reference
 
 
     def __eq__(self, other):
@@ -371,8 +402,3 @@ class CollectionImage():
             the same filename are considered the same image.
         """
         return self.filename == other.filename
-
-
-if __name__ == "__main__":
-    coll = CollectionManager.load("testimages")
-    print(coll)
