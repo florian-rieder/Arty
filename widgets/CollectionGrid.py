@@ -22,3 +22,5 @@ class CollectionGrid(GridLayout):
     def add_image(self, collection_image, collection):
         self.image_button = CollectionGridImage(source = collection.get_absolute_path(collection_image))
         self.add_widget(self.image_button)
+    
+
