@@ -13,7 +13,7 @@ from widgets.CollectionGrid import CollectionGrid
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
-from api.collection import CollectionManager, Collection
+from api.Collection import CollectionManager, Collection
 
 
 class ArtyApp(App):

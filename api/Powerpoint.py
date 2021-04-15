@@ -1,6 +1,6 @@
 from pptx import Presentation
 
-from api.collection import CollectionImage
+from api.Collection import CollectionImage
 
 class Powerpoint():
     """ Summary

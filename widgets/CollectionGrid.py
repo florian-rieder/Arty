@@ -4,7 +4,7 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.logger import Logger
 
-from api.collection import Collection
+from api.Collection import Collection
 from widgets.CollectionGridImage import CollectionGridImage
 
 class CollectionGrid(GridLayout):
