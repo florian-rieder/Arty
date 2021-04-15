@@ -1,5 +1,4 @@
 from kivy.uix.screenmanager import Screen
 
-
-class ComparisonScreen():
+class ComparisonScreen(Screen):
     pass
