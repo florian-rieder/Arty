@@ -8,7 +8,6 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
-from widgets.Picture import Picture
 from widgets.CollectionGrid import CollectionGrid
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
@@ -28,8 +27,6 @@ class ArtyApp(App):
     GRID = ObjectProperty(None)
 
     def build(self):
-        # the root is created in pictures.kv
-        #root = self.root
 
         Window.bind(on_dropfile=self._on_file_drop)
 

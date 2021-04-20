@@ -1,0 +1,13 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<StartScreen>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        FileChoose:
+            size_hint_y: 0.1
+            on_release: self.choose()
+            text: 'Select a folder'
