@@ -2,40 +2,6 @@
 #:import kivy kivy
 #:import win kivy.core.window
 
-FloatLayout:
-    canvas:
-        Color:
-            rgb: 1, 1, 1
-        Rectangle:
-            source: 'data/images/background.jpg'
-            size: self.size
-
-
-<Picture>:
-    # each time a picture is created, the image can delay the loading
-    # as soon as the image is loaded, ensure that the center is changed
-    # to the center of the screen.
-    on_size: self.center = win.Window.center
-    size: image.size
-    size_hint: None, None
-
-    Image:
-        id: image
-        source: root.source
-
-        # create initial image to be 400 pixels width
-        size: 400, 400 / self.image_ratio
-
-        # add shadow background
-        canvas.before:
-            Color:
-                rgba: 1,1,1,1
-            BorderImage:
-                source: 'shadow32.png'
-                border: (36,36,36,36)
-                size:(self.width+72, self.height+72)
-                pos: (-36,-36)
-
 <CollectionScreen>:
     BoxLayout:
         CollectionGrid:
@@ -59,54 +25,6 @@ FloatLayout:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'Collection'
 
-<StartScreen>:
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-
-        Label:
-            text: "Select a work directory:"
-            size_hint_y: None
-            height: 50
-
-        BoxLayout:
-            # Container for FileChooser options
-            size_hint_y: None
-            height: 50
-
-            # FileChooser view selection
-            Button:
-                text: 'Icon View'
-                on_press: fc.view_mode = 'icon'
-            Button:
-                text: 'List View'
-                on_press: fc.view_mode = 'list'
-
-        Label:
-            # dynamically shows the current selected path
-            text: fc.path
-            text_size: self.size
-            padding: (50, 2)
-            halign: 'left'
-            valign: 'middle'
-            size_hint_y: None
-            height: 40
-
-        FileChooser:
-            id: fc
-            # change the default path to the user's home directory
-            path: root.get_home_directory()
-            FileChooserIconLayout
-            FileChooserListLayout
-
-        BoxLayout:
-            size_hint_y: None
-            height: 80
-
-            Button:
-                text: "Load"
-                on_release: root.load_collection(fc.path)
 
 <CollectionGridImage>:
     AnchorLayout:
