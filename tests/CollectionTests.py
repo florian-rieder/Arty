@@ -62,22 +62,15 @@ class TestCollection(unittest.TestCase):
         test_image1 = CollectionImage(
                 filename ="48224.jpg",
                 artist="Leonard de Vinci",
-                production_site="test",
                 title="Mona Lisa (Joconde)",
-                year="1503-1506",
                 technique="Huile sur toile",
-                conservation_site="Musée du Louvre, Paris",
-                dimensions="77 x 53 cm"
             )
         test_image2 = CollectionImage(
                 filename ="asjbd.jpg",
                 artist="Leonard de Vinci",
-                production_site="test",
                 title="Salvator Mundi",
-                year="1503-1506",
                 technique="Huile sur bois",
-                conservation_site="Musée du Louvre, Paris",
-                dimensions="66 x 45 cm"
+
             )
         test_image3 = CollectionImage(
                 filename ="4asdnkasjd.jpg",
@@ -85,6 +78,7 @@ class TestCollection(unittest.TestCase):
                 title="Portrait de Mona Rosa",
                 technique="Huile sur toile",
             )
+        
         # Let's define a collection to filter
         test_coll = Collection("test", "test", [
             test_image1, test_image2, test_image3
@@ -109,4 +103,38 @@ class TestCollection(unittest.TestCase):
         self.assertEqual(
             [test_image1, test_image2, test_image3],
             test_coll.filter(mode="any", artist="Leonard", title="Mona")
+        )
+
+
+    def test_sort(self):
+        test_image1 = CollectionImage(
+            filename ="48224.jpg",
+            artist="a",
+            title="Mona Lisa (Joconde)",
+            technique="Huile sur toile"
+        )
+        test_image2 = CollectionImage(
+            filename ="asjbd.jpg",
+            artist="c",
+            title="Salvator Mundi",
+            technique="Huile sur bois"
+        )
+        test_image3 = CollectionImage(
+            filename ="4asdnkasjd.jpg",
+            artist="b",
+            title="Portrait de Mona Rosa",
+            technique="Huile sur toile"
+        )
+        
+        test_coll = Collection("test", "test", [
+            test_image1, test_image2, test_image3
+        ])
+        
+        self.assertEqual(
+            [test_image1, test_image3, test_image2],
+            test_coll.sort("artist")
+        )
+        self.assertEqual(
+            [test_image1, test_image3, test_image2],
+            test_coll.sort("title")
         )
