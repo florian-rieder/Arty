@@ -2,11 +2,11 @@
     Handles the datastructure of a collection, and saving and loading of
     metadata in a project folder.
 """
-
 import os
 import json
 import ntpath
 import shutil
+import builtins
 from typing import Optional
 from dataclasses import dataclass, field
 
@@ -150,7 +150,7 @@ class CollectionManager():
 
         dir_contents = os.listdir(collection.work_directory)
 
-        # filter the collection list to remove from the collection 
+        # filter the collection list to remove from the collection
         # references to files that no longer exist
         collection.collection = [i for i in collection.collection if i.filename in dir_contents]
 
@@ -312,6 +312,75 @@ class Collection():
 
         return os.path.join(self.work_directory, collection_image.filename)
 
+
+    def filter(self, mode="any", **kwargs):
+        """ Summary
+            -------
+            Filters a collection based on metadata
+
+            Arguments
+            ---------
+            mode : str, default='any'
+                Selection method for the filter. Either 'any' or 'all'.
+                It's basically an OR/AND operator between the specified
+                fields.
+                (e.g. any: artist OR title must match; all: artist
+                AND title must match)
+            Any attribute of CollectionImage
+
+            Returns
+            -------
+            filtered_list : list(CollectionImages)
+                List filtered according to the given parameters
+
+            Example
+            -------
+            filtered_collection = collection.filter(mode="all", title="Mona Lisa", artist="Leonard")
+        """
+
+        # check that the mode chosen is valid
+        if mode not in ("any", "all"):
+            raise ValueError("mode must be either 'any' or 'all'")
+
+        # check that the fields entered are valid CollectionImage fields
+        for attr in kwargs:
+            if not hasattr(CollectionImage, attr):
+                raise ValueError("CollectionImage has no attribute %s" % attr)
+
+        # for each image in the collection, retain if at least one of
+        # the arguments matches (with the in keyword)
+        return [
+            # for each image in the collection
+            i for i in self.collection
+
+            # this wizardry in the line below allows for using either
+            # the 'any' or 'all' python builtins from name
+            if getattr(builtins, mode)(
+                #retain if any/all arguments matches (with the in keyword)
+                [
+                    # check if the value we're looking for is in this
+                    # image's value (case insensitive)...
+                    value.lower() in i.__getattribute__(attr).lower()
+                    # ...for each attribute we're filtering for...
+                    for attr, value in kwargs.items()
+                    # ...but only if the attribute is filled in the
+                    # current image
+                    if i.__getattribute__(attr)
+                ]
+            )
+        ]
+
+    def sort(self, **kwargs):
+        """ Summary
+            -------
+            Sorts the images in a collection.
+
+            Returns
+            -------
+            sorted_collection : list(CollectionImage)
+                sorted collection
+        """
+        raise NotImplementedError
 
 
 @dataclass_json
