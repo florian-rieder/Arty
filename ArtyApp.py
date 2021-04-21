@@ -13,6 +13,7 @@ from widgets.CollectionGrid import CollectionGrid
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
+from screens.ComparisonScreen import ComparisonScreen
 from api.Collection import CollectionManager, Collection
 
 
@@ -39,6 +40,7 @@ class ArtyApp(App):
         start_screen      =     StartScreen(name="Start")
         collection_screen =     CollectionScreen(name='Collection')
         settings_screen   =     SettingsScreen(name='Settings')
+        comparison_screen =     ComparisonScreen(name="Compare")
 
         # reference grid
         self.GRID = collection_screen.ids.grid
@@ -47,11 +49,13 @@ class ArtyApp(App):
         self.SCREENS["START"]      =    start_screen
         self.SCREENS["COLLECTION"] =    collection_screen
         self.SCREENS["SETTINGS"]   =    settings_screen
-        
+        self.SCREENS["COMPARE"]    =    comparison_screen
+
         # add the screens to display
         screen_manager.add_widget(start_screen)
         screen_manager.add_widget(collection_screen)
         screen_manager.add_widget(settings_screen)
+        screen_manager.add_widget(comparison_screen)
 
         # select the start screen
         screen_manager.current = start_screen.name
