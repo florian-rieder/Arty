@@ -363,12 +363,12 @@ class Collection():
                 [
                     # check if the value we're looking for is in this
                     # image's value (case insensitive)...
-                    value.lower() in i.__getattribute__(attr).lower()
+                    value.lower() in getattr(i, attr).lower()
                     # ...for each attribute we're filtering for...
                     for attr, value in kwargs.items()
                     # ...but only if the attribute is filled in the
                     # current image
-                    if i.__getattribute__(attr)
+                    if getattr(i, attr)
                 ]
             )
         ]

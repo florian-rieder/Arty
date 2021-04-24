@@ -30,7 +30,11 @@ To run the application, use `python main.py`
 # -*- mode: python -*-
 
 block_cipher = None
-from kivy.tools.packaging.pyinstaller_hooks import get_deps_all, hookspath, runtime_hooks
+
+from kivy.tools.packaging.pyinstaller_hooks import get_deps_minimal, hookspath, runtime_hooks
+
+dependencies = get_deps_minimal(window=True, image=True, audio=None, camera=None, video=None)
+dependencies['hiddenimports'] += ["plyer.platforms.macosx.filechooser"]
 
 a = Analysis(['main.py'],
              pathex=['/path/to/this/repo'],
@@ -39,7 +43,7 @@ a = Analysis(['main.py'],
              win_private_assemblies=False,
              hookspath=hookspath(),
              runtime_hooks=runtime_hooks(),
-             **get_deps_all())
+             **dependencies)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -76,7 +80,7 @@ a = Analysis(['main.py'],
              pathex=['C:\\path\\to\\this\\repo'],
              binaries=[],
              datas=[],
-             hiddenimports=[],
+             hiddenimports=["plyer.platforms.win.filechooser"],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -96,7 +100,7 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           console=True )
-coll = COLLECT(exe, Tree('.'),
+coll = COLLECT(exe, Tree('C:\\path\\to\\this\\repo'),
                a.binaries,
                a.zipfiles,
                a.datas,
