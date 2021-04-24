@@ -54,7 +54,7 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           console=False )
-coll = COLLECT(exe, Tree('.'),
+coll = COLLECT(exe, Tree('path/to/this/repo'),
                a.binaries,
                a.zipfiles,
                a.datas,

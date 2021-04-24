@@ -1,0 +1,73 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<CollectionPanel>:
+    orientation: 'vertical'
+
+    BoxLayout:
+        Image:
+            source: root.source
+            height: dp(20)
+
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Label:
+                text: 'Artiste'
+            TextInput:
+                text: root.current_image.title
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Titre'
+            TextInput:
+                text: root.current_image.artist
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Datation'
+            TextInput:
+                text: root.current_image.year
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Technique'
+            TextInput:
+                text: root.current_image.technique
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Site de conservation'
+            TextInput:
+                text: root.current_image.conservation_site
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Site de production'
+            TextInput:
+                text: root.current_image.production_site
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Dimensions'
+            TextInput:
+                text: root.current_image.dimensions
+                height: 50
+        BoxLayout:
+            Label:
+                text: 'Notes'
+            TextInput:
+                text: root.current_image.user_notes
+                height: 50
+
+
+# <MetadataItem>:
+#     BoxLayout:
+#         orientation: 'horizontal'
+
+#         Label:
+#             id: metadata-label
+#             text: self.label_text
+        
+#         TextInput:
+#             id: text-input

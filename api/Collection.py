@@ -462,14 +462,14 @@ class CollectionImage():
     """
 
     filename :              str
-    title :                 Optional[str] = None
-    artist :                Optional[str] = None
-    year :                  Optional[str] = None
-    technique :             Optional[str] = None
-    conservation_site :     Optional[str] = None
-    production_site :       Optional[str] = None
-    dimensions :            Optional[str] = None
-    user_notes:             Optional[str] = None
+    title :                 Optional[str] = ""
+    artist :                Optional[str] = ""
+    year :                  Optional[str] = ""
+    technique :             Optional[str] = ""
+    conservation_site :     Optional[str] = ""
+    production_site :       Optional[str] = ""
+    dimensions :            Optional[str] = ""
+    user_notes:             Optional[str] = ""
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :
