@@ -1,0 +1,26 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<CollectionGridImage>:
+
+    # canvas:
+    #     Rectangle:
+    #         source: root.source
+    #         pos: self.pos
+    #         size: self.size
+
+    Image:
+        id: coll_image
+        source: root.source
+        size_hint: 1, None
+        #height: 10
+    
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+
+        CheckBox:
+            id: select_image
+            color: (0,1,0)
+            size_hint: (0.1,0.1)
+            pos_hint: {'x': 1, 'y': 1}

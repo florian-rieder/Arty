@@ -1,3 +1,4 @@
+from kivy.lang import Builder
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
@@ -18,5 +19,8 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         -------
 
     """
+    Builder.load_file('templates/CollectionGridImage.kv')
+
     source = StringProperty(None)
     collection_image = ObjectProperty(None)
+        
