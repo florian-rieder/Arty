@@ -31,6 +31,8 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
     # the widget is fully initialized
     collection_image = ObjectProperty(CollectionImage("shadow32.png"))
 
+    selected_image = []
+
     def on_press(self):
         """ Summary
             -------
@@ -38,3 +40,14 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         """
         app = App.get_running_app()
         app.PANEL.set_image(self.collection_image)
+
+    def checkbox_click(self, instance, value):
+
+        image_list = CollectionGridImage().selected_image
+
+        if value is True:
+            print(self.collection_image.filename + ' added')
+            image_list.append(self.collection_image.filename)
+        else:
+            print(self.collection_image.filename + ' removed')
+            image_list.remove(self.collection_image.filename)

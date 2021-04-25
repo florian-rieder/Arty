@@ -4,9 +4,17 @@
 
 <CollectionScreen>:
     BoxLayout:
-        ScrollView:
-            CollectionGrid:
-                id: grid
+        BoxLayout:
+
+            orientation: 'vertical'
+
+            CollectionToolbar:
+                height: dp(25)
+                size_hint: 1, None
+
+            ScrollView:
+                CollectionGrid:
+                    id: grid
 
         CollectionPanel:
             id: panel
@@ -28,4 +36,3 @@
             on_press:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'Collection'
-
