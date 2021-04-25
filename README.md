@@ -63,8 +63,13 @@ coll = COLLECT(exe, Tree('path/to/this/repo'),
                name='Arty')
 app = BUNDLE(coll,
              name='Arty.app',
-             icon=None,
-         bundle_identifier=None)
+             icon='resources/icon.icns',
+             bundle_identifier="com.visio-images.arty",
+             info_plist={
+                 'NSHighResolutionCapable': 'True',
+                 'NSPrincipalClass': 'NSApplication',
+                 'NSAppleScriptEnabled': False,
+             })
 ```
 
 ## Windows
@@ -99,7 +104,8 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True )
+          console=False,
+          icon='resources\\icon.ico')
 coll = COLLECT(exe, Tree('C:\\path\\to\\this\\repo'),
                a.binaries,
                a.zipfiles,

@@ -29,7 +29,7 @@ class ArtyApp(App):
     PANEL = ObjectProperty(None)
 
     def build(self):
-        self.icon = "icon.png"
+        self.icon = "resources/icon.png"
 
         # bind methods to kivy events
         Window.bind(on_dropfile=self._on_file_drop)
