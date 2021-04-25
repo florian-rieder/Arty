@@ -29,6 +29,7 @@ class ArtyApp(App):
     PANEL = ObjectProperty(None)
 
     def build(self):
+        self.icon = "icon.png"
 
         # bind methods to kivy events
         Window.bind(on_dropfile=self._on_file_drop)
@@ -124,7 +125,10 @@ class ArtyApp(App):
         """
         # save the metadata in the CollectionPanel, in turn saves the
         # entire collection
-        self.PANEL.save()
+        try:
+            self.PANEL.save()
+        except AttributeError:
+            Logger.exception("CollectionPanel couldn't save on exit.")
 
     def on_pause(self):
         return True

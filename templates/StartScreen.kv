@@ -2,12 +2,44 @@
 #:import kivy kivy
 
 <StartScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     BoxLayout:
         size: root.size
         pos: root.pos
         orientation: "vertical"
+        padding: 50
+        spacing: 100
+
+        Image:
+            # canvas.before:
+            #     Color:
+            #         rgba: 1, 0, 0, 1
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
+            source: 'icon_alpha.png'
+            size_hint_y: 1
+            size: 150, 150
+            
+        Label:
+            # canvas.before:
+            #     Color:
+            #         rgba: 0, 1, 0, 1
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
+            text: 'Pour commencer à travailler avec Arty, sélectionnez un dossier contenant vos images'
+            font_size: 48
+            color: 0, 0, 0, 0.6
 
         FileChoose:
-            size_hint_y: 0.1
+            pos_hint: {'center_x': 0.5}
+            size_hint: 0.5, 0.3
+            text: 'Selectionnez un dossier'
             on_release: self.choose()
-            text: 'Select a folder'
