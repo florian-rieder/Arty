@@ -1,4 +1,5 @@
 # Arty
+Arty is an image viewer designed for the needs of Art Historians.
 
 # Installation
 
@@ -7,7 +8,7 @@
 
 2. activate the environment:
 
-- on unix
+- on MacOS
 ```. venv/bin/activate```
 
 - on windows
@@ -21,7 +22,7 @@ To run the application, use `python main.py`
 
 # Building the application
 1. Create a `main.spec` file at the root of this repository and paste the appropriate content depending on your OS.
-2. Replace the `pathex` in the `Analysis` part of the spec file with the path to this repository on your machine.
+2. Replace the `pathex` and `Tree` where appropriate with the path to this repository on your machine.
 3. Then run the command `pyinstaller main.spec` to build the executable.
 
 ## MacOS

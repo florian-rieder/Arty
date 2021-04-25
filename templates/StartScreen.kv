@@ -34,12 +34,16 @@
             #     Rectangle:
             #         pos: self.pos
             #         size: self.size
-            text: 'Pour commencer à travailler avec Arty, sélectionnez un dossier contenant vos images'
+            text: 'Pour commencer à travailler avec Arty, sélectionnez un dossier contenant vos images.'
+            text_size: root.width/2, None
+            halign: 'center'
+            valign: 'middle'
             font_size: 48
             color: 0, 0, 0, 0.6
 
         FileChoose:
             pos_hint: {'center_x': 0.5}
             size_hint: 0.5, 0.3
-            text: 'Selectionnez un dossier'
+            text: 'Sélectionner un dossier'
+            font_size: 36
             on_release: self.choose()
