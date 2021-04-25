@@ -9,6 +9,7 @@ from kivy.core.window import Window
 from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
 from widgets.CollectionGrid import CollectionGrid
+from widgets.CollectionPanel import CollectionPanel
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
@@ -26,6 +27,7 @@ class ArtyApp(App):
     SCREENS = DictProperty(dict())
     SCREEN_MANAGER = ObjectProperty(None)
     GRID = ObjectProperty(None)
+    PANEL = ObjectProperty(None)
 
     def build(self):
 
@@ -41,6 +43,7 @@ class ArtyApp(App):
 
         # reference grid
         self.GRID = collection_screen.ids.grid
+        self.PANEL = collection_screen.ids.panel
 
         # keep reference to all the screens in the app
         self.SCREENS["START"]      =    start_screen
@@ -76,6 +79,9 @@ class ArtyApp(App):
             # give the collection to the CollectionGrid, which will in turn
             # display the images on the screen
             self.GRID.set_collection(self.CURRENT_COLLECTION)
+            # TEST
+            self.PANEL.initialize(self.CURRENT_COLLECTION.work_directory)
+            self.PANEL.set_image(self.CURRENT_COLLECTION.get_collection()[0])
         except FileNotFoundError:
             Logger.exception(
                 "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY

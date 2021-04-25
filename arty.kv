@@ -7,11 +7,14 @@
         CollectionGrid:
             id: grid
 
-        Button:
-            text: 'Goto settings'
-            on_press:
-                root.manager.transition.direction = 'left'
-                root.manager.current = 'Settings'
+        CollectionPanel:
+            id: panel
+
+        # Button:
+        #     text: 'Goto settings'
+        #     on_press:
+        #         root.manager.transition.direction = 'left'
+        #         root.manager.current = 'Settings'
         # Button:
         #     text: 'Quit'
 
@@ -31,7 +34,7 @@
         anchor_x: 'left'
         anchor_y: 'top'
 
-        canvas:            
+        canvas:
             Rectangle:
                 source: root.source
                 pos: self.pos
@@ -40,6 +43,7 @@
         #Image:
         #    source: root.source
         #    size_hint: 1,1
+        #    height: dp(40) # KEEP ASPECT RATIO (40: height)
 
         CheckBox:
             id: select_image

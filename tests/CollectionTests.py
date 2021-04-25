@@ -1,6 +1,6 @@
 import unittest
 
-from api.Collection import CollectionImage
+from api.Collection import Collection, CollectionImage
 
 class TestCollectionImage(unittest.TestCase):
 
@@ -57,3 +57,84 @@ class TestCollectionImage(unittest.TestCase):
         expected_ref3 = "Mona Lisa (Joconde), test, 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
         self.assertEqual(test_image3.to_reference(), expected_ref3)
 
+class TestCollection(unittest.TestCase):
+    def test_filter(self):
+        test_image1 = CollectionImage(
+                filename ="48224.jpg",
+                artist="Leonard de Vinci",
+                title="Mona Lisa (Joconde)",
+                technique="Huile sur toile",
+            )
+        test_image2 = CollectionImage(
+                filename ="asjbd.jpg",
+                artist="Leonard de Vinci",
+                title="Salvator Mundi",
+                technique="Huile sur bois",
+
+            )
+        test_image3 = CollectionImage(
+                filename ="4asdnkasjd.jpg",
+                artist="Leonard Baldaquin",
+                title="Portrait de Mona Rosa",
+                technique="Huile sur toile",
+            )
+        
+        # Let's define a collection to filter
+        test_coll = Collection("test", "test", [
+            test_image1, test_image2, test_image3
+        ])
+
+        self.assertEqual(
+            [test_image1, test_image3], 
+            test_coll.filter(technique="Huile sur toile")
+        )
+        self.assertEqual(
+            [test_image1, test_image2, test_image3],
+            test_coll.filter(artist="Leonard")
+        )
+        self.assertEqual(
+            [test_image1, test_image2],
+            test_coll.filter(artist="Leonard de Vinci")
+        )
+        self.assertEqual(
+            [test_image1, test_image3],
+            test_coll.filter(mode="all", artist="Leonard", title="Mona")
+        )
+        self.assertEqual(
+            [test_image1, test_image2, test_image3],
+            test_coll.filter(mode="any", artist="Leonard", title="Mona")
+        )
+
+
+    def test_sort(self):
+        test_image1 = CollectionImage(
+            filename ="48224.jpg",
+            artist="a",
+            title="Mona Lisa (Joconde)",
+            technique="Huile sur toile"
+        )
+        test_image2 = CollectionImage(
+            filename ="asjbd.jpg",
+            artist="c",
+            title="Salvator Mundi",
+            technique="Huile sur bois"
+        )
+        test_image3 = CollectionImage(
+            filename ="4asdnkasjd.jpg",
+            artist="b",
+            title="Portrait de Mona Rosa",
+            technique="Huile sur toile"
+        )
+        
+        test_coll = Collection("test", "test", [
+            test_image1, test_image2, test_image3
+        ])
+        
+        self.assertEqual(
+            [test_image1, test_image3, test_image2],
+            test_coll.sort("artist")
+        )
+        self.assertEqual(
+            [test_image1, test_image3, test_image2],
+            test_coll.sort("title")
+        )

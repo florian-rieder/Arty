@@ -43,4 +43,4 @@ class CollectionGrid(GridLayout):
                     'CollectionGrid: Unable to load <%s>' % collection_image
                 )
 
-        Logger.info("CollectionGrid refreshed.")
+        Logger.info("Arty: CollectionGrid refreshed.")

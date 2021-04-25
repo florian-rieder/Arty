@@ -2,11 +2,11 @@
     Handles the datastructure of a collection, and saving and loading of
     metadata in a project folder.
 """
-
 import os
 import json
 import ntpath
 import shutil
+import builtins
 from typing import Optional
 from dataclasses import dataclass, field
 
@@ -150,7 +150,7 @@ class CollectionManager():
 
         dir_contents = os.listdir(collection.work_directory)
 
-        # filter the collection list to remove from the collection 
+        # filter the collection list to remove from the collection
         # references to files that no longer exist
         collection.collection = [i for i in collection.collection if i.filename in dir_contents]
 
@@ -313,6 +313,106 @@ class Collection():
         return os.path.join(self.work_directory, collection_image.filename)
 
 
+    def filter(self, mode="any", **kwargs):
+        """ Summary
+            -------
+            Filters a collection based on metadata
+
+            Arguments
+            ---------
+            mode : str, default='any'
+                Selection method for the filter. Either 'any' or 'all'.
+                It's basically an OR/AND operator between the specified
+                fields.
+                (e.g. any: artist OR title must match; all: artist
+                AND title must match)
+            kwargs:
+                Any attribute of CollectionImage (multiple allowed)
+
+            Returns
+            -------
+            filtered_list : list(CollectionImages)
+                List filtered according to the given parameters
+
+            Example
+            -------
+            filtered_collection = collection.filter(mode="all", title="Mona Lisa", artist="Leonard")
+        """
+
+        # check that the mode chosen is valid
+        if mode not in ("any", "all"):
+            raise ValueError("mode must be either 'any' or 'all'")
+
+        # check that the fields entered are valid CollectionImage fields
+        for attr in kwargs:
+            if not hasattr(CollectionImage, attr):
+                raise ValueError("CollectionImage has no attribute %s" % attr)
+
+        # for each image in the collection, retain if at least one of
+        # the arguments matches (with the in keyword)
+        # Here it is better for performance and readability to use list
+        # comprehensions instead of filter
+        return [
+            # for each image in the collection
+            i for i in self.collection
+
+            # this wizardry in the line below allows for using either
+            # the 'any' or 'all' python builtins from name
+            if getattr(builtins, mode)(
+                #retain if any/all arguments matches (with the in keyword)
+                [
+                    # check if the value we're looking for is in this
+                    # image's value (case insensitive)...
+                    value.lower() in getattr(i, attr).lower()
+                    # ...for each attribute we're filtering for...
+                    for attr, value in kwargs.items()
+                    # ...but only if the attribute is filled in the
+                    # current image
+                    if getattr(i, attr)
+                ]
+            )
+        ]
+
+
+    def sort(self, attribute, reverse=False):
+        """ Summary
+            -------
+            Sorts the images in a collection.
+
+            Arguments
+            ---------
+            attribute: str
+                Any attribute of Collection image
+            reverse: bool, default=False
+                reverse the sorting
+
+            Returns
+            -------
+            sorted_collection : list(CollectionImage)
+                sorted collection
+
+            NOTE
+            ----
+            Does it make sense to sort by multiple arguments ? If so,
+            how does one do it ?
+            Doesn't really work for dates though (if there are cases
+            such as "c. 525" or "IIe siècle"). But the only solution to
+            this, while allowing freedom for the user would be to create
+            a whole processing engine to convert those notations to
+            homogenous numeric values that we could then sort.
+        """
+
+        # check that the argument is valid
+        if not hasattr(CollectionImage, attribute):
+            raise ValueError("CollectionImage has no attribute %s" % attribute)
+
+        # return the list sorted by the chosen criterion
+        return sorted(
+            self.collection,
+            key=lambda i: i.__getattribute__(attribute),
+            reverse=reverse
+        )
+
 
 @dataclass_json
 @dataclass
@@ -362,14 +462,14 @@ class CollectionImage():
     """
 
     filename :              str
-    title :                 Optional[str] = None
-    artist :                Optional[str] = None
-    year :                  Optional[str] = None
-    technique :             Optional[str] = None
-    conservation_site :     Optional[str] = None
-    production_site :       Optional[str] = None
-    dimensions :            Optional[str] = None
-    user_notes:             Optional[str] = None
+    title :                 Optional[str] = ""
+    artist :                Optional[str] = ""
+    year :                  Optional[str] = ""
+    technique :             Optional[str] = ""
+    conservation_site :     Optional[str] = ""
+    production_site :       Optional[str] = ""
+    dimensions :            Optional[str] = ""
+    user_notes:             Optional[str] = ""
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :

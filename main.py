@@ -2,6 +2,7 @@ from kivy.config import Config
 
 from ArtyApp import ArtyApp
 
+# I don't really know what it does, but it could be useful later
 # def reset():
 #     import kivy.core.window as window
 #     from kivy.base import EventLoop
@@ -15,9 +16,9 @@ from ArtyApp import ArtyApp
 if __name__ == '__main__':
     #reset()
 
-    # Configuration
+    #========================= Configuration =========================#
 
-    # set min and max size of the window
+    # set default size and minimum size of the window
     Config.set('graphics',  'width',            '1200')
     Config.set('graphics',  'height',           '800')
     Config.set('graphics',  'minimum_width',    '800')
@@ -28,6 +29,8 @@ if __name__ == '__main__':
 
     # apply configuration
     Config.write()
+
+    #======================= End Configuration =======================#
 
     # run the app
     ArtyApp().run()
