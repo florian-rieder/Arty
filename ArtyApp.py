@@ -10,6 +10,7 @@ from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
 from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
+from widgets.CollectionToolbar import CollectionToolbar
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
