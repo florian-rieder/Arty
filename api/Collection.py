@@ -11,6 +11,7 @@ from typing import Optional
 from dataclasses import dataclass, field
 
 from dataclasses_json import dataclass_json
+from kivy.logger import Logger
 
 
 class CollectionManager():
@@ -85,6 +86,7 @@ class CollectionManager():
         # and meta
         collection = cls.__check_files(collection)
         cls.__write_meta(collection)
+        Logger.info("Collection: collection loaded")
 
         return collection
 
@@ -100,6 +102,7 @@ class CollectionManager():
                 the Collection object to save
         """
         cls.__write_meta(collection)
+        Logger.info("Collection: collection saved")
 
 
     @classmethod
@@ -144,7 +147,7 @@ class CollectionManager():
         """
         # type safety check
         if not isinstance(collection, Collection):
-            raise ValueError("collection must be of type Collection, not %s"
+            raise TypeError("collection must be of type Collection, not %s"
                 % type(collection)
             )
 
@@ -176,7 +179,7 @@ class CollectionManager():
         """
         # type safety check
         if not isinstance(collection, Collection):
-            raise ValueError(
+            raise TypeError(
                 "collection must be of type Collection, not %s"
                 % type(collection)
             )
