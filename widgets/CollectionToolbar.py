@@ -1,12 +1,13 @@
-from kivy.lang import Builder
 from kivy.app import App
-
+from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
-
-from kivy.properties import ListProperty
+from kivy.logger import Logger
+from kivy.properties import ListProperty, StringProperty
+from plyer import filechooser
 
 from api.Collection import CollectionImage
+from api.Powerpoint import Powerpoint
 
 class CollectionToolbar(BoxLayout):
     """ Summary
@@ -18,29 +19,50 @@ class CollectionToolbar(BoxLayout):
 
         Methods
         -------
+        compare()
+            on_press compare button, switches to ComparisonScreen and
+            send selected images
+        export()
+            on_press export button, exports selection to pptx
 
     """
     Builder.load_file('templates/CollectionToolbar.kv')
 
     selected_images = ListProperty([])
+    save_destination = ListProperty([])
 
     def compare(self):
         # get selected images
         # send them to the compare screen
-        print("compare selection")
-        app = App.get_running_app()
-        app.SCREENS["COMPARE"].load_images(self.selected_images)
-        app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='right')
-    
+
+        try:
+            app = App.get_running_app()
+            app.SCREENS["COMPARE"].load_images(self.selected_images)
+            app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='left')
+        except Exception:
+            Logger.exception("Please select 2 to 4 images")
 
 
     def export(self):
-        # get selected images
-        # export them
-        print("export selection")
-        pass
+        """
+        Call plyer filechooser API to run a filechooser Activity.
+        """
+        # 1. select a file to save to
+        try:
+            filechooser.save_file(
+                on_selection=self.handle_selection,
+                #filters=["*pptx"] # crashes on replace existing file...
+            )
+        except Exception:
+            Logger.exception("An error occurred when selecting save destination")
     
 
-    def _get_selected_images(self):
-        pass
-
+    def handle_selection(self, selection):
+        """
+        Callback function for handling the selection response from Activity.
+        """
+        # 2. generate the powerpoint and save it to the selected path
+        path = str(selection[0])
+        app = App.get_running_app()
+        Logger.info("Arty: exporting selection to pptx")
+        Powerpoint.create_presentation(self.selected_images, app.PROJECT_DIRECTORY, path)

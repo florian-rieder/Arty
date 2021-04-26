@@ -2,7 +2,8 @@ import os
 
 import PIL
 from pptx import Presentation
-from pptx.util import Inches
+from pptx.util import Inches, Emu
+from pptx.enum.text import PP_ALIGN
 
 from api.Collection import CollectionImage
 
@@ -21,7 +22,7 @@ class Powerpoint():
             Creates a Powerpoint slide from a CollectionImage
     """
     @classmethod
-    def create_presentation(cls, images_list, work_dir):
+    def create_presentation(cls, images_list, work_dir, output_path):
         """ Summary
             -------
             Creates a presentation with all the CollectionImages in a
@@ -44,21 +45,27 @@ class Powerpoint():
             # TODO: max size and centered
             image_open = PIL.Image.open(img_path)
 
-            left = (prs.slide_width - image_open.width) / 2
-            top = Inches(1)
-            height = Inches(5.5)
+            # this does not center the image...
+            #left = int((prs.slide_width - image_open.width) / 2)
+            left = Inches(-0.5)
+            top = Inches(0.5)
+            height = Inches(6)
             slide.shapes.add_picture(img_path, left, top, height=height)
 
             # create textbox
             # TODO: center bottom
-            left = top = width = height = Inches(1)
+            left = Inches(0)
+            top = Inches(6.6)
+            width = prs.slide_width
+            height = Inches(0.5)
             txBox = slide.shapes.add_textbox(left, top, width, height)
             tf = txBox.text_frame
+            tf.alignment = PP_ALIGN.CENTER # align center, doesn't work either
             tf.text = image.to_reference()
 
-        prs.save('test.pptx')
+        prs.save(output_path)
 
 
 if __name__ == "__main__":
     images = [CollectionImage(filename="botticelli-venus.png", artist="Botticelli", title="La Naissance de Vénus", year="1567", conservation_site="Musée du Louvre, Paris")]
-    Powerpoint.create_presentation(images, "/Users/frieder/Documents/images")
+    Powerpoint.create_presentation(images, "/Users/frieder/Documents/images", "test.pptx")
