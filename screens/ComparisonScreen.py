@@ -27,7 +27,7 @@ class ComparisonScreen(Screen):
     def load_images(self, image_list):
         if not isinstance(image_list, list):
             raise TypeError('')
-        #if len(image_list) == 2 and len(image_list) < 5:
+        #if len(image_list) >= 2 and len(image_list) < 5:
             #raise ValueError(len(image_list))
         if not all([isinstance(i, CollectionImage) for i in image_list]):
             raise TypeError('')
@@ -36,13 +36,10 @@ class ComparisonScreen(Screen):
         if len(image_list) == 2:
             layout = Layout2()
             self.add_widget(layout)
-            layout.get_image_1().source = os.path.join(self.WORK_DIRECTORY,image_list[0].filename)
-            layout.get_image_2().source = os.path.join(self.WORK_DIRECTORY,image_list[1].filename)
+            layout.ids.image_1.source = os.path.join(self.WORK_DIRECTORY,image_list[0].filename)
+            layout.ids.image_2.source = os.path.join(self.WORK_DIRECTORY,image_list[1].filename)
 
 
 
 class Layout2(Widget):
-    def get_image_1(self):
-        return self.ids.image_1
-    def get_image_2(self):
-        return self.ids.image_2
+    pass
