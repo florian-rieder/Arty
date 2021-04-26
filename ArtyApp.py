@@ -48,7 +48,8 @@ class ArtyApp(App):
         # reference grid
         self.GRID = collection_screen.ids.grid
         self.PANEL = collection_screen.ids.panel
-
+        self.TOOLBAR = collection_screen.ids.toolbar
+        
         # keep reference to all the screens in the app
         self.SCREENS["START"]      =    start_screen
         self.SCREENS["COLLECTION"] =    collection_screen

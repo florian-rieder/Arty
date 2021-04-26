@@ -27,8 +27,8 @@ class ComparisonScreen(Screen):
     def load_images(self, image_list):
         if not isinstance(image_list, list):
             raise TypeError('')
-        #if len(image_list) == 2 and len(image_list) < 5:
-            #raise ValueError(len(image_list))
+        if not 2 <= len(image_list) <= 4:
+            raise ValueError(len(image_list))
         if not all([isinstance(i, CollectionImage) for i in image_list]):
             raise TypeError('')
 
