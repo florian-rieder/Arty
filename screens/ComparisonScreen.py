@@ -1,18 +1,18 @@
+import os
+
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty
-
+from kivy.uix.widget import Widget
 
 from api.Collection import CollectionImage
-
 
 class ComparisonScreen(Screen):
 
     WORK_DIRECTORY = StringProperty("")
     # start with a default collection as to cause no errors
     # rebinds allows refreshing the ui when the property changes
-    current_image = ObjectProperty(CollectionImage("shadow32.png"), rebind=True)
     source = StringProperty("")
 
     Builder.load_file("templates/ComparisonScreen.kv")
@@ -20,23 +20,29 @@ class ComparisonScreen(Screen):
     def build(self):
         pass
 
-    def LoadImage(self, Image, Collection):
-        current_image = []
-        current_image = Image(source= filename)
-        #self.current_image = current_image
+    def initialize(self, work_dir):
+        # needed to get the full path to an image
+        self.WORK_DIRECTORY = work_dir
+
+    def load_images(self, image_list):
+        if not isinstance(image_list, list):
+            raise TypeError('')
+        #if len(image_list) == 2 and len(image_list) < 5:
+            #raise ValueError(len(image_list))
+        if not all([isinstance(i, CollectionImage) for i in image_list]):
+            raise TypeError('')
 
 
-        if (current_image == 1):
-            raise ValueError ('Please select at least 2 images')
+        if len(image_list) == 2:
+            layout = Layout2()
+            self.add_widget(layout)
+            layout.get_image_1().source = os.path.join(self.WORK_DIRECTORY,image_list[0].filename)
+            layout.get_image_2().source = os.path.join(self.WORK_DIRECTORY,image_list[1].filename)
 
-        if (current_image == 2):
-           return self.layout_2
 
-        elif (current_image == 3):
-            return self.layout_3
 
-        elif (current_image == 4):
-            return self.layout_4
-
-        else: 
-            raise ValueError ('Too many images were selected')
+class Layout2(Widget):
+    def get_image_1(self):
+        return self.ids.image_1
+    def get_image_2(self):
+        return self.ids.image_2

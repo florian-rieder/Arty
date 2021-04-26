@@ -88,6 +88,7 @@ class ArtyApp(App):
             # Initialize CollectionPanel
             self.PANEL.initialize(self.CURRENT_COLLECTION.work_directory)
             self.PANEL.set_image(self.CURRENT_COLLECTION.get_collection()[0])
+            self.SCREENS['COMPARE'].initialize(self.CURRENT_COLLECTION.work_directory)
         except FileNotFoundError:
             Logger.exception(
                 "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY

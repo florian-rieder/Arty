@@ -1,6 +1,11 @@
 from kivy.lang import Builder
+from kivy.app import App
 
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
+
+
+from api.Collection import CollectionImage
 
 class CollectionToolbar(BoxLayout):
     """ Summary
@@ -20,7 +25,11 @@ class CollectionToolbar(BoxLayout):
         # get selected images
         # send them to the compare screen
         print("compare selection")
-        pass
+        app = App.get_running_app()
+        images = [CollectionImage("DarkLens_Arrival1.jpg"),CollectionImage("The_Great_Replacement_Delsaux.jpg")]
+        app.SCREENS["COMPARE"].load_images(images)
+        app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"].name, direction ='right')
+    
 
 
     def export(self):
@@ -32,3 +41,4 @@ class CollectionToolbar(BoxLayout):
 
     def _get_selected_images(self):
         pass
+
