@@ -2,36 +2,56 @@
 #:import kivy kivy
 
 <ComparisonScreen>:
-    #orientation: 'horizontal'
+    orentation : 'horizontal'
 
-<Layout2>:         
+<Layout2>:   
     BoxLayout:
         id: layout_2
+        size: root.width, root.height
         Image: 
             id : image_1
+            allow_strech : True
+            keep_ration : True    
         Image: 
             id : image_2
-       
+            allow_strech : True
+            keep_ration : True
 
 <Layout3>:
     BoxLayout:    
         id: layout_3
+        size: root.width, root.height
         Image: 
             id : image_1
+            allow_strech : True
+            keep_ration : True
         Image: 
-            source: root.source
+            id : image_2
+            allow_strech : True
+            keep_ration : True
         Image: 
-            source: root.source
+            id : image_3
+            allow_strech : True
+            keep_ration : True
            
 <Layout4>:
-    BoxLayout:
+    GridLayout:
         id: layout_4
+        size: root.width, root.height
+        cols: 2
         Image: 
-            source: root.source
+            id : image_1
+            allow_strech : True
+            keep_ration : True
         Image: 
-            source: root.source
+            id : image_2
+            allow_strech : True
+            keep_ration : True
         Image: 
-            source: root.source
+            id : image_3
+            allow_strech : True
+            keep_ration : True      
         Image: 
-            source: root.source
-    
+            id : image_4
+            allow_strech : True
+            keep_ration : True

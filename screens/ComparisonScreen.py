@@ -38,8 +38,29 @@ class ComparisonScreen(Screen):
             self.add_widget(layout)
             layout.ids.image_1.source = os.path.join(self.WORK_DIRECTORY,image_list[0].filename)
             layout.ids.image_2.source = os.path.join(self.WORK_DIRECTORY,image_list[1].filename)
+        
+        if len(image_list) == 3:
+            layout = Layout3()
+            self.add_widget(layout)
+            layout.ids.image_1.source = os.path.join(self.WORK_DIRECTORY,image_list[0].filename)
+            layout.ids.image_2.source = os.path.join(self.WORK_DIRECTORY,image_list[1].filename)
+            layout.ids.image_3.source = os.path.join(self.WORK_DIRECTORY,image_list[2].filename)
 
+        if len(image_list) == 4:
+            layout = Layout4()
+            self.add_widget(layout)
+            layout.ids.image_1.source = os.path.join(self.WORK_DIRECTORY,image_list[0].filename)
+            layout.ids.image_2.source = os.path.join(self.WORK_DIRECTORY,image_list[1].filename)
+            layout.ids.image_3.source = os.path.join(self.WORK_DIRECTORY,image_list[2].filename)
+            layout.ids.image_4.source = os.path.join(self.WORK_DIRECTORY,image_list[3].filename)
 
 
 class Layout2(Widget):
+    pass
+
+
+class Layout3(Widget):
+    pass
+
+class Layout4(Widget):
     pass
