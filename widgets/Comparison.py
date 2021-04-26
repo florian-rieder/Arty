@@ -1,4 +1,6 @@
-class Comparison():
+from kivy.uix.image import Image
+
+class Comparison(Image):
     """
         Summary
         -------
