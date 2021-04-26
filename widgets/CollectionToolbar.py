@@ -15,3 +15,20 @@ class CollectionToolbar(BoxLayout):
 
     """
     Builder.load_file('templates/CollectionToolbar.kv')
+
+    def compare(self):
+        # get selected images
+        # send them to the compare screen
+        print("compare selection")
+        pass
+
+
+    def export(self):
+        # get selected images
+        # export them
+        print("export selection")
+        pass
+    
+
+    def _get_selected_images(self):
+        pass
