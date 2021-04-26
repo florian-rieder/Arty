@@ -1,4 +1,8 @@
-class Toolbar():
+from kivy.lang import Builder
+
+from kivy.uix.boxlayout import BoxLayout
+
+class CollectionToolbar(BoxLayout):
     """ Summary
         -------
         Toolbar to access other pages (Comparison).
@@ -10,4 +14,4 @@ class Toolbar():
         -------
 
     """
-    pass
+    Builder.load_file('templates/CollectionToolbar.kv')

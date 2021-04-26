@@ -10,6 +10,7 @@ from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
 from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
+from widgets.CollectionToolbar import CollectionToolbar
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.SettingsScreen import SettingsScreen
@@ -22,7 +23,7 @@ class ArtyApp(App):
         -------
         The main class of our app
     """
-    PROJECT_DIRECTORY = StringProperty("testimages")
+    PROJECT_DIRECTORY = StringProperty("")
     CURRENT_COLLECTION = ObjectProperty(None)
     SCREENS = DictProperty(dict())
     SCREEN_MANAGER = ObjectProperty(None)
@@ -30,8 +31,11 @@ class ArtyApp(App):
     PANEL = ObjectProperty(None)
 
     def build(self):
+        self.icon = "resources/icon.png"
 
+        # bind methods to kivy events
         Window.bind(on_dropfile=self._on_file_drop)
+        Window.bind(on_request_close=self._on_request_close)
 
         # Create different screens
         screen_manager = ScreenManager()
@@ -76,10 +80,12 @@ class ArtyApp(App):
         try:
             # load or create collection at specified project directory
             self.CURRENT_COLLECTION = CollectionManager.load(self.PROJECT_DIRECTORY)
+
             # give the collection to the CollectionGrid, which will in turn
             # display the images on the screen
             self.GRID.set_collection(self.CURRENT_COLLECTION)
-            # TEST
+
+            # Initialize CollectionPanel
             self.PANEL.initialize(self.CURRENT_COLLECTION.work_directory)
             self.PANEL.set_image(self.CURRENT_COLLECTION.get_collection()[0])
         except FileNotFoundError:
@@ -114,6 +120,20 @@ class ArtyApp(App):
             self.GRID.set_collection(self.CURRENT_COLLECTION)
         except ValueError:
             Logger.exception("The file %s couldn't be added to the collection." % file_path)
+
+
+    def _on_request_close(self, *_args):
+        """ Summary
+            -------
+            Method that runs when the user requests to close the
+            application
+        """
+        # save the metadata in the CollectionPanel, in turn saves the
+        # entire collection
+        try:
+            self.PANEL.save()
+        except AttributeError:
+            Logger.exception("CollectionPanel couldn't save on exit.")
 
     def on_pause(self):
         return True

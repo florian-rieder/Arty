@@ -2,5 +2,7 @@
 #:import kivy kivy
 
 <CollectionGrid>:
-    cols: 3
-    spacing: 16,33
+        size_hint_y: None
+        height: self.minimum_height
+        row_default_height: 250
+        cols: 3

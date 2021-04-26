@@ -226,6 +226,11 @@ class Collection():
             getter for the collection attribute
         set_collection(coll_list)
             setter for the collection attribute
+        add_image(filename)
+            add an image to the collection from source
+        update_image(collection_image)
+            update an image in the collection, if the image doesn't
+            exist, throw an exception.
     """
     work_directory : str
     title : str
@@ -290,6 +295,32 @@ class Collection():
         CollectionManager.save(self)
 
         return new_image
+
+
+    def update_image(self, collection_image):
+        """ Summary
+            -------
+            update an image in the collection, if the image doesn't
+            exist, throw an exception.
+
+            Arguments
+            ---------
+            collection_image: CollectionImage
+                the image to update
+            
+            Raises
+            ------
+            Exception
+                If the image to update doesn't exist in the collectin
+        """
+        if collection_image not in self.collection:
+            raise Exception("Cannot update an image that doesn't exist in the collection.")
+        
+        for idx, image in enumerate(self.collection):
+            if collection_image == image:
+                self.collection[idx] = collection_image
+
+        CollectionManager.save(self)
 
 
     def get_absolute_path(self, collection_image):

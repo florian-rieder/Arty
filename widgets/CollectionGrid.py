@@ -36,7 +36,9 @@ class CollectionGrid(GridLayout):
             absolute_path = collection.get_absolute_path(collection_image)
 
             try:
-                image_widget = CollectionGridImage(source = absolute_path)
+                image_widget = CollectionGridImage(
+                    source = absolute_path, collection_image=collection_image)
+
                 self.add_widget(image_widget)
             except ValueError:
                 Logger.exception(
