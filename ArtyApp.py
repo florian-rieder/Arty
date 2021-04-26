@@ -42,24 +42,21 @@ class ArtyApp(App):
 
         start_screen      =     StartScreen(name="Start")
         collection_screen =     CollectionScreen(name='Collection')
-        settings_screen   =     SettingsScreen(name='Settings')
         comparison_screen =     ComparisonScreen(name="Compare")
 
-        # reference grid
-        self.GRID = collection_screen.ids.grid
-        self.PANEL = collection_screen.ids.panel
-        self.TOOLBAR = collection_screen.ids.toolbar
+        # reference important widgets
+        self.GRID       =       collection_screen.ids.grid
+        self.PANEL      =       collection_screen.ids.panel
+        self.TOOLBAR    =       collection_screen.ids.toolbar
         
         # keep reference to all the screens in the app
         self.SCREENS["START"]      =    start_screen
         self.SCREENS["COLLECTION"] =    collection_screen
-        self.SCREENS["SETTINGS"]   =    settings_screen
         self.SCREENS["COMPARE"]    =    comparison_screen
 
         # add the screens to display
         screen_manager.add_widget(start_screen)
         screen_manager.add_widget(collection_screen)
-        screen_manager.add_widget(settings_screen)
         screen_manager.add_widget(comparison_screen)
 
         # select the start screen
@@ -86,10 +83,12 @@ class ArtyApp(App):
             # display the images on the screen
             self.GRID.set_collection(self.CURRENT_COLLECTION)
 
-            # Initialize CollectionPanel
-            self.PANEL.initialize(self.CURRENT_COLLECTION.work_directory)
+            # initialize CollectionPanel
+            self.PANEL.initialize(self.PROJECT_DIRECTORY)
             self.PANEL.set_image(self.CURRENT_COLLECTION.get_collection()[0])
-            self.SCREENS['COMPARE'].initialize(self.CURRENT_COLLECTION.work_directory)
+
+            # initialize ComparisonScreen
+            self.SCREENS['COMPARE'].initialize(self.PROJECT_DIRECTORY)
         except FileNotFoundError:
             Logger.exception(
                 "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY

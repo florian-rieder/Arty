@@ -24,16 +24,6 @@
         #     text: 'Goto settings'
         #     on_press:
         #         root.manager.transition.direction = 'left'
-        #         root.manager.current = 'Settings'
+        #         root.manager.current = 'Collection'
         # Button:
         #     text: 'Quit'
-
-<SettingsScreen>:
-    BoxLayout:
-        Button:
-            text: 'My settings button'
-        Button:
-            text: 'Back to menu'
-            on_press:
-                root.manager.transition.direction = 'right'
-                root.manager.current = 'Collection'
