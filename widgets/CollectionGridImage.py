@@ -43,11 +43,12 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
 
     def checkbox_click(self, instance, value):
 
-        image_list = CollectionGridImage().selected_image
+        app = App.get_running_app()
 
         if value is True:
             print(self.collection_image.filename + ' added')
-            image_list.append(self.collection_image.filename)
+            app.TOOLBAR.selected_images.append(self.collection_image)
+           
         else:
             print(self.collection_image.filename + ' removed')
-            image_list.remove(self.collection_image.filename)
+            app.TOOLBAR.selected_images.remove(self.collection_image)

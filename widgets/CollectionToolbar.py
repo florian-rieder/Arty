@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 
 
+from kivy.properties import ListProperty
 
 from api.Collection import CollectionImage
 
@@ -21,13 +22,14 @@ class CollectionToolbar(BoxLayout):
     """
     Builder.load_file('templates/CollectionToolbar.kv')
 
+    selected_images = ListProperty([])
+
     def compare(self):
         # get selected images
         # send them to the compare screen
         print("compare selection")
         app = App.get_running_app()
-        images = [CollectionImage("DarkLens_Arrival1.jpg"),CollectionImage("The_Great_Replacement_Delsaux.jpg")]
-        app.SCREENS["COMPARE"].load_images(images)
+        app.SCREENS["COMPARE"].load_images(self.selected_images)
         app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='right')
     
 
