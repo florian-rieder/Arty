@@ -9,6 +9,20 @@ from kivy.uix.widget import Widget
 from api.Collection import CollectionImage
 
 class ComparisonScreen(Screen):
+    """
+        Summary
+        -------
+        Screen to compare up to four images.
+        
+        Attributes
+        ----------
+        source: StringProperty
+            source of the image
+
+        Methods
+        -------
+
+    """
 
     WORK_DIRECTORY = StringProperty("")
     # start with a default collection as to cause no errors
@@ -20,17 +34,19 @@ class ComparisonScreen(Screen):
     def build(self):
         pass
 
+
     def initialize(self, work_dir):
         # needed to get the full path to an image
         self.WORK_DIRECTORY = work_dir
 
+
     def load_images(self, image_list):
         if not isinstance(image_list, list):
-            raise TypeError('')
+            raise TypeError('image_list must be of type list')
         if not 2 <= len(image_list) <= 4:
-            raise ValueError(len(image_list))
+            raise ValueError('len of image_list is lower than 2 or higher than 4')
         if not all([isinstance(i, CollectionImage) for i in image_list]):
-            raise TypeError('')
+            raise TypeError('objects in image_list must be of type CollectionImage')
 
 
         if len(image_list) == 2:
@@ -57,7 +73,6 @@ class ComparisonScreen(Screen):
 
 class Layout2(Widget):
     pass
-
 
 class Layout3(Widget):
     pass
