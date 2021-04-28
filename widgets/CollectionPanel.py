@@ -7,6 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, StringProperty
 
 from api.Collection import CollectionImage
+from widgets.ImagePreview import ImagePreview
 
 class CollectionPanel(BoxLayout):
     """
@@ -25,7 +26,6 @@ class CollectionPanel(BoxLayout):
     # start with a default collection as to cause no errors
     # rebind=True allows refreshing the ui when the property changes
     current_image = ObjectProperty(CollectionImage("shadow32.png"), rebind=True)
-    source = StringProperty("")
 
     Builder.load_file('templates/CollectionPanel.kv')
 
@@ -57,7 +57,7 @@ class CollectionPanel(BoxLayout):
             Logger.exception("Arty: Couldn't save %s" % self.current_image.filename)
 
         self.current_image = collection_image
-        self.source = self.get_image_source()
+        self.ids.preview.source = self.get_image_source()
 
 
     def get_image_source(self):

@@ -26,12 +26,11 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
     """
     Builder.load_file('templates/CollectionGridImage.kv')
 
-    source = StringProperty(None)
+    source = StringProperty("")
     # the default collection prevents getting errors and warnings before
-    # the widget is fully initialized
+    # the widget is fully initialized, but then, it does throw an other
+    # error down the line (which is caught so everything is fine)
     collection_image = ObjectProperty(CollectionImage("shadow32.png"))
-
-    selected_image = []
 
     def on_press(self):
         """ Summary
@@ -41,14 +40,11 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         app = App.get_running_app()
         app.PANEL.set_image(self.collection_image)
 
-    def checkbox_click(self, instance, value):
+    def checkbox_click(self, _instance, is_checked):
 
         app = App.get_running_app()
 
-        if value is True:
-            print(self.collection_image.filename + ' added')
+        if is_checked:
             app.TOOLBAR.selected_images.append(self.collection_image)
-           
         else:
-            print(self.collection_image.filename + ' removed')
             app.TOOLBAR.selected_images.remove(self.collection_image)
