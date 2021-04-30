@@ -5,6 +5,8 @@ from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty
 from kivy.core.window import Window
 
+from widgets.ZoomablePicture import ZoomablePicture
+
 class ImagePreview(ButtonBehavior, Image):
     source = StringProperty("")
     is_hovered = False
@@ -26,26 +28,12 @@ class ImagePreview(ButtonBehavior, Image):
             TODO: Figure out how to zoom in the image
         """
 
-        # size the modal in function of the image size
-        with PIL.Image.open(self.source) as im:
-            image_width, image_height = im.size
-        
-        image_ratio = image_width / image_height
-        window_ratio = Window.width / Window.height
-
-        if image_height > image_width or image_ratio < window_ratio:
-            # size by height
-            height_ratio = (Window.height * self.WINDOW_MIN_MARGIN) / image_height
-            modal_size = (image_width * height_ratio, image_height * height_ratio)
-        else:
-            # size by width
-            width_ratio = (Window.width * self.WINDOW_MIN_MARGIN) / image_width
-            modal_size = (image_width * width_ratio, image_height * width_ratio)
+        modal_size = self._get_modal_size()
 
         # open a modal view to see the image in full size
-        modal = ModalView(size_hint=(None, None), size=modal_size)
+        modal = ModalView(size_hint=(None, None), size=(modal_size), background_color=(0,0,0,0))
 
-        modal.add_widget(Image(source=self.source, allow_stretch=True))
+        modal.add_widget(ZoomablePicture(source=self.source, image_width=modal_size[0], image_height=modal_size[1]))
 
         # open the modal
         modal.open()
@@ -63,3 +51,22 @@ class ImagePreview(ButtonBehavior, Image):
             if self.is_hovered:
                 self.is_hovered = False
                 Window.set_system_cursor("arrow")
+
+    def _get_modal_size(self):
+        # size the modal in function of the image size
+        with PIL.Image.open(self.source) as im:
+            image_width, image_height = im.size
+        
+        image_ratio = image_width / image_height
+        window_ratio = Window.width / Window.height
+
+        if image_height > image_width or image_ratio < window_ratio:
+            # size by height
+            ratio = (Window.height * self.WINDOW_MIN_MARGIN) / image_height
+            modal_size = (image_width * ratio, image_height * ratio)
+        else:
+            # size by width
+            ratio = (Window.width * self.WINDOW_MIN_MARGIN) / image_width
+            modal_size = (image_width * ratio, image_height * ratio)
+        
+        return modal_size
