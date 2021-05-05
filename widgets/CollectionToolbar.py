@@ -2,10 +2,12 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.popup import Popup
 from kivy.logger import Logger
 from kivy.properties import ListProperty, StringProperty
 from plyer import filechooser
 
+from widgets.PopupMessage import PopupMessage
 from api.Collection import CollectionImage
 from api.Powerpoint import Powerpoint
 
@@ -41,7 +43,16 @@ class CollectionToolbar(BoxLayout):
             app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='left')
         except Exception:
             Logger.exception("Please select 2 to 4 images")
+            
+            popup_content = PopupMessage(message = "Please select 2 to 4 images")
+            popup_window = Popup(title = "Error",
+                                 content = popup_content,
+                                 size_hint = (None,None),
+                                 size = (300,200))
 
+            popup_content.ids.popup_btn.bind(on_press = popup_window.dismiss)
+
+            popup_window.open()
 
     def export(self):
         """
