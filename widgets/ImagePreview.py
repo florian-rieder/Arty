@@ -1,16 +1,15 @@
-import PIL
 from kivy.uix.button import ButtonBehavior
-from kivy.uix.image import Image
 from kivy.uix.modalview import ModalView
-from kivy.properties import StringProperty
 from kivy.core.window import Window
+from kivy.uix.image import Image
+import kivy.properties as kyprops
+import PIL
 
 from widgets.ZoomablePicture import ZoomablePicture
 
 class ImagePreview(ButtonBehavior, Image):
-    source = StringProperty("")
+    source = kyprops.StringProperty("")
     is_hovered = False
-    WINDOW_MIN_MARGIN = 0.95
 
     def __init__(self, **kwargs):
         super(ImagePreview, self).__init__(**kwargs)
@@ -18,6 +17,7 @@ class ImagePreview(ButtonBehavior, Image):
         # hovers over the image
         # note: had to do it in the init, otherwise it doesn't work
         Window.bind(mouse_pos=self.on_mouse_pos)
+
 
     def on_press(self):
         """ Summary
@@ -42,6 +42,7 @@ class ImagePreview(ButtonBehavior, Image):
     def on_mouse_pos(self, window, pos):
         # TODO: figure out how to make it work also on the first element
         # displayed... weird
+
         # if the mouse position is over the image
         if self.collide_point(*pos):
             if not self.is_hovered:
@@ -52,7 +53,21 @@ class ImagePreview(ButtonBehavior, Image):
                 self.is_hovered = False
                 Window.set_system_cursor("arrow")
 
+
     def _get_modal_size(self):
+        """ Summary
+            -------
+            Computes the desired size of the modal, in function of the
+            size of the image, and the size of the window
+
+            Returns
+            -------
+            modal_size : tuple
+                bi-dimensional tuple containing the x and y size of the
+                modal.
+        """
+        WINDOW_MIN_MARGIN = 0.95
+
         # size the modal in function of the image size
         with PIL.Image.open(self.source) as im:
             image_width, image_height = im.size
@@ -60,13 +75,13 @@ class ImagePreview(ButtonBehavior, Image):
         image_ratio = image_width / image_height
         window_ratio = Window.width / Window.height
 
-        if image_height > image_width or image_ratio < window_ratio:
+        if image_ratio < window_ratio:
             # size by height
-            ratio = (Window.height * self.WINDOW_MIN_MARGIN) / image_height
+            ratio = (Window.height * WINDOW_MIN_MARGIN) / image_height
             modal_size = (image_width * ratio, image_height * ratio)
         else:
             # size by width
-            ratio = (Window.width * self.WINDOW_MIN_MARGIN) / image_width
+            ratio = (Window.width * WINDOW_MIN_MARGIN) / image_width
             modal_size = (image_width * ratio, image_height * ratio)
         
         return modal_size

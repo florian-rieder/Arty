@@ -3,7 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.logger import Logger
-from kivy.properties import ListProperty, StringProperty
+import kivy.properties as kyprops
 from plyer import filechooser
 
 from api.Collection import CollectionImage
@@ -28,8 +28,8 @@ class CollectionToolbar(BoxLayout):
     """
     Builder.load_file('templates/CollectionToolbar.kv')
 
-    selected_images = ListProperty([])
-    save_destination = ListProperty([])
+    selected_images = kyprops.ListProperty(list())
+    save_destination = kyprops.ListProperty(list())
 
     def compare(self):
         # get selected images

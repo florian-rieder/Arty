@@ -121,7 +121,13 @@ class CollectionManager():
             coll_dict = json.loads(coll_json)
 
         # retrieve the title of the collection
-        title = coll_dict["title"]
+        try:
+            title = coll_dict["title"]
+        except KeyError:
+            title = "Untitled Collection"
+            Logger.exception(
+                "Couldn't retrieve collection title from .collection"
+            )
 
         # retrieve the collection list
         collection = [
@@ -466,10 +472,12 @@ class CollectionImage():
             title of the image
         artist : str, optional
             artist name
-        year : str, optional
-            production year (eg. "c. 1875")
+        datation : str, optional
+            production datation (eg. "c. 1875")
         technique : str, optional
-            technique (eg. "Oil on canvas")
+            technique (eg. "Painting", "Sculpture"...)
+        material : str, optional
+            material (eg. "Oil on canvas", "Marble"...)
         conservation_site : str, optional
             conservation site (eg. "Musée du Louvre, Paris")
         production_site : str, optional
@@ -498,12 +506,13 @@ class CollectionImage():
     filename :              str
     title :                 Optional[str] = ""
     artist :                Optional[str] = ""
-    year :                  Optional[str] = ""
+    datation :              Optional[str] = ""
     technique :             Optional[str] = ""
+    material :              Optional[str] = ""
     conservation_site :     Optional[str] = ""
     production_site :       Optional[str] = ""
     dimensions :            Optional[str] = ""
-    user_notes:             Optional[str] = ""
+    notes:             Optional[str] = ""
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :

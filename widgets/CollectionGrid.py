@@ -1,7 +1,6 @@
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty
 from kivy.logger import Logger
 
 from api.Collection import Collection
@@ -15,10 +14,11 @@ class CollectionGrid(GridLayout):
 
         Methods
         -------
-        add_image(collection_image, collection)
-            Adds a CollectionImage to the grid display
+        set_collection(collection)
+            Updates display of the grid with the images in the
+            collection. 
     """
-    CURRENT_COLLECTION = ObjectProperty(None)
+    CURRENT_COLLECTION = None
 
     Builder.load_file('templates/CollectionGrid.kv')
 
@@ -26,6 +26,7 @@ class CollectionGrid(GridLayout):
         if not isinstance(collection, Collection):
             raise ValueError("collection must by of type Collection")
 
+        # remove children if the collection is not None
         if self.CURRENT_COLLECTION:
             self.clear_widgets()
 

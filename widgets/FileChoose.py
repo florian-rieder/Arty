@@ -1,7 +1,7 @@
 
 from kivy.app import App
 from kivy.uix.button import Button
-from kivy.properties import ListProperty
+import kivy.properties as kyprops
 from plyer import filechooser
 
 
@@ -11,7 +11,7 @@ class FileChoose(Button):
     the data response from filechooser Activity.
     '''
 
-    selection = ListProperty([])
+    selection = kyprops.ListProperty(list())
 
     def choose(self):
         """

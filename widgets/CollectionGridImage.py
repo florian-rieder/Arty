@@ -3,7 +3,7 @@ from kivy.app import App
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
-from kivy.properties import StringProperty, ObjectProperty
+import kivy.properties as kyprops
 
 from api.Collection import CollectionImage
 
@@ -26,11 +26,11 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
     """
     Builder.load_file('templates/CollectionGridImage.kv')
 
-    source = StringProperty("")
+    source = kyprops.StringProperty("")
     # the default collection prevents getting errors and warnings before
     # the widget is fully initialized, but then, it does throw an other
     # error down the line (which is caught so everything is fine)
-    collection_image = ObjectProperty(CollectionImage("shadow32.png"))
+    collection_image = kyprops.ObjectProperty(CollectionImage("shadow32.png"))
 
     def on_press(self):
         """ Summary

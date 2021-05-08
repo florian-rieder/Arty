@@ -10,85 +10,72 @@
             allow_stretch: True
 
     BoxLayout:
+        id: metadata_container
         orientation: 'vertical'
-        BoxLayout:
-            Label:
-                text: 'Artiste'
-            TextInput:
-                id: meta_artist
-                text: root.current_image.artist
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Titre'
-            TextInput:
-                id: meta_title
-                text: root.current_image.title
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Datation'
-            TextInput:
-                id: meta_year
-                text: root.current_image.year
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Technique'
-            TextInput:
-                id: meta_technique
-                text: root.current_image.technique
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Site de conservation'
-            TextInput:
-                id: meta_conservation_site
-                text: root.current_image.conservation_site
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Site de production'
-            TextInput:
-                id: meta_production_site
-                text: root.current_image.production_site
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Dimensions'
-            TextInput:
-                id: meta_dimensions
-                text: root.current_image.dimensions
-                height: 50
-                multiline: False
-        BoxLayout:
-            Label:
-                text: 'Notes'
-            TextInput:
-                id: meta_user_notes
-                text: root.current_image.user_notes
-                height: 50
-                multiline: True
+        # BoxLayout:
+        #     Label:
+        #         text: 'Artiste'
+        #     TextInput:
+        #         id: meta_artist
+        #         text: root.current_image.artist
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Titre'
+        #     TextInput:
+        #         id: meta_title
+        #         text: root.current_image.title
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Datation'
+        #     TextInput:
+        #         id: meta_datation
+        #         text: root.current_image.datation
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Technique'
+        #     TextInput:
+        #         id: meta_technique
+        #         text: root.current_image.technique
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Matérial'
+        #     TextInput:
+        #         id: meta_material
+        #         text: root.current_image.material
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Site de conservation'
+        #     TextInput:
+        #         id: meta_conservation_site
+        #         text: root.current_image.conservation_site
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Site de production'
+        #     TextInput:
+        #         id: meta_production_site
+        #         text: root.current_image.production_site
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Dimensions'
+        #     TextInput:
+        #         id: meta_dimensions
+        #         text: root.current_image.dimensions
+        #         multiline: False
+        # BoxLayout:
+        #     Label:
+        #         text: 'Notes'
+        #     TextInput:
+        #         id: meta_user_notes
+        #         text: root.current_image.user_notes
+        #         height: 50
+        #         multiline: True
         # Button:
         #     text: 'Sauvegarder'
         #     on_press: root.save()
-
-        
-
-
-# <MetadataItem>:
-#     BoxLayout:
-#         orientation: 'horizontal'
-
-#         Label:
-#             id: metadata_label
-#             text: self.label_text
-        
-#         TextInput:
-#             id: text_input

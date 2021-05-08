@@ -8,14 +8,12 @@ class ZoomablePicture(ScatterPlane):
     source = StringProperty("")
     image_width = NumericProperty(0)
     image_height = NumericProperty(0)
-    mouse_pos = Window.center
-
 
     def __init__(self, **kwargs):
         super(ZoomablePicture, self).__init__(**kwargs)
 
         self.do_rotation = False
-        self.do_translation = False
+        self.do_translation = (False, False)
 
         # setup image
         image = Image(
@@ -36,10 +34,18 @@ class ZoomablePicture(ScatterPlane):
                     if self.scale > 1:
                         mat = Matrix().scale(.9, .9, .9)
                         self.apply_transform(mat, anchor=touch.pos)
+                    else:
+                        self.center = Window.center
                 elif touch.button == 'scrolldown':
                     # zoom
                     if self.scale < 10:
                         mat = Matrix().scale(1.1, 1.1, 1.1)
                         self.apply_transform(mat, anchor=touch.pos)
+
+        if self.scale <= 1 and self.do_translation == (True, True):
+            self.do_translation = (False, False)
+        elif self.scale > 1 and self.do_translation == (False, False):
+            self.do_translation = (True, True)
+
         # If some other kind of "touch": Fall back on Scatter's behavior
         return super().on_touch_up(touch)

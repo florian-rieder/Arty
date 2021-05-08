@@ -6,14 +6,12 @@ from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
-from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
 from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
 from widgets.CollectionToolbar import CollectionToolbar
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
-from screens.SettingsScreen import SettingsScreen
 from screens.ComparisonScreen import ComparisonScreen
 from api.Collection import CollectionManager, Collection
 
@@ -23,12 +21,12 @@ class ArtyApp(App):
         -------
         The main class of our app
     """
-    PROJECT_DIRECTORY = StringProperty("")
-    CURRENT_COLLECTION = ObjectProperty(None)
-    SCREENS = DictProperty(dict())
-    SCREEN_MANAGER = ObjectProperty(None)
-    GRID = ObjectProperty(None)
-    PANEL = ObjectProperty(None)
+    PROJECT_DIRECTORY = ""
+    CURRENT_COLLECTION = None
+    SCREENS = dict()
+    SCREEN_MANAGER = None
+    GRID = None
+    PANEL = None
 
     def build(self):
         self.icon = "resources/icon.png"
