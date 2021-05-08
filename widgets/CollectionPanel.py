@@ -21,11 +21,25 @@ class CollectionPanel(BoxLayout):
 
         Attributes
         ----------
+        WORK_DIRECTORY : string
+            Initialized when a collection is loaded. Path to the
+            directory we're working on.
+        current_image : CollectionImage
+            The CollectionImage currently displayed in the panel. Update
+            this property to change the image displayed in the panel.
 
         Methods
         -------
-        set_image(CollectionImage)
-
+        initialize(work_dir)
+            On first launch of the CollectionScreen, give the
+            CollectionPanel the path to the work directory and generate
+            all text fields in function of CollectionImage attributes.
+        get_image_source()
+            Generates the absolute path to an image so it can be
+            displayed.
+        save()
+            Loops through the text fields and saves the data to the
+            collection.
     """
     WORK_DIRECTORY = ""
     tabs = dict()
@@ -58,16 +72,14 @@ class CollectionPanel(BoxLayout):
 
         # the filename is not a field that should be changed
         del self.attributes[self.attributes.index("filename")]
-        print(self.attributes)
 
-        # generate all fields
+        # generate all text fields
         for attribute in self.attributes:
             item = MetadataItem()
+            item.field_name = attribute
             # find a way to write a "nice" attribute name, without
             # bloating the save file
-            item.field_name = attribute
             item.ids.label.text = attribute.replace("_", " ").title()
-            print(attribute)
             item.ids.text_input.text = getattr(self.current_image, attribute)
 
             # add the widget
@@ -76,35 +88,27 @@ class CollectionPanel(BoxLayout):
 
         # link fields together so we can navigate with the Tab key
         # this links each field to the next one, and the last one to the
-        # first
+        # first (using the fact that array[-1] gives the last item of
+        # the list)
         for idx, attribute in enumerate(reversed(self.attributes)):
             text_input = self.tabs[attribute].ids.text_input
-            text_input.set_next(self.tabs[self.attributes[idx - 1]].ids.text_input)
+            next_input = self.tabs[self.attributes[idx - 1]].ids.text_input
+            text_input.set_next(next_input)
 
 
     def set_image(self, collection_image):
-        """ Summary
-            -------
-            Set the image to display in the collection panel and try to
-            save the metadata of the previous one.
-
-            Arguments
-            ---------
-            collection_image: CollectionImage
-                The CollectionImage to display and edit
-        """
-        if not isinstance(collection_image, CollectionImage):
-            raise TypeError("collection_image must be of type CollectionImage")
-
         # try to save when the image is changed. Doesn't work on the
         # first try, because of the default image, but we catch it.
+        if not isinstance(collection_image, CollectionImage):
+            raise TypeError("collection_image must be of type CollectionImage")
         try:
             self.save()
         except Exception:
-            Logger.exception("Arty: Couldn't save %s" % self.current_image.filename)
+            Logger.exception(
+                "Arty: Couldn't save %s" % self.current_image.filename
+        )
 
         self.current_image = collection_image
-        self.ids.preview.source = self.get_image_source()
 
 
     def get_image_source(self):
@@ -130,7 +134,7 @@ class CollectionPanel(BoxLayout):
             # read the value from TextInput
             field_value = metadata_item.ids.text_input.text
 
-            # save the value
+            # save the value to memory
             setattr(self.current_image, metadata_item.field_name, field_value)
 
         app = App.get_running_app()
@@ -143,9 +147,14 @@ class CollectionPanel(BoxLayout):
             Callback called when the current_image property is updated.
             Updates the values of the text fields.
         """
+
+        # update preview image
+        self.ids.preview.source = self.get_image_source()
+        
+        # updates text fields values
         for metadata_item in self.ids.metadata_container.children:
-            # read the value
-            field_value = getattr(self.current_image, metadata_item.field_name)
+            # read the value from memory
+            field_value = getattr(image, metadata_item.field_name)
 
             # display the value in TextInput
             metadata_item.ids.text_input.text = field_value
