@@ -124,6 +124,15 @@ For better compatibility, build with the oldest version of the OS you want to su
 # Unit testing
 Use the command `python -m tests.Tests` to run unit tests.
 
+# Dependencies
+- Python 3
+- Kivy
+- Plyer
+- Pillow
+- Pyinstaller
+- Python-pptx
+- dataclasses_json
+
 # Contributors
 - Florian Rieder
 - Caroline Roxana Rohrbach
