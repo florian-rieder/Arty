@@ -57,17 +57,20 @@ class TestCollectionImage(unittest.TestCase):
         expected_ref3 = "Mona Lisa (Joconde), test, 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
         self.assertEqual(test_image3.to_reference(), expected_ref3)
 
+
 class TestCollection(unittest.TestCase):
     def test_filter(self):
         test_image1 = CollectionImage(
                 filename ="48224.jpg",
                 artist="Leonard de Vinci",
+                datation="Xe siècle",
                 title="Mona Lisa (Joconde)",
                 technique="Huile sur toile",
             )
         test_image2 = CollectionImage(
                 filename ="asjbd.jpg",
                 artist="Leonard de Vinci",
+                datation="1001",
                 title="Salvator Mundi",
                 technique="Huile sur bois",
 
@@ -75,10 +78,11 @@ class TestCollection(unittest.TestCase):
         test_image3 = CollectionImage(
                 filename ="4asdnkasjd.jpg",
                 artist="Leonard Baldaquin",
+                datation="1525-1530",
                 title="Portrait de Mona Rosa",
                 technique="Huile sur toile",
             )
-        
+
         # Let's define a collection to filter
         test_coll = Collection("test", "test", [
             test_image1, test_image2, test_image3
@@ -106,30 +110,64 @@ class TestCollection(unittest.TestCase):
         )
 
 
+    def test_datation_to_numeric(self):
+        coll = Collection("test", "test")
+
+        tests = {
+            "III-IVe siècles": 200,
+            "trucs": 0, # when no estimation is found
+            "1620": 1620,
+            "IIème siècle": 100,
+            "IIème siècle av. j-c": -200,
+            "100 av. JC": -100,
+            "60 après JC": 60,
+            "60 après J-C": 60,
+            "60 après j.-C.": 60,
+            "60 après J.c.": 60,
+            "1620-1630": 1620,
+            "c. 1600": 1600,
+            "circa 320": 320,
+            "XXème siècle": 1900,
+            "XXIe s.": 2000,
+            "2e s.": 100,
+            "1668-9": 1668,
+            "1512-1525": 1512,
+            "Ve s. av. JC": -500,
+            #"1ère moitié du XVIème siècle": 1550 # not implemented yet
+        }
+
+        for key, value in tests.items():
+            result = coll._datation_to_numeric(key)
+            self.assertEqual(result, value)
+
+
     def test_sort(self):
         test_image1 = CollectionImage(
             filename ="48224.jpg",
             artist="a",
+            datation="1001",
             title="Mona Lisa (Joconde)",
             technique="Huile sur toile"
         )
         test_image2 = CollectionImage(
             filename ="asjbd.jpg",
             artist="c",
+            datation="Xe siècle",
             title="Salvator Mundi",
             technique="Huile sur bois"
         )
         test_image3 = CollectionImage(
             filename ="4asdnkasjd.jpg",
             artist="b",
+            datation="1525",
             title="Portrait de Mona Rosa",
             technique="Huile sur toile"
         )
-        
+
         test_coll = Collection("test", "test", [
             test_image1, test_image2, test_image3
         ])
-        
+
         self.assertEqual(
             [test_image1, test_image3, test_image2],
             test_coll.sort("artist")
@@ -137,4 +175,8 @@ class TestCollection(unittest.TestCase):
         self.assertEqual(
             [test_image1, test_image3, test_image2],
             test_coll.sort("title")
+        )
+        self.assertEqual(
+            [test_image2, test_image1, test_image3],
+            test_coll.sort("datation")
         )

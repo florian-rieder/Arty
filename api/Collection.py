@@ -3,6 +3,7 @@
     metadata in a project folder.
 """
 import os
+import re
 import json
 import ntpath
 import shutil
@@ -141,8 +142,11 @@ class CollectionManager():
 
     @classmethod
     def __check_files(cls, collection):
-        """ Runs through the files in the work directory and adds any
-            image that is not yet in our collection.
+        """ Summary
+            -------
+            Runs through the files in the work directory and adds any
+            image that is not yet in our collection. Removes any image
+            whose file no longer exists -> data loss on renaming a file
 
             Returns
             -------
@@ -390,8 +394,8 @@ class Collection():
 
         # for each image in the collection, retain if at least one of
         # the arguments matches (with the in keyword)
-        # Here it is better for performance and readability to use list
-        # comprehensions instead of filter
+        # Here it is better for performance and readability to use a 
+        # list comprehension instead of filter()
         return [
             # for each image in the collection
             i for i in self.collection
@@ -399,7 +403,8 @@ class Collection():
             # this wizardry in the line below allows for using either
             # the 'any' or 'all' python builtins from name
             if getattr(builtins, mode)(
-                #retain if any/all arguments matches (with the in keyword)
+                # retain if any/all arguments matches
+                # (with the in keyword)
                 [
                     # check if the value we're looking for is in this
                     # image's value (case insensitive)...
@@ -446,12 +451,133 @@ class Collection():
         if not hasattr(CollectionImage, attribute):
             raise ValueError("CollectionImage has no attribute %s" % attribute)
 
-        # return the list sorted by the chosen criterion
-        return sorted(
-            self.collection,
-            key=lambda i: getattr(i, attribute).lower(),
-            reverse=reverse
+        # special case with dates
+        if attribute == "datation":
+            # return the list sorted by estimated numeric value of
+            # datation string
+            return sorted(
+                self.collection,
+                key=lambda i: self._datation_to_numeric(getattr(i, attribute)),
+                reverse=reverse
+            )
+        else:
+            # return the list sorted by the chosen criterion
+            return sorted(
+                self.collection,
+                key=lambda i: getattr(i, attribute).lower(),
+                reverse=reverse
+            )
+
+
+    def _datation_to_numeric(self, datation_string):
+        """ Summary
+            -------
+            Tries to estimate a numeric year value for datation strings
+            for example:
+            c. 1060 -> 1060
+            IIè siècle av. j.-c. -> -200
+            II-IIIè -> 250
+            c. 1667-1668 -> 1667
+            1666-8 -> 1666
+            3-4ème siècle -> 350
+            1667 -> 1667
+
+            Notations:
+            avant/après JC peut s'appliquer à toutes les notations
+            AP/AD
+            datation estimée: 2 valeurs données siècles ou années
+
+                siècles: nombres romains possibles
+                année précise: pas de traitement
+            
+            Returns
+            -------
+            int
+                The estimated value of the input string. Returns 0 if
+                nothing could be found
+        """
+        # detect av/ap j-c
+        jc = re.compile(
+            r"((av\.?(ant)?)|(ap\.?(r[eè]s)?))\s?j\.?-?c\.?",
+            flags=re.IGNORECASE
         )
+
+        # detect numeric values
+        num_values = re.compile(
+            r"\b[IVX]+|\b\d+",
+            flags=re.IGNORECASE
+        )
+
+        # detect if values are given in centuries
+        century = re.compile(
+            r"(\bsi[eè]cles?\b)|(\bs\.?\b)",
+            flags=re.IGNORECASE
+        )
+
+        ad = 1
+
+        # get av/ap j-c
+        # av -> negative number, ap -> positive
+        if re.search(jc, datation_string):
+            # check wether it is av or ap
+            ad = 1 if re.search(r"ap(?:r[eè]s)", datation_string) else -1
+
+        values = list()
+
+        # get all numeric values given in the string
+        matches = re.findall(num_values, datation_string)
+        if len(matches) > 0:
+            # for each value
+            for v in matches:
+                # translate to int
+                if re.match(r"[IVX]+", v):
+                    values.append(self._roman_to_int(v))
+                else:
+                    values.append(int(v))
+
+        # check if the values are given in centuries
+        if re.search(century, datation_string):
+            # multiply each value by 100 (as each digit means a century)
+            values = [i * 100 if ad == -1 else (i - 1) * 100 for i in values]
+
+        if len(values) == 0:
+            return 0
+        
+        return values[0] * ad
+
+
+    def _roman_to_int(self, s):
+        """ Summary
+            -------
+            Converts roman numerals to int
+            Entirely taken from :
+            https://www.tutorialspoint.com/roman-to-integer-in-python
+
+            Arguments
+            ---------
+            s : str
+                string of roman numerals (eg. 'XIII')
+            
+            Returns
+            -------
+            int
+                decimal value of the roman numeral
+        """
+        roman = {
+            'I':1,'V':5,'X':10,'L':50,'C':100,'D':500,'M':1000,'IV':4,
+            'IX':9,'XL':40,'XC':90,'CD':400,'CM':900
+        }
+
+        i = 0
+        num = 0
+        while i < len(s):
+            if i+1<len(s) and s[i:i+2] in roman:
+                num+=roman[s[i:i+2]]
+                i+=2
+            else:
+                num+=roman[s[i]]
+                i+=1
+        return num
 
 
 @dataclass_json
@@ -498,6 +624,9 @@ class CollectionImage():
           everything from breaking in the case the directory is moved.
           To get the absolute path, use:
             collection.get_absolute_path(collection_image)
+          or other os.path.join barbaric things.
+          This is not particularily clean but for now I don't really
+          know how to do better.
         - Date format to discuss.
         - Other fields ?
         - Tag system ?
@@ -512,7 +641,7 @@ class CollectionImage():
     conservation_site :     Optional[str] = ""
     production_site :       Optional[str] = ""
     dimensions :            Optional[str] = ""
-    notes:             Optional[str] = ""
+    notes:                  Optional[str] = ""
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :
