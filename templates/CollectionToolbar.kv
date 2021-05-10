@@ -15,4 +15,10 @@
             id: export_btn
             text: 'Export Selection'
             on_press: root.export()
-      
+
+        Spinner:
+            id: select_sort
+            text: 'sort by:'
+            values: ['title', 'artist', 'year', 'technique']
+
+            on_text: root.sorting_by(select_sort.text)

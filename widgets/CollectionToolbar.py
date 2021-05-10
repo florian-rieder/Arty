@@ -8,7 +8,7 @@ import kivy.properties as kyprops
 from plyer import filechooser
 
 from widgets.PopupMessage import PopupMessage
-from api.Collection import CollectionImage
+from api.Collection import CollectionImage, Collection
 from api.Powerpoint import Powerpoint
 
 class CollectionToolbar(BoxLayout):
@@ -44,6 +44,7 @@ class CollectionToolbar(BoxLayout):
         except Exception:
             Logger.exception("Please select 2 to 4 images")
             
+            #show popup if the wrong amount of images is selected
             popup_content = PopupMessage(message = "Please select 2 to 4 images")
             popup_window = Popup(title = "Error",
                                  content = popup_content,
@@ -67,6 +68,10 @@ class CollectionToolbar(BoxLayout):
         except Exception:
             Logger.exception("An error occurred when selecting save destination")
     
+    def sorting_by(self, value):
+        app = App.get_running_app()
+        sorted_coll = app.CURRENT_COLLECTION.sort(value)
+        app.GRID.set_collection(sorted_coll)
 
     def handle_selection(self, selection):
         """
