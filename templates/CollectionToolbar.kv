@@ -18,7 +18,12 @@
 
         Spinner:
             id: select_sort
-            text: 'sort by:'
+            text: 'Sort by:'
             values: ['title', 'artist', 'datation', 'technique']
 
             on_text: root.sorting_by(select_sort.text)
+        
+        Button:
+            id: filter_select
+            text: 'Filter'
+            on_release: root.open_filter()

@@ -1,0 +1,32 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<FilterPopup>:
+    id: filter_box
+    orientation: 'vertical'
+
+    TextInput:
+        id: title_input
+        hint_text: 'title'
+        text: ''
+        size_hint_y: None
+        height: 55
+
+    TextInput:
+        id: artist_input
+        hint_text: 'artist'
+        text: ''
+        size_hint_y: None
+        height: 55
+
+    TextInput:
+        id: technique_input
+        hint_text: 'technique'
+        text: ''
+        size_hint_y: None
+        height: 55
+
+    Button:
+        id: filter_btn
+        text: 'Filter'
+

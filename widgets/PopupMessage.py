@@ -1,6 +1,6 @@
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty
+import kivy.properties as kyprops
 
 class PopupMessage(FloatLayout):
     """Summary
@@ -18,6 +18,6 @@ class PopupMessage(FloatLayout):
     """
 
     Builder.load_file('templates/PopupMessage.kv')
-    message = StringProperty("")
+    message = kyprops.StringProperty("")
 
     

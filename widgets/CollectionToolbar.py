@@ -8,6 +8,7 @@ import kivy.properties as kyprops
 from plyer import filechooser
 
 from widgets.PopupMessage import PopupMessage
+from widgets.FilterPopup import FilterPopup
 from api.Collection import CollectionImage, Collection
 from api.Powerpoint import Powerpoint
 
@@ -72,6 +73,31 @@ class CollectionToolbar(BoxLayout):
         app = App.get_running_app()
         sorted_coll = app.CURRENT_COLLECTION.sort(value)
         app.GRID.set_display_list(sorted_coll)
+    
+    def open_filter(self):
+
+        selected_filter = FilterPopup()
+        filter_window = Popup(title = "Filter",
+                             content = selected_filter,
+                             size_hint = (None,None),
+                             size = (500,300))
+        selected_filter.ids.filter_btn.bind(on_press = self.filter_by)
+        selected_filter.ids.filter_btn.bind(on_press = filter_window.dismiss)
+        filter_window.open()
+
+    def filter_by(self, values):
+        app = App.get_running_app()
+        selected_filter = FilterPopup()
+        
+        title = selected_filter.ids.title_input.text
+        artist = selected_filter.ids.artist_input.text
+        technique = selected_filter.ids.technique_input.text
+
+        filtered_coll = app.CURRENT_COLLECTION.filter(mode='all',
+                                                    title = title,
+                                                    artist = artist,
+                                                    technique = technique)
+        print(filtered_coll)
 
     def handle_selection(self, selection):
         """
