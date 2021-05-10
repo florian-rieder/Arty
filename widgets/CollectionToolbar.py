@@ -71,7 +71,7 @@ class CollectionToolbar(BoxLayout):
     def sorting_by(self, value):
         app = App.get_running_app()
         sorted_coll = app.CURRENT_COLLECTION.sort(value)
-        app.GRID.set_collection(sorted_coll)
+        app.GRID.set_display_list(sorted_coll)
 
     def handle_selection(self, selection):
         """

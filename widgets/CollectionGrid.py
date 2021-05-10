@@ -16,7 +16,10 @@ class CollectionGrid(GridLayout):
         -------
         set_collection(collection)
             Updates display of the grid with the images in the
-            collection. 
+            collection.
+        set_display_list(collection_list)
+            Displays a list of CollectionImages in the order of the
+            list. set_collection() must have been called prior.
     """
     CURRENT_COLLECTION = None
 
@@ -26,24 +29,50 @@ class CollectionGrid(GridLayout):
         if not isinstance(collection, Collection):
             raise ValueError("collection must by of type Collection")
 
+        # set the collection
+        self.CURRENT_COLLECTION = collection
+
+        # Initialize with the collection in its default order
+        # (alphabetical order of filenames)
+        self.set_display_list(self.CURRENT_COLLECTION.get_collection())
+
+        Logger.info("Arty: CollectionGrid refreshed.")
+
+
+    def set_display_list(self, collection_list):
+        """ Summary
+            -------
+            Will display a list of CollectionImages in the grid, in the
+            order of the list.
+            A collection must have been set using the set_collection()
+            method.
+
+            Arguments
+            ---------
+            collection_list : list(CollectionImage)
+                A list of CollectionImages to display in the grid.
+        """
         # remove children if the collection is not None
         if self.CURRENT_COLLECTION:
             self.clear_widgets()
 
-        # set the collection
-        self.CURRENT_COLLECTION = collection
-
-        for collection_image in collection.get_collection():
-            absolute_path = collection.get_absolute_path(collection_image)
+        for collection_image in collection_list:
+            # get absolute path to the image, in order to display it
+            absolute_path = self.CURRENT_COLLECTION.get_absolute_path(
+                collection_image
+            )
 
             try:
+                # create an image widget
                 image_widget = CollectionGridImage(
-                    source = absolute_path, collection_image=collection_image)
+                    source=absolute_path,
+                    collection_image=collection_image
+                )
 
+                # add it to the grid
                 self.add_widget(image_widget)
+
             except ValueError:
                 Logger.exception(
                     'CollectionGrid: Unable to load <%s>' % collection_image
                 )
-
-        Logger.info("Arty: CollectionGrid refreshed.")

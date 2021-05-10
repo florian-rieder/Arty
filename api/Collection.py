@@ -449,7 +449,7 @@ class Collection():
         # return the list sorted by the chosen criterion
         return sorted(
             self.collection,
-            key=lambda i: i.__getattribute__(attribute),
+            key=lambda i: getattr(i, attribute).lower(),
             reverse=reverse
         )
 
@@ -530,7 +530,7 @@ class CollectionImage():
             artist_if_artist = self.artist + ", " if self.artist else "",
             title = self.title + ", " if self.title else "Untitled,",
             production_site_if_no_artist = self.production_site + ", " if not self.artist else "",
-            date = self.year + ", " if self.year else "",
+            date = self.datation + ", " if self.datation else "",
             technique = self.technique + ", " if self.technique else "",
             dimensions = self.dimensions + ", " if self.dimensions else "",
             conservation_site = self.conservation_site

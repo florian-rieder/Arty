@@ -23,7 +23,7 @@ class TestCollectionImage(unittest.TestCase):
             filename ="48224.jpg",
             artist="Leonardo de Vinci",
             title="Mona Lisa (Joconde)",
-            year="1503-1506",
+            datation="1503-1506",
             technique="Huile sur toile",
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
@@ -36,7 +36,7 @@ class TestCollectionImage(unittest.TestCase):
             artist="Leonardo de Vinci",
             production_site="test",
             title="Mona Lisa (Joconde)",
-            year="1503-1506",
+            datation="1503-1506",
             technique="Huile sur toile",
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
@@ -49,7 +49,7 @@ class TestCollectionImage(unittest.TestCase):
             artist=None,
             production_site="test",
             title="Mona Lisa (Joconde)",
-            year="1503-1506",
+            datation="1503-1506",
             technique="Huile sur toile",
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
