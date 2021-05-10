@@ -133,6 +133,9 @@ class TestCollection(unittest.TestCase):
             "1668-9": 1668,
             "1512-1525": 1512,
             "Ve s. av. JC": -500,
+            "après 1515": 1515,
+            "vers l'an 200": 200,
+            "entre 301 et 313": 301,
             #"1ère moitié du XVIème siècle": 1550 # not implemented yet
         }
 

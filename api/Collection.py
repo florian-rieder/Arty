@@ -380,7 +380,15 @@ class Collection():
 
             Example
             -------
-            filtered_collection = collection.filter(mode="all", title="Mona Lisa", artist="Leonard")
+            filtered_collection = collection.filter(
+                mode="all",
+                title="Mona Lisa", artist="Leonard"
+            )
+
+            TODO
+            ----
+            Add a proper method for filtering by datation, such as "get 
+            all artworks in a range of dates (e.g. 1000-1200)"
         """
 
         # check that the mode chosen is valid
@@ -476,27 +484,42 @@ class Collection():
             for example:
             c. 1060 -> 1060
             IIè siècle av. j.-c. -> -200
-            II-IIIè -> 250
+            II-IIIè -> 100
             c. 1667-1668 -> 1667
             1666-8 -> 1666
-            3-4ème siècle -> 350
+            3-4ème siècle -> 200
             1667 -> 1667
 
             Notations:
-            avant/après JC peut s'appliquer à toutes les notations
-            AP/AD
-            datation estimée: 2 valeurs données siècles ou années
-
-                siècles: nombres romains possibles
-                année précise: pas de traitement
+            AP/AD can apply to all notations
+            Estimated datation: 2 values given, centuries or years
+                centuries: possible roman numerals
+                    Note this little complication:
+                           IIe s. AD -> 100
+                           IIe s. AP -> -200
+                year: no processing
             
             Returns
             -------
             int
                 The estimated value of the input string. Returns 0 if
                 nothing could be found
+            
+            Notes
+            -----
+            We could make it so that when we have two values, return the
+            average of the two...
+
+            TODO
+            ----
+            Implement management of quarter of century precisions:
+                "2ème partie/moitié du IIème siècle" -> 150
+                "3ème quart du XXème siècle" -> 1975
+                "1er quart du 19ème siècle" -> 1800
+                etc.
         """
-        # detect av/ap j-c
+        # detect AP/AD
+        # NOTE: IN FRENCH !
         jc = re.compile(
             r"((av\.?(ant)?)|(ap\.?(r[eè]s)?))\s?j\.?-?c\.?",
             flags=re.IGNORECASE
@@ -516,10 +539,10 @@ class Collection():
 
         ad = 1
 
-        # get av/ap j-c
-        # av -> negative number, ap -> positive
+        # get AP/AD
+        # AP -> negative number, AD -> positive number
         if re.search(jc, datation_string):
-            # check wether it is av or ap
+            # check wether it is AP or AD
             ad = 1 if re.search(r"ap(?:r[eè]s)", datation_string) else -1
 
         values = list()
@@ -540,9 +563,11 @@ class Collection():
             # multiply each value by 100 (as each digit means a century)
             values = [i * 100 if ad == -1 else (i - 1) * 100 for i in values]
 
+        # this is in case nothing was found
         if len(values) == 0:
             return 0
         
+        # here we add the sign indicated by AP/AD
         return values[0] * ad
 
 
