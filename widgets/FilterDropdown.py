@@ -17,4 +17,17 @@ class FilterDropdown(DropDown):
     """
 
     Builder.load_file('templates/FilterDropdown.kv')
-    # state = kyprops.BooleanProperty(False)
+
+    def filter_by(self):
+        app = App.get_running_app()
+
+        title = self.ids.title_input.text
+        artist = self.ids.artist_input.text
+        technique = self.ids.technique_input.text
+
+        filtered_coll = app.CURRENT_COLLECTION.filter(mode='all',
+                                                    title = title,
+                                                    artist = artist,
+                                                    technique = technique)
+        
+        app.GRID.set_display_list(filtered_coll)

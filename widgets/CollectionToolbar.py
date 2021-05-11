@@ -77,28 +77,12 @@ class CollectionToolbar(BoxLayout):
     
     def open_filter(self):
 
-
         filter_dropdown = FilterDropdown()
         mainbutton = self.ids.filter_select
+        
         mainbutton.bind(on_press = filter_dropdown.open)
 
-        filter_dropdown.ids.filter_btn.bind(on_press = self.filter_by)
         filter_dropdown.ids.filter_btn.bind(on_release = filter_dropdown.dismiss)
-
-
-    def filter_by(self, values):
-        app = App.get_running_app()
-        filter_dropdown = FilterDropdown()
-        
-        title = filter_dropdown.ids.title_input.text
-        artist = filter_dropdown.ids.artist_input.text
-        technique = filter_dropdown.ids.technique_input.text
-
-        filtered_coll = app.CURRENT_COLLECTION.filter(mode='all',
-                                                    title = title,
-                                                    artist = artist,
-                                                    technique = technique)        
-        app.GRID.set_display_list(filtered_coll)
 
     def handle_selection(self, selection):
         """
