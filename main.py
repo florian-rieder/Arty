@@ -36,4 +36,5 @@ if __name__ == '__main__':
     #======================= End Configuration =======================#
 
     # run the app
+
     ArtyApp().run()

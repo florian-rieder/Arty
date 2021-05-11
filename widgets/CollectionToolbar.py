@@ -3,12 +3,13 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.popup import Popup
+from kivy.uix.dropdown import DropDown
 from kivy.logger import Logger
 import kivy.properties as kyprops
 from plyer import filechooser
 
 from widgets.PopupMessage import PopupMessage
-from widgets.FilterPopup import FilterPopup
+from widgets.FilterDropdown import FilterDropdown
 from api.Collection import CollectionImage, Collection
 from api.Powerpoint import Powerpoint
 
@@ -76,28 +77,28 @@ class CollectionToolbar(BoxLayout):
     
     def open_filter(self):
 
-        selected_filter = FilterPopup()
-        filter_window = Popup(title = "Filter",
-                             content = selected_filter,
-                             size_hint = (None,None),
-                             size = (500,300))
-        selected_filter.ids.filter_btn.bind(on_press = self.filter_by)
-        selected_filter.ids.filter_btn.bind(on_press = filter_window.dismiss)
-        filter_window.open()
+
+        filter_dropdown = FilterDropdown()
+        mainbutton = self.ids.filter_select
+        mainbutton.bind(on_press = filter_dropdown.open)
+
+        filter_dropdown.ids.filter_btn.bind(on_press = self.filter_by)
+        filter_dropdown.ids.filter_btn.bind(on_release = filter_dropdown.dismiss)
+
 
     def filter_by(self, values):
         app = App.get_running_app()
-        selected_filter = FilterPopup()
+        filter_dropdown = FilterDropdown()
         
-        title = selected_filter.ids.title_input.text
-        artist = selected_filter.ids.artist_input.text
-        technique = selected_filter.ids.technique_input.text
+        title = filter_dropdown.ids.title_input.text
+        artist = filter_dropdown.ids.artist_input.text
+        technique = filter_dropdown.ids.technique_input.text
 
         filtered_coll = app.CURRENT_COLLECTION.filter(mode='all',
                                                     title = title,
                                                     artist = artist,
-                                                    technique = technique)
-        print(filtered_coll)
+                                                    technique = technique)        
+        app.GRID.set_display_list(filtered_coll)
 
     def handle_selection(self, selection):
         """

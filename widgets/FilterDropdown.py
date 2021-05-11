@@ -1,9 +1,10 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.dropdown import DropDown
 import kivy.properties as kyprops
 
-class FilterPopup(BoxLayout):
+class FilterDropdown(DropDown):
     """ Summary
         -------
         Dropdown list for the filter options
@@ -15,4 +16,5 @@ class FilterPopup(BoxLayout):
         --------
     """
 
-    Builder.load_file('templates/FilterPopup.kv')
+    Builder.load_file('templates/FilterDropdown.kv')
+    # state = kyprops.BooleanProperty(False)

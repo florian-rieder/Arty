@@ -1,32 +1,34 @@
 #:kivy 1.0
 #:import kivy kivy
 
-<FilterPopup>:
+<FilterDropdown>:
     id: filter_box
-    orientation: 'vertical'
+    auto_dismiss: True
 
     TextInput:
         id: title_input
         hint_text: 'title'
-        text: ''
+        multiline: False
         size_hint_y: None
-        height: 55
+        height: 44
 
     TextInput:
         id: artist_input
         hint_text: 'artist'
-        text: ''
+        multiline: False
         size_hint_y: None
-        height: 55
+        height: 44
 
     TextInput:
         id: technique_input
         hint_text: 'technique'
-        text: ''
+        multiline: False
         size_hint_y: None
-        height: 55
+        height: 44
 
     Button:
         id: filter_btn
         text: 'Filter'
-
+        size_hint_y: None
+        height: 44
+        # on_press: root.state = False
