@@ -69,6 +69,7 @@ class CollectionPanel(BoxLayout):
 
         # get the attributes of a CollectionImage
         # from https://stackoverflow.com/questions/9058305/getting-attributes-of-a-class
+        # fields are not in the right order
         attributes = inspect.getmembers(CollectionImage, lambda a:not(inspect.isroutine(a)))
         self.attributes = [a[0] for a in attributes if not (a[0].startswith('__') and a[0].endswith('__'))]
 
