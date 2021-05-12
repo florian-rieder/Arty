@@ -11,7 +11,7 @@ import builtins
 from typing import Optional
 from dataclasses import dataclass, field
 
-from dataclasses_json import dataclass_json
+from dataclasses_json import config, dataclass_json
 from kivy.logger import Logger
 
 
@@ -123,7 +123,7 @@ class CollectionManager():
 
         # retrieve the title of the collection
         try:
-            title = coll_dict["title"]
+            title = coll_dict["t"]
         except KeyError:
             title = "Untitled Collection"
             Logger.exception(
@@ -134,7 +134,8 @@ class CollectionManager():
         collection = [
             # cast each object in the JSON list to a CollectionImage
             # pylint says it's an error. Let's just say I disagree
-            CollectionImage.from_dict(item) for item in coll_dict["collection"]
+            CollectionImage.from_dict(item) for item in coll_dict["c"]
+            #CollectionImage.from_json(json.dumps(item)) for item in coll_dict["c"]
         ]
 
         return Collection(path, title, collection)
@@ -203,8 +204,8 @@ class CollectionManager():
         with open(meta_file_path, "w") as meta_file:
             # convert the collection to JSON
             json_data = json.loads(collection.to_json())
-            # format JSON file (temporary)
-            formatted_json = json.dumps(json_data, indent=4)
+            # convert to string and minify JSON file
+            formatted_json = json.dumps(json_data, separators=(',', ':'))
 
             meta_file.write(formatted_json)
 
@@ -245,9 +246,16 @@ class Collection():
             update an image in the collection, if the image doesn't
             exist, throw an exception.
     """
-    work_directory : str
-    title : str
-    collection: list = field(default_factory=list)
+    work_directory :    str = field(
+                            metadata=config(field_name="w"), default=""
+                        )
+    title :             str = field(
+                            metadata=config(field_name="t"), default=""
+                        )
+    collection:         list = field(
+                            metadata=config(field_name="c"),
+                            default_factory=list
+                        )
 
     def get_collection(self):
         """getter for the collection list"""
@@ -581,6 +589,7 @@ class Collection():
             ---------
             s : str
                 string of roman numerals (eg. 'XIII')
+
             Returns
             -------
             int
@@ -616,24 +625,24 @@ class CollectionImage():
         Attributes
         ----------
         filename : str
-            relative path to the file (eg. "image.png").
+            Relative path to the file (eg. "image.png").
         title : str, optional
-            title of the image
+            Title of the image
         artist : str, optional
-            artist name
+            Artist name
         datation : str, optional
-            production datation (eg. "c. 1875")
+            Production datation (eg. "c. 1875")
         technique : str, optional
-            technique (eg. "Painting", "Sculpture"...)
+            Technique (eg. "Painting", "Sculpture"...)
         material : str, optional
-            material (eg. "Oil on canvas", "Marble"...)
+            Material (eg. "Oil on canvas", "Marble"...)
         conservation_site : str, optional
-            conservation site (eg. "Musée du Louvre, Paris")
+            Conservation site (eg. "Musée du Louvre, Paris")
         production_site : str, optional
-            production site
+            Production site
         dimensions : str, optional
-            dimensions of the work (eg. "300x200cm" or "20x30x25cm")
-        user_notes : str, optional
+            Dimensions of the work (eg. "300x200cm" or "20x30x25cm")
+        notes : str, optional
             Text block for the user to write anything they want
 
         Methods
@@ -655,16 +664,34 @@ class CollectionImage():
         - Tag system ?
     """
 
-    filename :              str
-    title :                 Optional[str] = ""
-    artist :                Optional[str] = ""
-    datation :              Optional[str] = ""
-    technique :             Optional[str] = ""
-    material :              Optional[str] = ""
-    conservation_site :     Optional[str] = ""
-    production_site :       Optional[str] = ""
-    dimensions :            Optional[str] = ""
-    notes:                  Optional[str] = ""
+    filename :              str = field(metadata=config(field_name="f"))
+    title :                 Optional[str] = field(
+                                metadata=config(field_name="t"), default=""
+                            )
+    artist :                Optional[str] = field(
+                                metadata=config(field_name="a"), default=""
+                            )
+    datation :              Optional[str] = field(
+                                metadata=config(field_name="d"), default=""
+                            )
+    technique :             Optional[str] = field(
+                                metadata=config(field_name="e"), default=""
+                            )
+    material :              Optional[str] = field(
+                                metadata=config(field_name="m"), default=""
+                            )
+    conservation_site :     Optional[str] = field(
+                                metadata=config(field_name="c"), default=""
+                            )
+    production_site :       Optional[str] = field(
+                                metadata=config(field_name="p"), default=""
+                            )
+    dimensions :            Optional[str] = field(
+                                metadata=config(field_name="d"), default=""
+                            )
+    notes:                  Optional[str] = field(
+                                metadata=config(field_name="n"), default=""
+                            )
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :

@@ -1,5 +1,6 @@
 import os
 import json
+import inspect
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.logger import Logger
@@ -66,12 +67,10 @@ class CollectionPanel(BoxLayout):
         #               *** generate text fields ***
         container = self.ids.metadata_container
 
-        # get the attributes of a CollectionImage using this json trick
-        bogus_image = CollectionImage("")
-        self.attributes = list(json.loads(bogus_image.to_json()).keys())
-
-        # the filename is not a field that should be changed
-        del self.attributes[self.attributes.index("filename")]
+        # get the attributes of a CollectionImage
+        # from https://stackoverflow.com/questions/9058305/getting-attributes-of-a-class
+        attributes = inspect.getmembers(CollectionImage, lambda a:not(inspect.isroutine(a)))
+        self.attributes = [a[0] for a in attributes if not (a[0].startswith('__') and a[0].endswith('__'))]
 
         # generate all text fields
         for attribute in self.attributes:
