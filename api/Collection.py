@@ -320,7 +320,6 @@ class Collection():
             ---------
             collection_image: CollectionImage
                 the image to update
-            
             Raises
             ------
             Exception
@@ -328,7 +327,6 @@ class Collection():
         """
         if collection_image not in self.collection:
             raise Exception("Cannot update an image that doesn't exist in the collection.")
-        
         for idx, image in enumerate(self.collection):
             if collection_image == image:
                 self.collection[idx] = collection_image
@@ -387,7 +385,7 @@ class Collection():
 
             TODO
             ----
-            Add a proper method for filtering by datation, such as "get 
+            Add a proper method for filtering by datation, such as "get
             all artworks in a range of dates (e.g. 1000-1200)"
         """
 
@@ -402,12 +400,12 @@ class Collection():
 
         # for each image in the collection, retain if at least one of
         # the arguments matches (with the in keyword)
-        # Here it is better for performance and readability to use a 
+        # Here it is better for performance and readability to use a
         # list comprehension instead of filter()
+        # ...but not for debugging though...
         return [
             # for each image in the collection
-            i for i in self.collection
-
+            image for image in self.collection
             # this wizardry in the line below allows for using either
             # the 'any' or 'all' python builtins from name
             if getattr(builtins, mode)(
@@ -416,12 +414,16 @@ class Collection():
                 [
                     # check if the value we're looking for is in this
                     # image's value (case insensitive)...
-                    value.lower() in getattr(i, attr).lower()
+                    value.lower() in getattr(image, attr).lower()
                     # ...for each attribute we're filtering for...
                     for attr, value in kwargs.items()
-                    # ...but only if the attribute is filled in the
+                    # ...but only if the value we're filtering with is
+                    # not empty, and the attribute is filled in the
                     # current image
-                    if getattr(i, attr)
+                    # TODO: find out why an image with an empty field is
+                    # retained when I specifically try to prevent it
+                    # here...
+                    if value.strip() != "" and getattr(image, attr) != ""
                 ]
             )
         ]
@@ -498,13 +500,11 @@ class Collection():
                            IIe s. AD -> 100
                            IIe s. AP -> -200
                 year: no processing
-            
             Returns
             -------
             int
                 The estimated value of the input string. Returns 0 if
                 nothing could be found
-            
             Notes
             -----
             We could make it so that when we have two values, return the
@@ -566,7 +566,6 @@ class Collection():
         # this is in case nothing was found
         if len(values) == 0:
             return 0
-        
         # here we add the sign indicated by AP/AD
         return values[0] * ad
 
@@ -582,7 +581,6 @@ class Collection():
             ---------
             s : str
                 string of roman numerals (eg. 'XIII')
-            
             Returns
             -------
             int
