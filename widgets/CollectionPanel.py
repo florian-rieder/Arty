@@ -1,6 +1,5 @@
 import os
 import json
-import inspect
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.logger import Logger
@@ -64,14 +63,20 @@ class CollectionPanel(BoxLayout):
         # needed to get the full path to an image
         self.WORK_DIRECTORY = work_dir
 
-        #               *** generate text fields ***
+        # generate text fields
         container = self.ids.metadata_container
 
-        # get the attributes of a CollectionImage
-        # from https://stackoverflow.com/questions/9058305/getting-attributes-of-a-class
-        # fields are not in the right order
-        attributes = inspect.getmembers(CollectionImage, lambda a:not(inspect.isroutine(a)))
-        self.attributes = [a[0] for a in attributes if not (a[0].startswith('__') and a[0].endswith('__'))]
+        self.attributes = [
+            'artist',
+            'title',
+            'datation',
+            'dimensions',
+            'material',
+            'technique',
+            'production_site',
+            'conservation_site',
+            'notes',
+        ]
 
         # generate all text fields
         for attribute in self.attributes:

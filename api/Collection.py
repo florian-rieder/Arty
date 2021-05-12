@@ -395,6 +395,7 @@ class Collection():
             ----
             Add a proper method for filtering by datation, such as "get
             all artworks in a range of dates (e.g. 1000-1200)"
+            Ignore accents
         """
 
         # check that the mode chosen is valid
@@ -574,6 +575,7 @@ class Collection():
         # this is in case nothing was found
         if len(values) == 0:
             return 0
+
         # here we add the sign indicated by AP/AD
         return values[0] * ad
 

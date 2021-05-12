@@ -28,7 +28,7 @@ if __name__ == '__main__':
     Config.set('kivy',      'exit_on_escape',   '0')
 
     # prevent red dots on right click
-    Config.set('input',     'mouse',            'mouse,multitouch_on_demand')
+    Config.set('input',     'mouse',            'mouse, disable_multitouch')
 
     # apply configuration
     Config.write()
