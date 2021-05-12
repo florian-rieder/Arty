@@ -48,10 +48,11 @@ class CollectionToolbar(BoxLayout):
             
             #show popup if the wrong amount of images is selected
             popup_content = PopupMessage(message = "Please select 2 to 4 images")
-            popup_window = Popup(title = "Error",
-                                 content = popup_content,
-                                 size_hint = (None,None),
-                                 size = (300,200))
+            popup_window = Popup(
+                title = "Error",
+                content = popup_content,
+                size_hint = (0.3, 0.25)
+            )
 
             popup_content.ids.popup_btn.bind(on_press = popup_window.dismiss)
 
