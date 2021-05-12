@@ -4,16 +4,16 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
 import kivy.properties as kyprops
 
+from api.Collection import CollectionUtils
+
 class FilterDropdown(DropDown):
     """ Summary
         -------
         Dropdown list for the filter options
 
-        Attributes
-        ----------
-
-        Methods:
-        --------
+        Methods
+        -------
+        filter_by()
     """
 
     Builder.load_file('templates/FilterDropdown.kv')
@@ -25,9 +25,14 @@ class FilterDropdown(DropDown):
         artist = self.ids.artist_input.text
         technique = self.ids.technique_input.text
 
-        filtered_coll = app.CURRENT_COLLECTION.filter(mode='all',
-                                                    title = title,
-                                                    artist = artist,
-                                                    technique = technique)
+        # TODO: Changer pour obtenir la liste d'images depuis
+        # CollectionToolbar
+        images_list = app.CURRENT_COLLECTION.get_collection()
+
+        filtered_coll = CollectionUtils.filter(images_list, 
+                                               mode='all',
+                                               title = title,
+                                               artist = artist,
+                                               technique = technique)
         
         app.GRID.set_display_list(filtered_coll)

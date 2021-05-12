@@ -363,255 +363,6 @@ class Collection():
         return os.path.join(self.work_directory, collection_image.filename)
 
 
-    def filter(self, mode="any", **kwargs):
-        """ Summary
-            -------
-            Filters a collection based on metadata
-
-            Arguments
-            ---------
-            mode : str, default='any'
-                Selection method for the filter. Either 'any' or 'all'.
-                It's basically an OR/AND operator between the specified
-                fields.
-                (e.g. any: artist OR title must match; all: artist
-                AND title must match)
-            kwargs:
-                Any attribute of CollectionImage (multiple allowed)
-
-            Returns
-            -------
-            filtered_list : list(CollectionImages)
-                List filtered according to the given parameters
-
-            Example
-            -------
-            filtered_collection = collection.filter(
-                mode="all",
-                title="Mona Lisa", artist="Leonard"
-            )
-
-            TODO
-            ----
-            Add a proper method for filtering by datation, such as "get
-            all artworks in a range of dates (e.g. 1000-1200)"
-            Ignore accents
-        """
-
-        # check that the mode chosen is valid
-        if mode not in ("any", "all"):
-            raise ValueError("mode must be either 'any' or 'all'")
-
-        # check that the fields entered are valid CollectionImage fields
-        for attr in kwargs:
-            if not hasattr(CollectionImage, attr):
-                raise ValueError("CollectionImage has no attribute %s" % attr)
-
-        # for each image in the collection, retain if at least one of
-        # the arguments matches (with the in keyword)
-        # Here it is better for performance and readability to use a
-        # list comprehension instead of filter()
-        # ...but not for debugging though...
-        return [
-            # for each image in the collection
-            image for image in self.collection
-            # this wizardry in the line below allows for using either
-            # the 'any' or 'all' python builtins from name
-            if getattr(builtins, mode)(
-                # retain if any/all arguments matches
-                # (with the in keyword)
-                [
-                    # check if the value we're looking for is in this
-                    # image's value (case insensitive)...
-                    value.lower() in getattr(image, attr).lower()
-                    # ...for each attribute we're filtering for...
-                    for attr, value in kwargs.items()
-                    # ...but only if the value we're filtering with is
-                    # not empty, and the attribute is filled in the
-                    # current image
-                    # TODO: find out why an image with an empty field is
-                    # retained when I specifically try to prevent it
-                    # here...
-                    if value.strip() != "" and getattr(image, attr) != ""
-                ]
-            )
-        ]
-
-
-    def sort(self, attribute, reverse=False):
-        """ Summary
-            -------
-            Sorts the images in a collection.
-
-            Arguments
-            ---------
-            attribute: str
-                Any attribute of Collection image
-            reverse: bool, default=False
-                reverse the sorting
-
-            Returns
-            -------
-            sorted_collection : list(CollectionImage)
-                sorted collection
-
-            NOTE
-            ----
-            Does it make sense to sort by multiple arguments ? If so,
-            how does one do it ?
-            Doesn't really work for dates though (if there are cases
-            such as "c. 525" or "IIe siècle"). But the only solution to
-            this, while allowing freedom for the user would be to create
-            a whole processing engine to convert those notations to
-            homogenous numeric values that we could then sort.
-        """
-
-        # check that the argument is valid
-        if not hasattr(CollectionImage, attribute):
-            raise ValueError("CollectionImage has no attribute %s" % attribute)
-
-        # special case with dates
-        if attribute == "datation":
-            # return the list sorted by estimated numeric value of
-            # datation string
-            return sorted(
-                self.collection,
-                key=lambda i: self._datation_to_numeric(getattr(i, attribute)),
-                reverse=reverse
-            )
-        else:
-            # return the list sorted by the chosen criterion
-            return sorted(
-                self.collection,
-                key=lambda i: getattr(i, attribute).lower(),
-                reverse=reverse
-            )
-
-
-    def _datation_to_numeric(self, datation_string):
-        """ Summary
-            -------
-            Tries to estimate a numeric year value for datation strings
-            for example:
-            c. 1060 -> 1060
-            IIè siècle av. j.-c. -> -200
-            II-IIIè -> 100
-            c. 1667-1668 -> 1667
-            1666-8 -> 1666
-            3-4ème siècle -> 200
-            1667 -> 1667
-
-            Notations:
-            AP/AD can apply to all notations
-            Estimated datation: 2 values given, centuries or years
-                centuries: possible roman numerals
-                    Note this little complication:
-                           IIe s. AD -> 100
-                           IIe s. AP -> -200
-                year: no processing
-            Returns
-            -------
-            int
-                The estimated value of the input string. Returns 0 if
-                nothing could be found
-            Notes
-            -----
-            We could make it so that when we have two values, return the
-            average of the two...
-
-            TODO
-            ----
-            Implement management of quarter of century precisions:
-                "2ème partie/moitié du IIème siècle" -> 150
-                "3ème quart du XXème siècle" -> 1975
-                "1er quart du 19ème siècle" -> 1800
-                etc.
-        """
-        # detect AP/AD
-        # NOTE: IN FRENCH !
-        jc = re.compile(
-            r"((av\.?(ant)?)|(ap\.?(r[eè]s)?))\s?j\.?-?c\.?",
-            flags=re.IGNORECASE
-        )
-
-        # detect numeric values
-        num_values = re.compile(
-            r"\b[IVX]+|\b\d+",
-            flags=re.IGNORECASE
-        )
-
-        # detect if values are given in centuries
-        century = re.compile(
-            r"(\bsi[eè]cles?\b)|(\bs\.?\b)",
-            flags=re.IGNORECASE
-        )
-
-        ad = 1
-
-        # get AP/AD
-        # AP -> negative number, AD -> positive number
-        if re.search(jc, datation_string):
-            # check wether it is AP or AD
-            ad = 1 if re.search(r"ap(?:r[eè]s)", datation_string) else -1
-
-        values = list()
-
-        # get all numeric values given in the string
-        matches = re.findall(num_values, datation_string)
-        if len(matches) > 0:
-            # for each value
-            for v in matches:
-                # translate to int
-                if re.match(r"[IVX]+", v):
-                    values.append(self._roman_to_int(v))
-                else:
-                    values.append(int(v))
-
-        # check if the values are given in centuries
-        if re.search(century, datation_string):
-            # multiply each value by 100 (as each digit means a century)
-            values = [i * 100 if ad == -1 else (i - 1) * 100 for i in values]
-
-        # this is in case nothing was found
-        if len(values) == 0:
-            return 0
-
-        # here we add the sign indicated by AP/AD
-        return values[0] * ad
-
-
-    def _roman_to_int(self, s):
-        """ Summary
-            -------
-            Converts roman numerals to int
-            Entirely taken from :
-            https://www.tutorialspoint.com/roman-to-integer-in-python
-
-            Arguments
-            ---------
-            s : str
-                string of roman numerals (eg. 'XIII')
-
-            Returns
-            -------
-            int
-                decimal value of the roman numeral
-        """
-        roman = {
-            'I':1,'V':5,'X':10,'L':50,'C':100,'D':500,'M':1000,'IV':4,
-            'IX':9,'XL':40,'XC':90,'CD':400,'CM':900
-        }
-
-        i = 0
-        num = 0
-        while i < len(s):
-            if i+1<len(s) and s[i:i+2] in roman:
-                num+=roman[s[i:i+2]]
-                i+=2
-            else:
-                num+=roman[s[i]]
-                i+=1
-        return num
 
 
 @dataclass_json
@@ -725,3 +476,281 @@ class CollectionImage():
             the same filename are considered the same image.
         """
         return self.filename == other.filename
+
+
+class CollectionUtils():
+    """ Summary
+        -------
+        A static class regrouping a bunch of utility methods regarding
+        Collections
+
+        Methods
+        -------
+        filter(img_list, mode="any", **kwargs)
+            Filters a list of CollectionImages based on metadata
+        sort(img_list, attribute)
+            Sorts the images in a list of CollectionImages
+    """
+
+    @staticmethod
+    def filter(img_list, mode="any", **kwargs):
+        """ Summary
+            -------
+            Filters a list of CollectionImages based on metadata
+
+            Arguments
+            ---------
+            img_list : list(CollectionImage)
+                A list of CollectionImages to filter.
+            mode : str, default='any'
+                Selection method for the filter. Either 'any' or 'all'.
+                It's basically an OR/AND operator between the specified
+                fields.
+                (e.g. any: artist OR title must match; all: artist
+                AND title must match)
+            kwargs:
+                Any attribute of CollectionImage (multiple allowed)
+
+            Returns
+            -------
+            filtered_list : list(CollectionImages)
+                List filtered according to the given parameters
+
+            Example
+            -------
+            filtered_collection = collection.filter(
+                mode="all",
+                title="Mona Lisa", artist="Leonard"
+            )
+
+            TODO
+            ----
+            Add a proper method for filtering by datation, such as "get
+            all artworks in a range of dates (e.g. 1000-1200)"
+            Ignore accents
+        """
+        # type check our list
+        if not all(isinstance(i, CollectionImage) for i in img_list):
+            raise TypeError(
+                "All elements of img_list must be of type CollecitionImage"
+            )
+
+        # check that the mode chosen is valid
+        if mode not in ("any", "all"):
+            raise ValueError("mode must be either 'any' or 'all'")
+
+        # check that the fields entered are valid CollectionImage fields
+        for attr in kwargs:
+            if not hasattr(CollectionImage, attr):
+                raise ValueError("CollectionImage has no attribute %s" % attr)
+
+        # for each image in the collection, retain if at least one of
+        # the arguments matches (with the in keyword)
+        # Here it is better for performance and readability to use a
+        # list comprehension instead of filter()
+        # ...but not for debugging though...
+        return [
+            # for each image in the collection
+            image for image in img_list
+            # this wizardry in the line below allows for using either
+            # the 'any' or 'all' python builtins from name
+            if getattr(builtins, mode)(
+                # retain if any/all arguments matches
+                # (with the in keyword)
+                [
+                    # check if the value we're looking for is in this
+                    # image's value (case insensitive)...
+                    value.lower() in getattr(image, attr).lower()
+                    # ...for each attribute we're filtering for...
+                    for attr, value in kwargs.items()
+                    # ...but only if the value we're filtering with is
+                    # not empty, and the attribute is filled in the
+                    # current image
+                    # TODO: find out why an image with an empty field is
+                    # retained when I specifically try to prevent it
+                    # here...
+                    if value.strip() != "" and getattr(image, attr) != ""
+                ]
+            )
+        ]
+
+
+    @classmethod
+    def sort(cls, img_list, attribute, reverse=False):
+        """ Summary
+            -------
+            Sorts the images in a list of CollectionImages
+
+            Arguments
+            ---------
+            img_list: list(CollectionImage)
+                A list of CollectionImage
+            attribute: str
+                Any attribute of Collection image
+            reverse: bool, default=False
+                reverse the sorting
+
+            Returns
+            -------
+            sorted_collection : list(CollectionImage)
+                sorted collection
+
+            NOTE
+            ----
+            Does it make sense to sort by multiple arguments ? If so,
+            how does one do it ?
+            Doesn't really work for dates though (if there are cases
+            such as "c. 525" or "IIe siècle"). But the only solution to
+            this, while allowing freedom for the user would be to create
+            a whole processing engine to convert those notations to
+            homogenous numeric values that we could then sort.
+        """
+        # type check our list
+        if not all(isinstance(i, CollectionImage) for i in img_list):
+            raise TypeError(
+                "All elements of img_list must be of type CollecitionImage"
+            )
+
+        # check that the argument is valid
+        if not hasattr(CollectionImage, attribute):
+            raise ValueError("CollectionImage has no attribute %s" % attribute)
+
+        # special case with dates
+        if attribute == "datation":
+            # return the list sorted by estimated numeric value of
+            # datation string
+            return sorted(
+                img_list,
+                key=lambda i: cls._datation_to_numeric(getattr(i, attribute)),
+                reverse=reverse
+            )
+
+        # return the list sorted by the chosen criterion
+        return sorted(
+            img_list,
+            key=lambda i: getattr(i, attribute).lower(),
+            reverse=reverse
+        )
+
+    @classmethod
+    def _datation_to_numeric(cls, datation_string):
+        """ Summary
+            -------
+            Tries to estimate a numeric year value for datation strings
+            for example:
+            c. 1060 -> 1060
+            IIè siècle av. j.-c. -> -200
+            II-IIIè -> 100
+            c. 1667-1668 -> 1667
+            1666-8 -> 1666
+            3-4ème siècle -> 200
+            1667 -> 1667
+
+            Notations:
+            AP/AD can apply to all notations
+            Estimated datation: 2 values given, centuries or years
+                centuries: possible roman numerals
+                    Note this little complication:
+                           IIe s. AD -> 100
+                           IIe s. AP -> -200
+                year: no processing
+            Returns
+            -------
+            int
+                The estimated value of the input string. Returns 0 if
+                nothing could be found
+            Notes
+            -----
+            We could make it so that when we have two values, return the
+            average of the two...
+
+            TODO
+            ----
+            Implement management of quarter of century precisions:
+                "2ème partie/moitié du IIème siècle" -> 150
+                "3ème quart du XXème siècle" -> 1975
+                "1er quart du 19ème siècle" -> 1800
+                etc.
+        """
+        # detect AP/AD
+        # NOTE: IN FRENCH !
+        apad_regex = re.compile(
+            r"((av\.?(ant)?)|(ap\.?(r[eè]s)?))\s?j\.?-?c\.?",
+            flags=re.IGNORECASE
+        )
+
+        # detect numeric values
+        num_values = re.compile(r"\b[IVX]+|\b\d+")
+
+        # detect if values are given in centuries
+        century = re.compile(
+            r"(\bsi[eè]cles?\b)|(\bs\.?\b)",
+            flags=re.IGNORECASE
+        )
+
+        apad = 1
+
+        # get AP/AD
+        # AP -> negative number, AD -> positive number
+        if re.search(apad_regex, datation_string):
+            # check wether it is AP or AD
+            apad = 1 if re.search(r"ap(?:r[eè]s)", datation_string) else -1
+
+        values = list()
+
+        # get all numeric values given in the string
+        matches = re.findall(num_values, datation_string)
+        if len(matches) > 0:
+            # for each value
+            for value in matches:
+                # translate to int
+                if re.match(r"[IVX]+", value):
+                    values.append(cls._roman_to_int(value))
+                else:
+                    values.append(int(value))
+
+        # check if the values are given in centuries
+        if re.search(century, datation_string):
+            # multiply each value by 100 (as each digit means a century)
+            values = [i * 100 if apad == -1 else (i - 1) * 100 for i in values]
+
+        # this is in case nothing was found
+        if len(values) == 0:
+            return 0
+
+        # here we add the sign indicated by AP/AD
+        return values[0] * apad
+
+    @classmethod
+    def _roman_to_int(cls, roman_numeral):
+        """ Summary
+            -------
+            Converts roman numerals to int
+            Entirely taken from :
+            https://www.tutorialspoint.com/roman-to-integer-in-python
+
+            Arguments
+            ---------
+            roman_numeral : str
+                string of roman numerals (eg. 'XIII')
+
+            Returns
+            -------
+            int
+                decimal value of the roman numeral
+        """
+        roman = {
+            'I':1,'V':5,'X':10,'L':50,'C':100,'D':500,'M':1000,'IV':4,
+            'IX':9,'XL':40,'XC':90,'CD':400,'CM':900
+        }
+
+        i = 0
+        num = 0
+        while i < len(roman_numeral):
+            if i+1<len(roman_numeral) and roman_numeral[i:i+2] in roman:
+                num+=roman[roman_numeral[i:i+2]]
+                i+=2
+            else:
+                num+=roman[roman_numeral[i]]
+                i+=1
+        return num

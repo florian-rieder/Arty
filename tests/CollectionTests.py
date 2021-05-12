@@ -1,6 +1,6 @@
 import unittest
 
-from api.Collection import Collection, CollectionImage
+from api.Collection import Collection, CollectionImage, CollectionUtils
 
 class TestCollectionImage(unittest.TestCase):
 
@@ -84,34 +84,31 @@ class TestCollection(unittest.TestCase):
             )
 
         # Let's define a collection to filter
-        test_coll = Collection("test", "test", [
-            test_image1, test_image2, test_image3
-        ])
+        test_list = [test_image1, test_image2, test_image3]
 
         self.assertEqual(
             [test_image1, test_image3], 
-            test_coll.filter(technique="Huile sur toile")
+            CollectionUtils.filter(test_list, technique="Huile sur toile")
         )
         self.assertEqual(
             [test_image1, test_image2, test_image3],
-            test_coll.filter(artist="Leonard")
+            CollectionUtils.filter(test_list, artist="Leonard")
         )
         self.assertEqual(
             [test_image1, test_image2],
-            test_coll.filter(artist="Leonard de Vinci")
+            CollectionUtils.filter(test_list, artist="Leonard de Vinci")
         )
         self.assertEqual(
             [test_image1, test_image3],
-            test_coll.filter(mode="all", artist="Leonard", title="Mona")
+            CollectionUtils.filter(test_list, mode="all", artist="Leonard", title="Mona")
         )
         self.assertEqual(
             [test_image1, test_image2, test_image3],
-            test_coll.filter(mode="any", artist="Leonard", title="Mona")
+            CollectionUtils.filter(test_list, mode="any", artist="Leonard", title="Mona")
         )
 
 
     def test_datation_to_numeric(self):
-        coll = Collection("test", "test")
 
         tests = {
             "III-IVe siècles": 200,
@@ -140,7 +137,7 @@ class TestCollection(unittest.TestCase):
         }
 
         for key, value in tests.items():
-            result = coll._datation_to_numeric(key)
+            result = CollectionUtils._datation_to_numeric(key)
             self.assertEqual(result, value)
 
 
@@ -167,19 +164,18 @@ class TestCollection(unittest.TestCase):
             technique="Huile sur toile"
         )
 
-        test_coll = Collection("test", "test", [
-            test_image1, test_image2, test_image3
-        ])
+
+        test_list = [test_image1, test_image2, test_image3]
 
         self.assertEqual(
             [test_image1, test_image3, test_image2],
-            test_coll.sort("artist")
+            CollectionUtils.sort(test_list, "artist")
         )
         self.assertEqual(
             [test_image1, test_image3, test_image2],
-            test_coll.sort("title")
+            CollectionUtils.sort(test_list, "title")
         )
         self.assertEqual(
             [test_image2, test_image1, test_image3],
-            test_coll.sort("datation")
+            CollectionUtils.sort(test_list, "datation")
         )

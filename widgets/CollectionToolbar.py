@@ -1,16 +1,14 @@
+from plyer import filechooser
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.popup import Popup
-from kivy.uix.dropdown import DropDown
 from kivy.logger import Logger
 import kivy.properties as kyprops
-from plyer import filechooser
 
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterDropdown import FilterDropdown
-from api.Collection import CollectionImage, Collection
+from api.Collection import CollectionUtils
 from api.Powerpoint import Powerpoint
 
 class CollectionToolbar(BoxLayout):
@@ -20,6 +18,8 @@ class CollectionToolbar(BoxLayout):
 
         Attributes
         ----------
+        selected_images
+        save_destination
 
         Methods
         -------
@@ -29,6 +29,9 @@ class CollectionToolbar(BoxLayout):
         export()
             on_press export button, exports selection to pptx
 
+        TODO
+        ----
+        Remember the list of currently displayed images
     """
     Builder.load_file('templates/CollectionToolbar.kv')
 
@@ -36,16 +39,18 @@ class CollectionToolbar(BoxLayout):
     save_destination = kyprops.ListProperty(list())
 
     def compare(self):
+        """
+            TODO: docstring
+        """
         # get selected images
         # send them to the compare screen
-
         try:
             app = App.get_running_app()
             app.SCREENS["COMPARE"].load_images(self.selected_images)
             app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='left')
         except Exception:
             Logger.exception("Please select 2 to 4 images")
-            
+
             #show popup if the wrong amount of images is selected
             popup_content = PopupMessage(message = "Please select 2 to 4 images")
             popup_window = Popup(
@@ -70,17 +75,26 @@ class CollectionToolbar(BoxLayout):
             )
         except Exception:
             Logger.exception("An error occurred when selecting save destination")
-    
-    def sorting_by(self, value):
-        app = App.get_running_app()
-        sorted_coll = app.CURRENT_COLLECTION.sort(value)
-        app.GRID.set_display_list(sorted_coll)
-    
-    def open_filter(self):
 
+    def sort_by(self, value):
+        """
+            TODO: docstring
+        """
+        # TODO: replace with CollectionToolbar current image list
+        app = App.get_running_app()
+        current_collection = app.CURRENT_COLLECTION.get_collection()
+
+        # sort the image list
+        sorted_coll = CollectionUtils.sort(current_collection, value)
+        app.GRID.set_display_list(sorted_coll)
+
+    def open_filter(self):
+        """
+            TODO: docstring
+        """
         filter_dropdown = FilterDropdown()
         mainbutton = self.ids.filter_select
-        
+
         mainbutton.bind(on_press = filter_dropdown.open)
 
         filter_dropdown.ids.filter_btn.bind(on_release = filter_dropdown.dismiss)
