@@ -1,3 +1,4 @@
+import collections
 from plyer import filechooser
 from kivy.app import App
 from kivy.lang import Builder
@@ -9,6 +10,7 @@ import kivy.properties as kyprops
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterDropdown import FilterDropdown
 from api.Collection import CollectionUtils
+from api.Collection import CollectionManager
 from api.Powerpoint import Powerpoint
 
 class CollectionToolbar(BoxLayout):
@@ -37,6 +39,24 @@ class CollectionToolbar(BoxLayout):
 
     selected_images = kyprops.ListProperty(list())
     save_destination = kyprops.ListProperty(list())
+
+    def to_home_screen(self):
+        """
+            TODO: docstring
+        """
+        app = App.get_running_app()
+        collection = app.CURRENT_COLLECTION
+        
+        CollectionManager().save(collection)
+        app.SCREEN_MANAGER.switch_to(app.SCREENS["START"], direction ='right')
+
+    def save_coll(self):
+        """
+            TODO: docstring
+        """
+        app = App.get_running_app()
+        collection = app.CURRENT_COLLECTION
+        CollectionManager().save(collection)
 
     def compare(self):
         """

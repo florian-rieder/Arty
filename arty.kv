@@ -4,21 +4,22 @@
 
 <CollectionScreen>:
     BoxLayout:
+        orientation: 'vertical'
+        
+        CollectionToolbar:
+            id: toolbar
+            height: dp(25)
+            size_hint: 1, None
+
+
         BoxLayout:
-
-            orientation: 'vertical'
-
-            CollectionToolbar:
-                id: toolbar
-                height: dp(25)
-                size_hint: 1, None
 
             ScrollView:
                 CollectionGrid:
                     id: grid
 
-        CollectionPanel:
-            id: panel
+            CollectionPanel:
+                id: panel
 
         # Button:
         #     text: 'Goto settings'
