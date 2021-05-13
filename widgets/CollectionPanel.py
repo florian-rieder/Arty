@@ -78,14 +78,21 @@ class CollectionPanel(BoxLayout):
             'notes',
         ]
 
+        # calculate height of metadataitems so the notes cell will be
+        # twice as high as the other fields
+        base_hint_y = 1 / (len(self.attributes) + 1)
+
         # generate all text fields
         for attribute in self.attributes:
-            item = MetadataItem()
+            item = MetadataItem(size_hint_y = base_hint_y)
             item.field_name = attribute
             # find a way to write a "nice" attribute name, without
             # bloating the save file
             item.ids.label.text = attribute.replace("_", " ").title()
             item.ids.text_input.text = getattr(self.current_image, attribute)
+
+            if attribute == "notes":
+                item.size_hint_y = base_hint_y * 2
 
             # add the widget
             container.add_widget(item)
