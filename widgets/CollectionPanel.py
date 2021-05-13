@@ -66,6 +66,9 @@ class CollectionPanel(BoxLayout):
         # generate text fields
         container = self.ids.metadata_container
 
+        # clear container
+        container.clear_widgets()
+
         self.attributes = [
             'artist',
             'title',

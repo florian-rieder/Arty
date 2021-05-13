@@ -440,7 +440,7 @@ class CollectionImage():
                                 metadata=config(field_name="p"), default=""
                             )
     dimensions :            Optional[str] = field(
-                                metadata=config(field_name="d"), default=""
+                                metadata=config(field_name="x"), default=""
                             )
     notes:                  Optional[str] = field(
                                 metadata=config(field_name="n"), default=""
