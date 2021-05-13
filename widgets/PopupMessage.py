@@ -1,8 +1,9 @@
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
 import kivy.properties as kyprops
 
-class PopupMessage(FloatLayout):
+class PopupMessage(Popup):
     """Summary
         -------
         Error Popup
@@ -19,5 +20,3 @@ class PopupMessage(FloatLayout):
 
     Builder.load_file('templates/PopupMessage.kv')
     message = kyprops.StringProperty("")
-
-    

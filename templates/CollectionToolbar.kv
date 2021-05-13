@@ -8,13 +8,23 @@
         size_hint: 1,1
 
         Button:
+            id: home_btn
+            text: 'Home'
+            on_release: root.to_home_screen()
+
+        Button:
+            id: save_btn
+            text: 'Save'
+            on_release: root.save_coll()
+
+        Button:
             id: compare_btn
             text: 'Compare Selection'
-            on_press: root.compare()
+            on_release: root.compare()
         Button:
             id: export_btn
             text: 'Export Selection'
-            on_press: root.export()
+            on_release: root.export()
 
         Spinner:
             id: select_sort
@@ -26,4 +36,4 @@
         Button:
             id: filter_select
             text: 'Filter'
-            on_press: root.open_filter()
+            on_release: root.open_filter()
