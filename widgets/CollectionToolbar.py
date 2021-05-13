@@ -72,16 +72,17 @@ class CollectionToolbar(BoxLayout):
             Logger.exception("Please select 2 to 4 images")
 
             #show popup if the wrong amount of images is selected
-            popup_content = PopupMessage(message = "Please select 2 to 4 images")
-            popup_window = Popup(
-                title = "Error",
-                content = popup_content,
-                size_hint = (0.3, 0.25)
-            )
+            PopupMessage(message = "Please select 2 to 4 images 111111111111111111111111111111111111111111111111111111111111111111111111111111111111").open()
+            # popup_content = PopupMessage(message = "Please select 2 to 4 images")
+            # popup_window = Popup(
+            #     title = "Error",
+            #     content = popup_content,
+            #     size_hint = (0.3, 0.25)
+            # )
 
-            popup_content.ids.popup_btn.bind(on_press = popup_window.dismiss)
+            # popup_content.ids.popup_btn.bind(on_press = popup_window.dismiss)
 
-            popup_window.open()
+            # popup_window.open()
 
     def export(self):
         """
@@ -95,6 +96,8 @@ class CollectionToolbar(BoxLayout):
             )
         except Exception:
             Logger.exception("An error occurred when selecting save destination")
+            PopupMessage(message = "An error occurred when selecting save destination").open()
+
 
     def sort_by(self, value):
         """

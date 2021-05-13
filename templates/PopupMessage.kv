@@ -2,16 +2,24 @@
 #:import kivy kivy
 
 <PopupMessage>:
+    auto_dismiss: True
+    size_hint: 0.3,0.2
+    pos_hint: {"top":0.9}
+    title: 'Error'
 
-    Label:
-        text: root.message
-        size_hint: 1, 0.6
-        valign: "middle"
-        halign: "center"
-        pos_hint: {"x":0, "top":1}
-
-    Button:
-        id: popup_btn
-        text: "ok"
-        size_hint: 1, 0.4
-        pos_hint: {"x":0, "y":0.1}
+    BoxLayout:
+        orientation: 'vertical'
+        halign: 'center'
+        size:  root.width, root.height,
+        Label:
+            id: popup_label
+            text: root.message
+            text_size: root.width, None
+            halign: 'center'
+            valign: 'middle'
+        Button:
+            id: popup_btn
+            text: "ok"
+            size_hint: 1, 0.6
+            pos_hint: {"top":0}
+            on_release: root.dismiss()
