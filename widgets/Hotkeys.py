@@ -40,9 +40,10 @@ class Hotkeys(FloatLayout):
         """
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
+        system_name = platform.system()
 
         # MacOSX hotkeys definition
-        if platform.system() == "Darwin":
+        if system_name == "Darwin":
             # "super" is the keycode for the Command key
             if "super" in self.super and keycode[1] == 's':
                 # Cmd + S -> save collection
@@ -62,7 +63,7 @@ class Hotkeys(FloatLayout):
                 return False
 
         # Windows hotkeys definition
-        if platform.system() == "Windows":
+        if system_name == "Windows":
             if 'lctrl' in self.super and keycode[1] == 's':
                 # Ctrl + S -> save collection
 

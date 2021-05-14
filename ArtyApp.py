@@ -12,6 +12,7 @@ from widgets.Hotkeys import Hotkeys
 from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
 from widgets.CollectionToolbar import CollectionToolbar
+from widgets.PopupMessage import PopupMessage
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.ComparisonScreen import ComparisonScreen
@@ -97,9 +98,9 @@ class ArtyApp(App):
             # initialize ComparisonScreen
             self.SCREENS['COMPARE'].initialize(self.PROJECT_DIRECTORY)
         except FileNotFoundError:
-            Logger.exception(
-                "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY
-            )
+            err_msg = "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY
+            PopupMessage(message=err_msg).open()
+            Logger.exception(err_msg)
             return
 
         # switch to the collection screen
@@ -114,11 +115,20 @@ class ArtyApp(App):
             -------
             When the user drops a file on the window, we add it to the
             current collection.
+
+            Arguments
+            ---------
+            _window (unused)
+                Reference to the window
+            file_path : str
+                Path to the file that was dragged on the window
         """
         # make it so that one can only drop a file if the current screen
         # is the collection screen
         if not self.SCREEN_MANAGER.current == self.SCREENS["COLLECTION"].name:
-            Logger.exception("Can only drop files on collection screen.")
+            err_msg = "Can only drop files on collection screen."
+            PopupMessage(message=err_msg).open()
+            Logger.exception(err_msg)
             return
 
         try:
@@ -126,8 +136,10 @@ class ArtyApp(App):
             self.CURRENT_COLLECTION.add_image(file_path)
             # refresh the CollectionGrid
             self.GRID.set_collection(self.CURRENT_COLLECTION)
-        except ValueError:
-            Logger.exception("The file %s couldn't be added to the collection." % file_path)
+        except ValueError as err:
+            err_msg = "The file %s couldn't be added to the collection." % file_path
+            PopupMessage(message=err_msg).open()
+            Logger.exception(err)
 
 
     def _on_request_close(self, *_args):
@@ -136,13 +148,25 @@ class ArtyApp(App):
             Method that runs when the user requests to close the
             application
         """
-        # save the metadata in the CollectionPanel, in turn saves the
-        # entire collection
+        # save the metadata in the CollectionPanel in case there are
+        # unregistered changes
         try:
             self.PANEL.save()
-            CollectionManager.save(self.CURRENT_COLLECTION)
         except AttributeError:
             Logger.exception("CollectionPanel couldn't save on exit.")
+            # return True prevents the app from closing
+            #return True
+        
+        # save the entire collection to disk.
+        CollectionManager.save(self.CURRENT_COLLECTION)
+
+        return False
 
     def on_pause(self):
+        """
+            Method called when the app is in pause mode (the user
+            has minimized the window or moved it to the background)
+            Just to be sure, we'll save the collection at that moment.
+        """
+        CollectionManager.save(self.CURRENT_COLLECTION)
         return True

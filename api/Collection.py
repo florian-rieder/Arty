@@ -216,7 +216,8 @@ class CollectionManager():
     def __create_meta(cls, path):
         path = os.path.join(path, cls.META_FILENAME)
         open(path, "a").close()
-### end class CollectionManager()
+
+### end class CollectionManager
 
 
 @dataclass_json
@@ -365,8 +366,7 @@ class Collection():
 
         return os.path.join(self.work_directory, collection_image.filename)
 
-### end class Collection()
-
+### end class Collection
 
 
 @dataclass_json
@@ -484,7 +484,7 @@ class CollectionImage():
         """
         return self.filename == other.filename
 
-### end class CollectionImage()
+### end class CollectionImage
 
 
 class CollectionUtils():
@@ -760,4 +760,4 @@ class CollectionUtils():
                 i+=1
         return num
 
-### end class CollectionUtils()
+### end class CollectionUtils
