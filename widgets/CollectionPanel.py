@@ -1,5 +1,8 @@
+"""
+    Panel for displaying a preview of an image and edit its metadata
+"""
+
 import os
-import json
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.logger import Logger
@@ -112,10 +115,25 @@ class CollectionPanel(BoxLayout):
 
 
     def set_image(self, collection_image):
+        """ Summary
+            -------
+            Interface for opening an image in the CollectionPanel
+
+            Arguments
+            ---------
+            collection_image : CollectionImage
+                The image to display in the CollectionImage
+            
+            Raises
+            ------
+            TypeError
+                if the collection_image is of the wrong type
+        """
         # try to save when the image is changed. Doesn't work on the
         # first try, because of the default image, but we catch it.
         if not isinstance(collection_image, CollectionImage):
             raise TypeError("collection_image must be of type CollectionImage")
+
         try:
             self.save()
         except Exception:
@@ -152,11 +170,12 @@ class CollectionPanel(BoxLayout):
             # save the value to memory
             setattr(self.current_image, metadata_item.field_name, field_value)
 
+        # update the image in the collection (in RAM).
         app = App.get_running_app()
         app.CURRENT_COLLECTION.update_image(self.current_image)
 
 
-    def on_current_image(self, instance, image):
+    def on_current_image(self, _instance, image):
         """ Summary
             -------
             Callback called when the current_image property is updated.
@@ -165,7 +184,7 @@ class CollectionPanel(BoxLayout):
 
         # update preview image
         self.ids.preview.source = self.get_image_source()
-        
+
         # updates text fields values
         for metadata_item in self.ids.metadata_container.children:
             # read the value from memory

@@ -1,12 +1,14 @@
 """ Arty is an image viewer for Art History
 """
 import os
+import platform
 
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 
+from widgets.Hotkeys import Hotkeys
 from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
 from widgets.CollectionToolbar import CollectionToolbar
@@ -29,6 +31,9 @@ class ArtyApp(App):
     PANEL = None
 
     def build(self):
+        Logger.info("Platform: System: %s" % platform.system())
+        Logger.info("Platform: Release: %s" % platform.release())
+
         self.icon = "resources/icon.png"
 
         # bind methods to kivy events
@@ -41,6 +46,10 @@ class ArtyApp(App):
         start_screen      =     StartScreen(name="Start")
         collection_screen =     CollectionScreen(name='Collection')
         comparison_screen =     ComparisonScreen(name="Compare")
+
+        # add hotkeys manager, we're going to use it only in the
+        # collection screen for now
+        collection_screen.add_widget(Hotkeys())
 
         # reference important widgets
         self.GRID       =       collection_screen.ids.grid
@@ -131,6 +140,7 @@ class ArtyApp(App):
         # entire collection
         try:
             self.PANEL.save()
+            CollectionManager.save(self.CURRENT_COLLECTION)
         except AttributeError:
             Logger.exception("CollectionPanel couldn't save on exit.")
 

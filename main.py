@@ -1,4 +1,7 @@
+import platform
+
 from kivy.config import Config
+from kivy.logger import Logger
 
 from ArtyApp import ArtyApp
 
@@ -36,5 +39,4 @@ if __name__ == '__main__':
     #======================= End Configuration =======================#
 
     # run the app
-
     ArtyApp().run()

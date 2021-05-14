@@ -47,7 +47,7 @@ class CollectionToolbar(BoxLayout):
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
         
-        CollectionManager().save(collection)
+        CollectionManager.save(collection)
         app.SCREEN_MANAGER.switch_to(app.SCREENS["START"], direction ='right')
 
     def save_coll(self):
@@ -69,10 +69,8 @@ class CollectionToolbar(BoxLayout):
             app.SCREENS["COMPARE"].load_images(self.selected_images)
             app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='left')
         except Exception:
-            Logger.exception("Please select 2 to 4 images")
-
             #show popup if the wrong amount of images is selected
-            PopupMessage(message = "Please select 2 to 4 images 111111111111111111111111111111111111111111111111111111111111111111111111111111111111").open()
+            PopupMessage(message = "Please select 2 to 4 images").open()
             # popup_content = PopupMessage(message = "Please select 2 to 4 images")
             # popup_window = Popup(
             #     title = "Error",
@@ -86,8 +84,11 @@ class CollectionToolbar(BoxLayout):
 
     def export(self):
         """
-        Call plyer filechooser API to run a filechooser Activity.
+            Call plyer filechooser API to run a filechooser Activity.
         """
+        if len(self.selected_images) == 0:
+            PopupMessage(message="Please select at least one image").open()
+            return
         # 1. select a file to save to
         try:
             filechooser.save_file(
@@ -95,8 +96,12 @@ class CollectionToolbar(BoxLayout):
                 #filters=["*pptx"] # crashes on replace existing file...
             )
         except Exception:
-            Logger.exception("An error occurred when selecting save destination")
-            PopupMessage(message = "An error occurred when selecting save destination").open()
+            Logger.exception(
+                "An error occurred when selecting save destination"
+            )
+            PopupMessage(
+                message = "An error occurred when selecting save destination"
+            ).open()
 
 
     def sort_by(self, value):

@@ -38,6 +38,9 @@ class TabTextInput(TextInput):
 
 
     def _keyboard_on_key_down(self, window, keycode, text, modifiers):
+        """
+            Handles keystrokes, listens to tab and enter
+        """
         key, _key_str = keycode
         # 9 and 13 are the key codes for tab and enter.
         if key in (9, 13) and self.next is not None:

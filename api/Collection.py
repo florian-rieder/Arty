@@ -1,4 +1,5 @@
-""" Collection module
+""" 
+    Collection module
     Handles the datastructure of a collection, and saving and loading of
     metadata in a project folder.
 """
@@ -11,6 +12,7 @@ import builtins
 from typing import Optional
 from dataclasses import dataclass, field
 
+from unidecode import unidecode
 from dataclasses_json import config, dataclass_json
 from kivy.logger import Logger
 
@@ -214,6 +216,7 @@ class CollectionManager():
     def __create_meta(cls, path):
         path = os.path.join(path, cls.META_FILENAME)
         open(path, "a").close()
+### end class CollectionManager()
 
 
 @dataclass_json
@@ -246,6 +249,10 @@ class Collection():
             update an image in the collection, if the image doesn't
             exist, throw an exception.
     """
+    # the whole field(metadata=config(field_name=...)) shenanigans are
+    # there to create aliases for the attribute's name in order for the
+    # JSON file generated to save metadata to take less space on the
+    # user's disk.
     work_directory :    str = field(
                             metadata=config(field_name="w"), default=""
                         )
@@ -265,7 +272,6 @@ class Collection():
     def set_collection(self, coll_list):
         """setter for the collection list"""
         self.collection = coll_list
-        CollectionManager.save(self)
 
 
     def add_image(self, source):
@@ -313,7 +319,6 @@ class Collection():
             )
 
         self.collection.append(new_image)
-        CollectionManager.save(self)
 
         return new_image
 
@@ -339,8 +344,6 @@ class Collection():
             if collection_image == image:
                 self.collection[idx] = collection_image
 
-        CollectionManager.save(self)
-
 
     def get_absolute_path(self, collection_image):
         """ Summary
@@ -362,6 +365,7 @@ class Collection():
 
         return os.path.join(self.work_directory, collection_image.filename)
 
+### end class Collection()
 
 
 
@@ -416,7 +420,10 @@ class CollectionImage():
         - Other fields ?
         - Tag system ?
     """
-
+    # the whole field(metadata=config(field_name=...)) shenanigans are
+    # there to create aliases for the attribute's name in order for the
+    # JSON file generated to save metadata to take less space on the
+    # user's disk.
     filename :              str = field(metadata=config(field_name="f"))
     title :                 Optional[str] = field(
                                 metadata=config(field_name="t"), default=""
@@ -477,6 +484,8 @@ class CollectionImage():
         """
         return self.filename == other.filename
 
+### end class CollectionImage()
+
 
 class CollectionUtils():
     """ Summary
@@ -527,7 +536,6 @@ class CollectionUtils():
             ----
             Add a proper method for filtering by datation, such as "get
             all artworks in a range of dates (e.g. 1000-1200)"
-            Ignore accents
         """
         # type check our list
         if not all(isinstance(i, CollectionImage) for i in img_list):
@@ -559,8 +567,8 @@ class CollectionUtils():
                 # (with the in keyword)
                 [
                     # check if the value we're looking for is in this
-                    # image's value (case insensitive)...
-                    value.lower() in getattr(image, attr).lower()
+                    # image's value (accent and case insensitive)...
+                    unidecode(value).lower() in unidecode(getattr(image, attr)).lower()
                     # ...for each attribute we're filtering for...
                     for attr, value in kwargs.items()
                     # ...but only if the value we're filtering with is
@@ -599,11 +607,6 @@ class CollectionUtils():
             ----
             Does it make sense to sort by multiple arguments ? If so,
             how does one do it ?
-            Doesn't really work for dates though (if there are cases
-            such as "c. 525" or "IIe siècle"). But the only solution to
-            this, while allowing freedom for the user would be to create
-            a whole processing engine to convert those notations to
-            homogenous numeric values that we could then sort.
         """
         # type check our list
         if not all(isinstance(i, CollectionImage) for i in img_list):
@@ -654,6 +657,7 @@ class CollectionUtils():
                            IIe s. AD -> 100
                            IIe s. AP -> -200
                 year: no processing
+
             Returns
             -------
             int
@@ -666,7 +670,8 @@ class CollectionUtils():
 
             TODO
             ----
-            Implement management of quarter of century precisions:
+            Implement management of quarter and half of century
+            precisions:
                 "2ème partie/moitié du IIème siècle" -> 150
                 "3ème quart du XXème siècle" -> 1975
                 "1er quart du 19ème siècle" -> 1800
@@ -679,7 +684,7 @@ class CollectionUtils():
             flags=re.IGNORECASE
         )
 
-        # detect numeric values
+        # detect numeric values (case sensitive)
         num_values = re.compile(r"\b[IVX]+|\b\d+")
 
         # detect if values are given in centuries
@@ -754,3 +759,5 @@ class CollectionUtils():
                 num+=roman[roman_numeral[i]]
                 i+=1
         return num
+
+### end class CollectionUtils()
