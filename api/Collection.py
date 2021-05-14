@@ -455,8 +455,7 @@ class CollectionImage():
 
     def to_reference(self):
         """ Formats the image metadata according to the guidelines at :
-            https://www.unil.ch/files/live/sites/hart/files/shared
-            /Espace_Etudiants/GPS_Guide_du_proseminaire.pdf
+            https://www.unil.ch/files/live/sites/hart/files/shared/Espace_Etudiants/GPS_Guide_du_proseminaire.pdf
 
             NOTE
             ----

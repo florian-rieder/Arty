@@ -12,7 +12,6 @@ import kivy.properties as kyprops
 
 from api.Collection import CollectionImage
 from widgets.ImagePreview import ImagePreview
-from widgets.TabTextInput import TabTextInput
 from widgets.MetadataItem import MetadataItem
 
 
@@ -72,7 +71,7 @@ class CollectionPanel(BoxLayout):
         # clear container
         container.clear_widgets()
 
-        self.attributes = [
+        attributes = [
             'artist',
             'title',
             'datation',
@@ -86,10 +85,10 @@ class CollectionPanel(BoxLayout):
 
         # calculate height of metadataitems so the notes cell will be
         # twice as high as the other fields
-        base_hint_y = 1 / (len(self.attributes) + 1)
+        base_hint_y = 1 / (len(attributes) + 1)
 
         # generate all text fields
-        for attribute in self.attributes:
+        for attribute in attributes:
             item = MetadataItem(size_hint_y = base_hint_y)
             item.field_name = attribute
             # find a way to write a "nice" attribute name, without
@@ -99,19 +98,11 @@ class CollectionPanel(BoxLayout):
 
             if attribute == "notes":
                 item.size_hint_y = base_hint_y * 2
+                item.ids.text_input.multiline = True
 
             # add the widget
             container.add_widget(item)
             self.tabs[attribute] = item
-
-        # link fields together so we can navigate with the Tab key
-        # this links each field to the next one, and the last one to the
-        # first (using the fact that array[-1] gives the last item of
-        # the list)
-        for idx, attribute in enumerate(reversed(self.attributes)):
-            text_input = self.tabs[attribute].ids.text_input
-            next_input = self.tabs[self.attributes[idx - 1]].ids.text_input
-            text_input.set_next(next_input)
 
 
     def set_image(self, collection_image):
