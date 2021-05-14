@@ -156,7 +156,7 @@ class ArtyApp(App):
             Logger.exception("CollectionPanel couldn't save on exit.")
             # return True prevents the app from closing
             #return True
-        
+
         # save the entire collection to disk.
         CollectionManager.save(self.CURRENT_COLLECTION)
 

@@ -2,8 +2,7 @@ import os
 
 import PIL
 from pptx import Presentation
-from pptx.util import Inches, Emu
-from pptx.enum.text import PP_ALIGN
+from pptx.util import Cm
 
 from api.Collection import CollectionImage
 
@@ -26,9 +25,9 @@ class Powerpoint():
         """ Summary
             -------
             Creates a presentation with all the CollectionImages in a
-            list 
+            list
         """
-        if not all([isinstance(i, CollectionImage) for i in images_list]):
+        if not all(isinstance(i, CollectionImage) for i in images_list):
             raise TypeError("images_list must contain only CollectionImages")
         
         # create presentation
@@ -42,30 +41,145 @@ class Powerpoint():
             slide = prs.slides.add_slide(blank_slide_layout)
 
             # create image
-            # TODO: max size and centered
-            image_open = PIL.Image.open(img_path)
+            params = cls._get_layout_params(img_path)
 
-            # this does not center the image...
-            #left = int((prs.slide_width - image_open.width) / 2)
-            left = Inches(-0.5)
-            top = Inches(0.5)
-            height = Inches(6)
+            left    =   params["image"]["left"]
+            top     =   params["image"]["top"]
+            height  =   params["image"]["height"]
+
             slide.shapes.add_picture(img_path, left, top, height=height)
 
-            # create textbox
-            # TODO: center bottom
-            left = Inches(0)
-            top = Inches(6.6)
-            width = prs.slide_width
-            height = Inches(0.5)
-            txBox = slide.shapes.add_textbox(left, top, width, height)
-            tf = txBox.text_frame
-            tf.alignment = PP_ALIGN.CENTER # align center, doesn't work either
-            tf.text = image.to_reference()
+            # create text box
+            left    =   params["text"]["left"]
+            top     =   params["text"]["top"]
+            height  =   params["text"]["height"]
+            width   =   params["text"]["width"]
+
+            text_box = slide.shapes.add_textbox(left, top, width, height)
+
+            text_frame = text_box.text_frame
+            text_frame.word_wrap = True
+            text_frame.clear()
+            text_frame.paragraphs[0].text = image.to_reference()
+
+            # autofit text to the text box
+            # text_frame.fit_text(
+            #     font_family='Arial',
+            #     max_size=18,
+            #     bold=False,
+            #     italic=False
+            # )
 
         prs.save(output_path)
 
+    @staticmethod
+    def _get_layout_params(img_path, margin=1, textbox_height=1.5):
+        """ Summary
+            -------
+            Calculates the top, left, and height parameters of our image
+            and our text box to be given to the presentation.
+
+            Arguments
+            ---------
+            img_path : str
+                Absolute path to our image
+            margin : float
+                Margin size in cm
+            textbox_height : float
+                Height of the legend text box in cm
+            
+            Returns
+            -------
+            dict
+                dict containing the parameters top, left, and height for
+                the image and top, left, height and width for the text
+                box.
+                Values are in python-pptx Cm()
+            
+            NOTE
+            ----
+            All calculations below are done in centimeters !
+            The actual size of the image in pixels is irrelevant:
+            the only thing we need to know to determine the layout is
+            its aspect ratio.
+        """
+        # dummy presentation to get access to slide width and height
+        prs = Presentation()
+
+        image_open = PIL.Image.open(img_path)
+        image_width, image_height = image_open.size
+        # get the image aspect ratio
+        image_ratio = image_width / image_height
+
+        # canvas is the slide minus the margin and space for the text
+        # values in cm
+        canvas_width = prs.slide_width.cm - margin * 2
+        canvas_height = prs.slide_height.cm - margin * 3 - textbox_height
+        # get the canvas aspect ratio
+        canvas_ratio = canvas_width / canvas_height
+
+        if image_ratio < canvas_ratio:
+            # size by height
+            height = canvas_height
+            width = height * image_ratio
+
+        else:
+            # size by width
+            width = canvas_width
+            height = width / image_ratio
+
+        top = margin + (canvas_height - height) / 2
+        left = (prs.slide_width.cm - width) / 2
+
+        params = {
+            "image": {
+                "left"  : Cm(left),
+                "top"   : Cm(top),
+                "height": Cm(height),
+            },
+            "text": {
+                "left"  : Cm(margin),
+                "top"   : Cm(margin * 2 + canvas_height),
+                "width" : Cm(canvas_width),
+                "height": Cm(textbox_height),
+            }
+            
+        }
+
+        return params
+
 
 if __name__ == "__main__":
-    images = [CollectionImage(filename="botticelli-venus.png", artist="Botticelli", title="La Naissance de Vénus", year="1567", conservation_site="Musée du Louvre, Paris")]
-    Powerpoint.create_presentation(images, "/Users/frieder/Documents/images", "test.pptx")
+    ### Tests 
+    images = [
+        CollectionImage(
+            filename="Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.JPG",
+            artist="Sandro Botticelli",
+            title="La Naissance de Vénus Mais avec un très long titre en espérant que ça va wrap",
+            datation="c. 1485",
+            technique="Tempera sur toile",
+            conservation_site="Gallerie Uffizi, Florence"
+        ),
+        CollectionImage(
+            filename="Botticelli_Venus.jpg",
+            artist="Sandro Botticelli",
+            title="La Naissance de Vénus Mais avec un très long titre en espérant que ça va wrap",
+            datation="c. 1485",
+            technique="Tempera sur toile",
+            conservation_site="Gallerie Uffizi, Florence"
+        ),
+        CollectionImage(
+            filename="Strada_south_interior_facade.jpg",
+            artist="Giulio Romano",
+            title="Façade sud de la cour intérieure",
+            datation="c. 1516",
+            technique="Gravure",
+            conservation_site="Palais du Te, Mantoue"
+        )
+    ]
+
+    Powerpoint.create_presentation(
+        images,
+        "/Users/frieder/Documents/images",
+        "test.pptx"
+    )
