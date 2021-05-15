@@ -11,6 +11,7 @@ import shutil
 import builtins
 from typing import Optional
 from dataclasses import dataclass, field
+from widgets.PopupMessage import PopupMessage
 
 from unidecode import unidecode
 from dataclasses_json import config, dataclass_json
@@ -131,6 +132,10 @@ class CollectionManager():
             Logger.exception(
                 "Couldn't retrieve collection title from .collection"
             )
+
+            PopupMessage(
+                message = "Couldn't retrieve collection title"
+            ).open
 
         # retrieve the collection list
         collection = [
@@ -524,8 +529,8 @@ class CollectionUtils():
             filtered_list : list(CollectionImages)
                 List filtered according to the given parameters
 
-            Example
-            -------
+            Examples
+            --------
             filtered_collection = collection.filter(
                 mode="all",
                 title="Mona Lisa", artist="Leonard"
@@ -602,8 +607,8 @@ class CollectionUtils():
             sorted_collection : list(CollectionImage)
                 sorted collection
 
-            NOTE
-            ----
+            Notes
+            -----
             Does it make sense to sort by multiple arguments ? If so,
             how does one do it ?
         """

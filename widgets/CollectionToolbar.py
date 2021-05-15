@@ -39,7 +39,13 @@ class CollectionToolbar(BoxLayout):
 
     selected_images = kyprops.ListProperty(list())
     save_destination = kyprops.ListProperty(list())
-
+    displayed_images = kyprops.ListProperty(list())
+    sorting_attributes = kyprops.ListProperty(
+                            ['Title [A-Z]', 'Title [Z-A]',
+                            'Artist [A-Z]','Artist [Z-A]',
+                            'Datation Increasing','Datation Decreasing']
+                            )
+    
     def to_home_screen(self):
         """
             TODO: docstring
@@ -109,12 +115,28 @@ class CollectionToolbar(BoxLayout):
             TODO: docstring
         """
         # TODO: replace with CollectionToolbar current image list
+        
         app = App.get_running_app()
-        current_collection = app.CURRENT_COLLECTION.get_collection()
-
+        
+        if len(self.displayed_images) == 0:
+            self.displayed_images = app.CURRENT_COLLECTION.get_collection()
+        
+        val_to_sort = value.split()
         # sort the image list
-        sorted_coll = CollectionUtils.sort(current_collection, value)
-        app.GRID.set_display_list(sorted_coll)
+        if val_to_sort[1] == '[A-Z]' or 'Increasing':
+            print(val_to_sort[1])
+            self.displayed_images = CollectionUtils.sort(
+                                            self.displayed_images,
+                                            val_to_sort[0].lower()
+                                            )
+        else:
+            print(val_to_sort[1])
+            self.displayed_images = CollectionUtils.sort(
+                                            self.displayed_images,
+                                            val_to_sort[0].lower(),
+                                            reverse= True
+                                            )
+        app.GRID.set_display_list(self.displayed_images)
 
     def open_filter(self):
         """
