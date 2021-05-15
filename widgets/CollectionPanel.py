@@ -128,9 +128,14 @@ class CollectionPanel(BoxLayout):
         try:
             self.save()
         except Exception:
-            Logger.exception(
-                "Arty: Couldn't save %s" % self.current_image.filename
-        )
+            # For some obscure reason, this particular call to the
+            # logger makes the MacOSX build crash.
+
+            # Logger.exception(
+            #     "Arty: Couldn't save %s" % self.current_image.filename
+            # )
+
+            pass
 
         self.current_image = collection_image
 

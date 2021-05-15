@@ -1,3 +1,4 @@
+import os
 import platform
 
 from kivy.config import Config
@@ -18,6 +19,7 @@ from ArtyApp import ArtyApp
 
 if __name__ == '__main__':
     #reset()
+    log_dir = os.path.join(os.path.expanduser("~/Documents"), "Arty", "logs")
 
     #========================= Configuration =========================#
 
@@ -29,6 +31,11 @@ if __name__ == '__main__':
 
     # prevent quitting when ESCAPE is pressed
     Config.set('kivy',      'exit_on_escape',   '0')
+
+    # logging config: we send the logs to our own folder
+    Config.set('kivy',      'log_dir',          log_dir)
+    Config.set('kivy',      'log_name',         r'arty_%y-%m-%d_%_.txt')
+    Config.set('kivy',      'log_maxfiles',     5)
 
     # prevent red dots on right click
     Config.set('input',     'mouse',            'mouse, disable_multitouch')

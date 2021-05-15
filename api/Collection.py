@@ -524,8 +524,8 @@ class CollectionUtils():
             filtered_list : list(CollectionImages)
                 List filtered according to the given parameters
 
-            Example
-            -------
+            Examples
+            --------
             filtered_collection = collection.filter(
                 mode="all",
                 title="Mona Lisa", artist="Leonard"
@@ -602,8 +602,8 @@ class CollectionUtils():
             sorted_collection : list(CollectionImage)
                 sorted collection
 
-            NOTE
-            ----
+            Notes
+            -----
             Does it make sense to sort by multiple arguments ? If so,
             how does one do it ?
         """
