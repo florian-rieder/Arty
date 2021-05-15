@@ -5,6 +5,7 @@ from kivy.logger import Logger
 
 from api.Collection import Collection
 from widgets.CollectionGridImage import CollectionGridImage
+from widgets.PopupMessage import PopupMessage
 
 class CollectionGrid(GridLayout):
     """
@@ -76,3 +77,5 @@ class CollectionGrid(GridLayout):
                 Logger.exception(
                     'CollectionGrid: Unable to load <%s>' % collection_image
                 )
+                PopupMessage(
+                    message = "Unable to load <%s>" % collection_image).open()

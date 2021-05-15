@@ -11,6 +11,7 @@ import shutil
 import builtins
 from typing import Optional
 from dataclasses import dataclass, field
+from widgets.PopupMessage import PopupMessage
 
 from unidecode import unidecode
 from dataclasses_json import config, dataclass_json
@@ -131,6 +132,10 @@ class CollectionManager():
             Logger.exception(
                 "Couldn't retrieve collection title from .collection"
             )
+
+            PopupMessage(
+                message = "Couldn't retrieve collection title"
+            ).open
 
         # retrieve the collection list
         collection = [
