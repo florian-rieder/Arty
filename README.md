@@ -22,7 +22,7 @@ To run the application, use `python main.py`
 
 # Building the application
 1. Create a `main.spec` file at the root of this repository and paste the appropriate content depending on your OS.
-2. Replace the `pathex` and `Tree` where appropriate with the path to this repository on your machine.
+2. Replace placeholders where appropriate with the path to this repository on your machine.
 3. Then run the command `pyinstaller main.spec` to build the executable.
 
 ## MacOS
@@ -78,14 +78,18 @@ app = BUNDLE(coll,
 ```
 # -*- mode: python ; coding: utf-8 -*-
 
+from kivy_deps import sdl2, glew
+
 block_cipher = None
 
-from kivy_deps import sdl2, glew
+added_files = [
+    ('C:\\path\\to\\this\\repo\\venv\\Lib\\site-packages\\pptx\\templates\\default.pptx', 'pptx\\templates')
+]
 
 a = Analysis(['main.py'],
              pathex=['C:\\path\\to\\this\\repo'],
              binaries=[],
-             datas=[],
+             datas=added_files,
              hiddenimports=["plyer.platforms.win.filechooser"],
              hookspath=[],
              runtime_hooks=[],
