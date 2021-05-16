@@ -179,3 +179,7 @@ class TestCollection(unittest.TestCase):
             [test_image2, test_image1, test_image3],
             CollectionUtils.sort(test_list, "datation")
         )
+        self.assertEqual(
+            [test_image2, test_image3, test_image1],
+            CollectionUtils.sort(test_list, "artist", reverse=True)
+        )

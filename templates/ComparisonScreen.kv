@@ -2,9 +2,12 @@
 #:import kivy kivy
 
 <ComparisonScreen>:
-    orentation : 'horizontal'
+    #orentation : 'horizontal'
+    
+    BoxLayout:
+        id: layout_container
 
-<Layout2>:   
+<Layout2>: 
     BoxLayout:
         id: layout_2
         size: root.width, root.height
@@ -18,6 +21,14 @@
             allow_strech : True
             size_hint_y: 1
             keep_ratio : True
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+        Button:
+            text: 'Back'
+            size_hint: None, None
+            size: dp(130), dp(50)
+            on_release: root.parent.parent.on_back_released()
 
 <Layout3>:
     BoxLayout:    
@@ -35,6 +46,14 @@
             id : image_3
             allow_strech : True
             keep_ratio : True
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+        Button:
+            text: 'Back'
+            size_hint: None, None
+            size: dp(130), dp(50)
+            on_release: root.parent.parent.on_back_released()
            
 <Layout4>:
     GridLayout:
@@ -57,3 +76,11 @@
             id : image_4
             allow_strech : True
             keep_ratio : True
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'top'
+        Button:
+            text: 'Back'
+            size_hint: None, None
+            size: dp(130), dp(50)
+            on_release: root.parent.parent.on_back_released()
