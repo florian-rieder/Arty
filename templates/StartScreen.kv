@@ -2,9 +2,10 @@
 #:import kivy kivy
 
 <StartScreen>:
+    # change the background color to white
     canvas.before:
         Color:
-            rgba: 1, 1, 1, 1
+            rgba: 1, 1, 1, 0.2
         Rectangle:
             pos: self.pos
             size: self.size
@@ -26,6 +27,7 @@
             source: 'resources/icon_alpha.png'
             size_hint_y: 1
             size: dp(150), dp(150)
+
             
         Label:
             # canvas.before:
@@ -39,7 +41,7 @@
             halign: 'center'
             valign: 'middle'
             font_size: sp(30)
-            color: 0, 0, 0, 0.6
+            color: 1, 1, 1, 1
 
         FileChoose:
             pos_hint: {'center_x': 0.5}

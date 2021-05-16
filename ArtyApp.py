@@ -150,15 +150,16 @@ class ArtyApp(App):
         """
         # save the metadata in the CollectionPanel in case there are
         # unregistered changes
-        try:
-            self.PANEL.save()
-        except AttributeError:
-            Logger.exception("CollectionPanel couldn't save on exit.")
-            # return True prevents the app from closing
-            #return True
+        if self.CURRENT_COLLECTION:
+            try:
+                self.PANEL.save()
+            except AttributeError:
+                Logger.exception("CollectionPanel couldn't save on exit.")
+                # return True prevents the app from closing
+                #return True
 
-        # save the entire collection to disk.
-        CollectionManager.save(self.CURRENT_COLLECTION)
+            # save the entire collection to disk.
+            CollectionManager.save(self.CURRENT_COLLECTION)
 
         return False
 

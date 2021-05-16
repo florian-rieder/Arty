@@ -2,7 +2,12 @@
 #:import kivy kivy
 
 <ComparisonScreen>:
-    #orentation : 'horizontal'
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
     
     BoxLayout:
         id: layout_container
