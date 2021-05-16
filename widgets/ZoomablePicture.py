@@ -29,6 +29,7 @@ class ZoomablePicture(ScatterPlane):
     source = kyprops.StringProperty("")
     image_width = kyprops.NumericProperty(0)
     image_height = kyprops.NumericProperty(0)
+    is_zoomed = False
 
     def __init__(self, **kwargs):
         super(ZoomablePicture, self).__init__(**kwargs)
@@ -56,14 +57,14 @@ class ZoomablePicture(ScatterPlane):
                 if touch.button == 'scrollup':
                     # unzoom
                     if self.scale > 1:
-                        self.parent.auto_dismiss = False
                         mat = Matrix().scale(.9, .9, .9)
                         self.apply_transform(mat, anchor=touch.pos)
                     else:
                         # move the image back to the center of the
-                        # screen when it reaches a scale of < 1
+                        # screen when it reaches a scale of <= 1
                         self.scale = 1
                         self.center = Window.center
+
                 elif touch.button == 'scrolldown':
                     # zoom
                     if self.scale < 10:

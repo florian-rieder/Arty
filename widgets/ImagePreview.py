@@ -36,7 +36,8 @@ class ImagePreview(ButtonBehavior, Image):
         large_view = ModalView(
             size_hint=(None, None),
             size=(modal_size),
-            background_color=(0,0,0,0)
+            background_color=(0,0,0,0),
+            auto_dismiss=True
         )
 
         large_view.add_widget(ZoomablePicture(
@@ -103,12 +104,19 @@ class ImagePreview(ButtonBehavior, Image):
 
 
     def _on_large_view_dismissed(self, instance):
-        """
+        """ Summary
+            -------
             Callback to intercept the large view modal on_dismiss and
             prevent closing it if the image is zoomed.
             (Prevents unwanted closing of the image when trying to move
             it and clicking out of the borders of the modal, but not of
             the image, but also prevents closing it using escape...)
+
+            Notes
+            -----
+            There is no way of differenciating a dismiss from clicking
+            outside of the modal, or if escape has been pressed in kivy.
+            Workaround is yet to be found.
         """
         # prevent closing the modal if the image is zoomed
         if instance.children[0].scale > 1:
