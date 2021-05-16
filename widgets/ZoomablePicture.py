@@ -62,7 +62,6 @@ class ZoomablePicture(ScatterPlane):
                     else:
                         # move the image back to the center of the
                         # screen when it reaches a scale of < 1
-                        self.parent.auto_dismiss = True
                         self.scale = 1
                         self.center = Window.center
                 elif touch.button == 'scrolldown':
