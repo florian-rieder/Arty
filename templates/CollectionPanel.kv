@@ -4,6 +4,13 @@
 <CollectionPanel>:
     orientation: 'vertical'
 
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.9
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     BoxLayout:
         ImagePreview:
             id: preview
