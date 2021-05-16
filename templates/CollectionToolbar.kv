@@ -29,7 +29,7 @@
         Spinner:
             id: select_sort
             text: 'Sort by:'
-            values: root.sorting_attributes#['Title [A-Z]', 'Title [Z-A]','Artist [A-Z]','Artist [Z-A]','Datation Increasing','Datation Decreasing']
+            values: root.sorting_attributes
             on_text: root.sort_by(select_sort.text)
         
         Button:
