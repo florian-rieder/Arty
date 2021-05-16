@@ -1,4 +1,4 @@
-rmdir /s /q ./dist
-rmdir /s /q ./build
+rmdir /s .\dist
+rmdir /s .\build
 
 pyinstaller main.spec
