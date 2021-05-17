@@ -1,5 +1,7 @@
+#pylint: disable=invalid-name
 """
     Collection module
+    -----------------
     Handles the datastructure of a collection, and saving and loading of
     metadata in a project folder.
 """
@@ -145,7 +147,7 @@ class CollectionManager():
         # retrieve the collection list
         collection = [
             # cast each object in the JSON list to a CollectionImage
-            # pylint says it's an error. Let's just say I disagree
+            # pylint: disable=no-member
             CollectionImage.from_dict(item) for item in coll_dict["c"]
         ]
 
@@ -381,13 +383,17 @@ class Collection():
             ---------
             collection_image: CollectionImage
                 the image to update
+
             Raises
             ------
             Exception
                 If the image to update doesn't exist in the collectin
         """
         if collection_image not in self.collection:
-            raise Exception("Cannot update an image that doesn't exist in the collection.")
+            raise Exception(
+                "Cannot update an image that doesn't exist in the collection."
+            )
+
         for idx, image in enumerate(self.collection):
             if collection_image == image:
                 self.collection[idx] = collection_image
@@ -409,13 +415,16 @@ class Collection():
                 absolute path to the image file
         """
         if not isinstance(collection_image, CollectionImage):
-            raise ValueError("collection_image must be of type CollectionImage")
+            raise ValueError(
+                "collection_image must be of type CollectionImage"
+            )
 
         return os.path.join(self.work_directory, collection_image.filename)
 
 ### end class Collection
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass_json
 @dataclass
 class CollectionImage():
@@ -615,15 +624,14 @@ class CollectionUtils():
                     # check if the value we're looking for is in this
                     # image's value (accent and case insensitive)...
                     unidecode(value).lower() in unidecode(getattr(image, attr)).lower()
+                    # ...but only if the attribute is filled in the
+                    # current image
+                    if getattr(image, attr) != "" else False
                     # ...for each attribute we're filtering for...
                     for attr, value in kwargs.items()
-                    # ...but only if the value we're filtering with is
-                    # not empty, and the attribute is filled in the
-                    # current image
-                    # TODO: find out why an image with an empty field is
-                    # retained when I specifically try to prevent it
-                    # here...
-                    if value.strip() != "" and getattr(image, attr) != ""
+                    # but only if we are actually filtering for that
+                    # attribute
+                    if value.strip() != ""
                 ]
             )
         ]

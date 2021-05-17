@@ -48,6 +48,9 @@ class Hotkeys(FloatLayout):
             if "super" in self.super and keycode[1] == 's':
                 # Cmd + S -> save collection
 
+                if not collection:
+                    return False
+
                 # save the contents of the panel, in case there are
                 # unregistered modifications
                 app.PANEL.save()
@@ -66,6 +69,9 @@ class Hotkeys(FloatLayout):
         if system_name == "Windows":
             if 'lctrl' in self.super and keycode[1] == 's':
                 # Ctrl + S -> save collection
+
+                if not collection:
+                    return False
 
                 app.PANEL.save()
                 CollectionManager.save(collection)

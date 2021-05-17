@@ -1,3 +1,11 @@
+#pylint: disable=invalid-name
+"""
+    Powerpoint module
+    -----------------
+    Interface for Arty to use the python-pptx library in order to
+    generate Powerpoint presentations.
+"""
+
 import os
 
 import PIL
@@ -6,6 +14,7 @@ from pptx.util import Cm
 
 from api.Collection import CollectionImage
 
+#pylint: disable=too-few-public-methods
 class Powerpoint():
     """ Summary
         -------
@@ -20,23 +29,34 @@ class Powerpoint():
         to_slide(image)
             Creates a Powerpoint slide from a CollectionImage
     """
+
     @classmethod
     def create_presentation(cls, images_list, work_dir, output_path):
         """ Summary
             -------
-            Creates a presentation with all the CollectionImages in a
-            list
+            Creates a Powerpoint presentation with all the
+            CollectionImages in a list
+
+            Arguments
+            ---------
+            images_list : list(CollectionImage)
+                A list of CollectionImages to export to pptx slides.
+            work_dir : str
+                Absolute path to the directory containing the images, so
+                we can find the images on the user's disk.
+            output_path : str
+                Absolute path to where to put the generated Powerpoint
         """
         if not all(isinstance(i, CollectionImage) for i in images_list):
             raise TypeError("images_list must contain only CollectionImages")
-        
+
         # create presentation
         prs = Presentation()
 
         for image in images_list:
             img_path = os.path.join(work_dir, image.filename)
 
-            # create slide
+            # create blank slide
             blank_slide_layout = prs.slide_layouts[6]
             slide = prs.slides.add_slide(blank_slide_layout)
 
@@ -59,7 +79,10 @@ class Powerpoint():
 
             text_frame = text_box.text_frame
             text_frame.word_wrap = True
+            # this removes all paragraphs present except one empty
+            # paragraph
             text_frame.clear()
+            # so we can write in this one paragraph
             text_frame.paragraphs[0].text = image.to_reference()
 
             # autofit text to the text box
@@ -71,6 +94,7 @@ class Powerpoint():
             # )
 
         prs.save(output_path)
+
 
     @staticmethod
     def _get_layout_params(img_path, margin=1, textbox_height=1.5):
@@ -87,7 +111,7 @@ class Powerpoint():
                 Margin size in cm
             textbox_height : float
                 Height of the legend text box in cm
-            
+
             Returns
             -------
             dict
@@ -95,7 +119,7 @@ class Powerpoint():
                 the image and top, left, height and width for the text
                 box.
                 Values are in python-pptx Cm()
-            
+
             NOTE
             ----
             All calculations below are done in centimeters !
@@ -143,14 +167,13 @@ class Powerpoint():
                 "width" : Cm(canvas_width),
                 "height": Cm(textbox_height),
             }
-            
         }
 
         return params
 
 
 if __name__ == "__main__":
-    ### Tests 
+    ### Tests
     images = [
         CollectionImage(
             filename="Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.JPG",

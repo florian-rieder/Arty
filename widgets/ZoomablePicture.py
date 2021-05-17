@@ -41,7 +41,8 @@ class ZoomablePicture(ScatterPlane):
         image = Image(
             source=self.source,
             height=self.image_height,
-            width=self.image_width
+            width=self.image_width,
+            allow_stretch=True
         )
 
         self.add_widget(image)
