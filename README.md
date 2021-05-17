@@ -25,6 +25,10 @@ To run the application, use `python main.py`
 2. Replace placeholders where appropriate with the path to this repository on your machine.
 3. Then run the command `pyinstaller main.spec` to build the executable.
 
+### Note
+Pyinstaller is incapable of cross-compiling. It means that you can only build the app for the OS of the machine you're compiling it with.
+For better compatibility, build with the oldest version of the OS you want to support.
+
 ## MacOS
 `main.spec`
 ```
@@ -82,6 +86,8 @@ app = BUNDLE(coll,
              })
 ```
 
+Once the main.spec file is created, running the build script with `. build.sh` should take care of the entire build process, generating a MacOSX application and an installer package in the `dist` folder.
+
 ## Windows
 `main.spec`
 ```
@@ -130,9 +136,7 @@ coll = COLLECT(exe, Tree('C:\\path\\to\\this\\repo'),
                name='Arty')
 ```
 
-## Note
-Pyinstaller is incapable of cross-compiling. It means that you can only build the app for the OS of the machine you're compiling it with.
-For better compatibility, build with the oldest version of the OS you want to support.
+Once the main.spec file is created, you can build an executable of Arty. The build script for Windows requires an extra installation step to be able to generate an installer package. The software (Inno Setup 6)[https://jrsoftware.org/isinfo.php] is used. You then generate a winsetup.iss file and run the build script with `build.bat` in `cmd` should take care of the entire build process, generating a folder with the .exe and dependencies and an installer package in the `dist` folder.
 
 # Unit testing
 Use the command `python -m tests.Tests` to run unit tests.
@@ -145,6 +149,10 @@ Use the command `python -m tests.Tests` to run unit tests.
 - Pyinstaller
 - Python-pptx
 - dataclasses_json
+- unidecode
+
+Other tool:
+- Inno Setup 6 (Windows build installer)
 
 # Contributors
 - Florian Rieder
