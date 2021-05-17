@@ -123,6 +123,18 @@ class ArtyApp(App):
             file_path : str
                 Path to the file that was dragged on the window
         """
+        file_path = str(file_path.decode('utf-8'))
+        if file_path.startswith("b'") and file_path.endswith("'"):
+            file_path = file_path[2:-1]
+
+        # load a collection when it is dragged on the app, or when the
+        # app is opened by clicking on an Arty meta file
+        if self.SCREEN_MANAGER.current == self.SCREENS["START"].name:
+            if file_path.endswith(CollectionManager.META_EXTENSION):
+                Logger.info("Loading collection from drop...")
+                self.load_collection(os.path.dirname(file_path))
+                return
+                
         # make it so that one can only drop a file if the current screen
         # is the collection screen
         if not self.SCREEN_MANAGER.current == self.SCREENS["COLLECTION"].name:

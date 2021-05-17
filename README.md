@@ -70,6 +70,15 @@ app = BUNDLE(coll,
                  'NSHighResolutionCapable': 'True',
                  'NSPrincipalClass': 'NSApplication',
                  'NSAppleScriptEnabled': False,
+                 'CFBundleDocumentTypes': [
+                    {
+                        'CFBundleTypeExtensions': ['arty'],
+                        'CFBundleTypeName': 'Arty Collection',
+                        'CFBundleTypeIconFile': 'resources/icon.icns',
+                        'LSHandlerRank': 'Owner',
+                        'CFBundleTypeRole': 'Editor'
+                    }
+                ]
              })
 ```
 

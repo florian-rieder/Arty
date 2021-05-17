@@ -1,5 +1,5 @@
 @echo off
-Rem ###              Building script for Arty on Windows                ###
+Rem ###            Building script for Arty on Windows               ###
 
 echo [BUILD] Removing dist and build folders...
 

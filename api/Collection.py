@@ -1,4 +1,4 @@
-""" 
+"""
     Collection module
     Handles the datastructure of a collection, and saving and loading of
     metadata in a project folder.
@@ -11,7 +11,6 @@ import shutil
 import builtins
 from typing import Optional
 from dataclasses import dataclass, field
-from widgets.PopupMessage import PopupMessage
 
 from unidecode import unidecode
 from dataclasses_json import config, dataclass_json
@@ -45,7 +44,8 @@ class CollectionManager():
     """
 
     AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
-    META_FILENAME = ".collection"
+    META_EXTENSION = ".arty"
+    VERSION = "Alpha-1.0"
 
     @classmethod
     def load(cls, path):
@@ -76,7 +76,9 @@ class CollectionManager():
             raise FileNotFoundError
 
         # check if there is already a project file in this directory
-        if cls.META_FILENAME in os.listdir(path):
+        meta_filename = cls._get_meta_filename(path)
+
+        if meta_filename:
             # if it's the case, load it.
             collection = cls.__load_meta(path)
         else:
@@ -114,38 +116,40 @@ class CollectionManager():
         """ Summary
             -------
             Deserializes the data from the meta file and updates the
-            collection
-
-            NOTE
-            ----
-            I'm sure there's a better way to do this...
+            collection.
         """
-        with open(os.path.join(path, cls.META_FILENAME), "r") as meta:
+        # read the existing meta file
+        meta_filename = cls._get_meta_filename(path)
+
+        with open(os.path.join(path, meta_filename), "r") as meta:
             coll_json = meta.read()
             coll_dict = json.loads(coll_json)
 
-        # retrieve the title of the collection
+        # retrieve the version of the collection
         try:
-            title = coll_dict["t"]
-        except KeyError:
-            title = "Untitled Collection"
-            Logger.exception(
-                "Couldn't retrieve collection title from .collection"
-            )
+            version = coll_dict["v"]
+        except KeyError as exc:
+            raise KeyError(
+                "Couldn't retrieve version from collection meta file"
+            ) from exc
 
-            PopupMessage(
-                message = "Couldn't retrieve collection title"
-            ).open
+        if version != cls.VERSION:
+            coll_json = cls.fix_version_conflict(coll_json)
+            # reload the fixed json
+            coll_dict = json.loads(coll_json)
+
+        # now we are sure the data is clean, we can load the collection
+
+        version = coll_dict["v"]
 
         # retrieve the collection list
         collection = [
             # cast each object in the JSON list to a CollectionImage
             # pylint says it's an error. Let's just say I disagree
             CollectionImage.from_dict(item) for item in coll_dict["c"]
-            #CollectionImage.from_json(json.dumps(item)) for item in coll_dict["c"]
         ]
 
-        return Collection(path, title, collection)
+        return Collection(path, version, collection)
 
 
     @classmethod
@@ -204,7 +208,7 @@ class CollectionManager():
 
         meta_file_path = os.path.join(
             collection.work_directory,
-            cls.META_FILENAME
+            cls._get_meta_filename(collection.work_directory)
         )
 
         # create metadata file in the project directory
@@ -219,8 +223,48 @@ class CollectionManager():
 
     @classmethod
     def __create_meta(cls, path):
-        path = os.path.join(path, cls.META_FILENAME)
+        # default filename is collection.arty
+        path = os.path.join(path, "collection" + cls.META_EXTENSION)
         open(path, "a").close()
+
+
+    @classmethod
+    def _get_meta_filename(cls, path):
+        """
+            Gets the first file with the correct extension. If none are
+            found, returns False
+        """
+        for fname in os.listdir(path):
+            if fname.endswith(cls.META_EXTENSION):
+                return fname
+        # if no collection meta file is found
+        return False
+
+
+    @classmethod
+    def fix_version_conflict(cls, json_string):
+        """ Summary
+            -------
+            Rules for upgrading older versions of a collection's meta
+            to the current one.
+
+            Arguments
+            ---------
+            json_string : str
+                Outdated JSON string collected from the meta file
+        """
+        # turn the JSON into a dictionary for easy modifications
+        coll_dict = json.loads(json_string)
+        version = coll_dict["v"]
+
+        if version == "Alpha-1.0":
+            # upgrade the save file to the next version
+            pass
+
+        # turn the dictionary back to a JSON string
+        json_string = json.dumps(coll_dict)
+
+        return json_string
 
 ### end class CollectionManager
 
@@ -262,8 +306,8 @@ class Collection():
     work_directory :    str = field(
                             metadata=config(field_name="w"), default=""
                         )
-    title :             str = field(
-                            metadata=config(field_name="t"), default=""
+    version :           str = field(
+                            metadata=config(field_name="v"), default=""
                         )
     collection:         list = field(
                             metadata=config(field_name="c"),
@@ -290,11 +334,6 @@ class Collection():
             CollectionImage
                 The image that was inserted in the collection
         """
-        # cleaning the input if necessary (format <b'path/to/file'>
-        # coming from ArtyApp._on_file_drop())
-        source = str(source.decode('utf-8'))
-        if source.startswith("b'") and source.endswith("'"):
-            source = source[2:-1]
 
         # get the file name, using ntpath
         file_name = ntpath.basename(source)
