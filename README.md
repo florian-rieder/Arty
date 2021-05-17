@@ -136,7 +136,7 @@ coll = COLLECT(exe, Tree('C:\\path\\to\\this\\repo'),
                name='Arty')
 ```
 
-Once the main.spec file is created, you can build an executable of Arty. The build script for Windows requires an extra installation step to be able to generate an installer package. The software (Inno Setup 6)[https://jrsoftware.org/isinfo.php] is used. You then generate a winsetup.iss file and run the build script with `build.bat` in `cmd` should take care of the entire build process, generating a folder with the .exe and dependencies and an installer package in the `dist` folder.
+Once the main.spec file is created, you can build an executable of Arty. The build script for Windows requires an extra installation step to be able to generate an installer package. The software [Inno Setup 6](https://jrsoftware.org/isinfo.php) is used. You then generate a winsetup.iss file and run the build script with `build.bat` in `cmd` should take care of the entire build process, generating a folder with the .exe and dependencies and an installer package in the `dist` folder.
 
 # Unit testing
 Use the command `python -m tests.Tests` to run unit tests.
