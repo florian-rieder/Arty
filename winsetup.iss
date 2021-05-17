@@ -7,7 +7,7 @@
 #define MyAppURL "https://www.example.com/"
 #define MyAppExeName "Arty.exe"
 #define MyAppAssocName MyAppName + " Collection"
-#define MyAppAssocExt ".collection"
+#define MyAppAssocExt ".arty"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
 
 [Setup]

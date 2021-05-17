@@ -348,7 +348,10 @@ class Collection():
         # NOTE: should verify if the user is not dragging a file from
         # the working directory
         try:
-            shutil.copyfile(source, os.path.join(self.work_directory, file_name))
+            shutil.copyfile(
+                source,
+                os.path.join(self.work_directory, file_name)
+            )
         except shutil.SameFileError as err:
             raise ValueError(
                 "This image already exists in the work directory %s" %
