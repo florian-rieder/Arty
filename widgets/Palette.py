@@ -1,7 +1,8 @@
 from PIL import Image
 
-from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
+from kivy.core.window import Window
+from kivy.uix.widget import Widget
 
 class Palette(Widget):
     """ Summary
@@ -14,6 +15,14 @@ class Palette(Widget):
             Calculates and displays the palette of an image
     """
     NUM_COLORS = 7
+    RESIZE = 100
+
+    current_palette = list()
+
+    def __init__(self, **kwargs):
+        super(Palette, self).__init__(**kwargs)
+        Window.bind(on_resize=self._on_resize)
+
 
     def set_image(self, image_path):
         """ Summary
@@ -30,16 +39,17 @@ class Palette(Widget):
         # remap RGB values [0-255] -> [0-1]
         kivy_palette = [[v / 255 for v in color] for color in palette]
 
-        self._display_palette(kivy_palette)
+        self.current_palette = kivy_palette
+        self._display_palette()
 
 
-    def _display_palette(self, palette):
+    def _display_palette(self):
         """ Summary
             -------
             Takes a palette and displays it using the canvas.
         """
         self.canvas.clear()
-        for idx, color in enumerate(palette):
+        for idx, color in enumerate(self.current_palette):
             with self.canvas:
                 Color(*color)
                 Rectangle(
@@ -55,7 +65,7 @@ class Palette(Widget):
 
 
     @classmethod
-    def get_colors(cls, image_path, resize=150):
+    def get_colors(cls, image_path):
         """ Summary
             -------
             Gets the palette of an image
@@ -81,7 +91,7 @@ class Palette(Widget):
         # Resize image to speed up processing
         img = Image.open(image_path)
         img = img.copy()
-        img.thumbnail((resize, resize))
+        img.thumbnail((cls.RESIZE, cls.RESIZE))
 
         # Reduce to palette
         paletted = img.convert(
@@ -100,3 +110,8 @@ class Palette(Widget):
             colors.append(tuple(dominant_color))
 
         return colors
+
+
+    def _on_resize(self, *_args):
+        # reload the palette (fixes positioning and sizing issue)
+        self._display_palette()
