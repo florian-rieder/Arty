@@ -4,9 +4,8 @@ from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.app import App
 import kivy.properties as kyprops
-import PIL
 
-from widgets.ZoomablePicture import ZoomablePicture
+from widgets.LargeImageView import LargeImageView
 
 class ImagePreview(ButtonBehavior, Image):
     source = kyprops.StringProperty("")
@@ -29,24 +28,10 @@ class ImagePreview(ButtonBehavior, Image):
             Runs when the user clicks on the preview. Opens a modal to
             view the image in a larger format
         """
-
-        modal_size = self._get_modal_size()
-
         # open a modal view to see the image in full size
-        large_view = ModalView(
-            size_hint=(None, None),
-            size=(modal_size),
-            background_color=(0,0,0,0),
-            auto_dismiss=True
-        )
+        large_view = LargeImageView(source=self.source)
 
-        large_view.add_widget(ZoomablePicture(
-            source=self.source,
-            image_width=modal_size[0],
-            image_height=modal_size[1]
-        ))
-
-        # bind on dismiss callback
+        # pylint: disable=no-member
         large_view.bind(on_dismiss=self._on_large_view_dismissed)
 
         # open the modal
@@ -68,39 +53,6 @@ class ImagePreview(ButtonBehavior, Image):
             if self.is_hovered:
                 self.is_hovered = False
                 Window.set_system_cursor("arrow")
-
-
-    def _get_modal_size(self):
-        """ Summary
-            -------
-            Computes the desired size of the modal, in function of the
-            size of the image, and the size of the window
-
-            Returns
-            -------
-            modal_size : tuple
-                bi-dimensional tuple containing the x and y size of the
-                modal.
-        """
-        WINDOW_MIN_MARGIN = 0.95
-
-        # size the modal in function of the image size
-        with PIL.Image.open(self.source) as im:
-            image_width, image_height = im.size
-        
-        image_ratio = image_width / image_height
-        window_ratio = Window.width / Window.height
-
-        if image_ratio < window_ratio:
-            # size by height
-            ratio = (Window.height * WINDOW_MIN_MARGIN) / image_height
-        else:
-            # size by width
-            ratio = (Window.width * WINDOW_MIN_MARGIN) / image_width
-
-        modal_size = (image_width * ratio, image_height * ratio)
-        
-        return modal_size
 
 
     def _on_large_view_dismissed(self, instance):

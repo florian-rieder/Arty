@@ -3,6 +3,7 @@
     and move it around when it is zoomed.
 """
 
+# pylint: disable=no-name-in-module
 from kivy.graphics.transformation import Matrix
 from kivy.uix.scatter import ScatterPlane
 from kivy.uix.image import Image
