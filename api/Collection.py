@@ -390,7 +390,7 @@ class Collection():
                 If the image to update doesn't exist in the collectin
         """
         if collection_image not in self.collection:
-            raise Exception(
+            raise ValueError(
                 "Cannot update an image that doesn't exist in the collection."
             )
 

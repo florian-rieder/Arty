@@ -13,6 +13,7 @@ import kivy.properties as kyprops
 from api.Collection import CollectionImage
 from widgets.ImagePreview import ImagePreview
 from widgets.MetadataItem import MetadataItem
+from widgets.Palette import Palette
 
 
 class CollectionPanel(BoxLayout):
@@ -59,8 +60,7 @@ class CollectionPanel(BoxLayout):
         """ Summary
             -------
             Initializes the panel. Generates text fields in function of
-            the attributes of CollectionImages, and links them in order
-            to switch between them with Tab.
+            the attributes of CollectionImages.
         """
         # needed to get the full path to an image
         self.WORK_DIRECTORY = work_dir
@@ -91,7 +91,7 @@ class CollectionPanel(BoxLayout):
         for attribute in attributes:
             item = MetadataItem(size_hint_y = base_hint_y)
             item.field_name = attribute
-            # find a way to write a "nice" attribute name, without
+            # TODO: find a way to write a "nice" attribute name, without
             # bloating the save file
             item.ids.label.text = attribute.replace("_", " ").title()
             item.ids.text_input.text = getattr(self.current_image, attribute)
@@ -114,7 +114,7 @@ class CollectionPanel(BoxLayout):
             ---------
             collection_image : CollectionImage
                 The image to display in the CollectionImage
-            
+
             Raises
             ------
             TypeError
@@ -176,10 +176,20 @@ class CollectionPanel(BoxLayout):
             -------
             Callback called when the current_image property is updated.
             Updates the values of the text fields.
+
+            Arguments
+            ---------
+            _instance (unused)
+            image : CollectionImage
         """
 
+        image_path = self.get_image_source()
+
         # update preview image
-        self.ids.preview.source = self.get_image_source()
+        self.ids.preview.source = image_path
+
+        # update palette
+        self.ids.palette.set_image(image_path)
 
         # updates text fields values
         for metadata_item in self.ids.metadata_container.children:

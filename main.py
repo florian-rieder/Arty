@@ -1,5 +1,5 @@
 import os
-import platform
+import sys
 
 from kivy.config import Config
 from kivy.logger import Logger
@@ -33,6 +33,7 @@ if __name__ == '__main__':
     Config.set('kivy',      'exit_on_escape',   '0')
 
     # logging config: we send the logs to our own folder
+    Config.set('kivy',      'log_enable',       1)
     Config.set('kivy',      'log_dir',          log_dir)
     Config.set('kivy',      'log_name',         r'arty_%y-%m-%d_%_.txt')
     Config.set('kivy',      'log_maxfiles',     5)
@@ -44,6 +45,9 @@ if __name__ == '__main__':
     Config.write()
 
     #======================= End Configuration =======================#
+
+    print(sys.argv)
+    Logger.info("Arguments" + str(sys.argv))
 
     # run the app
     ArtyApp().run()

@@ -4,18 +4,19 @@ from kivy.uix.popup import Popup
 import kivy.properties as kyprops
 
 class PopupMessage(Popup):
-    """Summary
+    """ Summary
         -------
-        Error Popup
+        Error popup
 
         Attributes
         ----------
         message: StringProperty
             message to diplay
 
-        Methods
-        -------
-
+        Examples
+        --------
+        >>>from widgets.PopupMessage import PopupMessage
+        >>>PopupMessage(message="your message here").open()
     """
 
     Builder.load_file('templates/PopupMessage.kv')

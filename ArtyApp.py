@@ -23,6 +23,11 @@ class ArtyApp(App):
     """ Summary
         -------
         The main class of our app
+
+        Methods
+        -------
+        load_collection(path)
+            Load a collection from a path
     """
     PROJECT_DIRECTORY = ""
     CURRENT_COLLECTION = None
@@ -80,6 +85,14 @@ class ArtyApp(App):
         """ Summary
             -------
             Load a collection from the path to a directory.
+            Setup other screens and widgets that depend on the
+            collection, and switch to the collection screen.
+
+            Arguments
+            ---------
+            path : str
+                Path to the work directory
+
         """
         self.PROJECT_DIRECTORY = path
 
@@ -87,21 +100,30 @@ class ArtyApp(App):
             # load or create collection at specified project directory
             self.CURRENT_COLLECTION = CollectionManager.load(self.PROJECT_DIRECTORY)
 
-            # give the collection to the CollectionGrid, which will in turn
-            # display the images on the screen
-            self.GRID.set_collection(self.CURRENT_COLLECTION)
-
-            # initialize CollectionPanel
-            self.PANEL.initialize(self.PROJECT_DIRECTORY)
-            self.PANEL.set_image(self.CURRENT_COLLECTION.get_collection()[0])
-
-            # initialize ComparisonScreen
-            self.SCREENS['COMPARE'].initialize(self.PROJECT_DIRECTORY)
-        except FileNotFoundError:
+        except FileNotFoundError as exc:
             err_msg = "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY
             PopupMessage(message=err_msg).open()
+            Logger.exception(exc)
             Logger.exception(err_msg)
             return
+
+        except KeyError as exc:
+            err_msg = "Collection couldn't be loaded due to an old or corrupted .arty file"
+            PopupMessage(message=err_msg).open()
+            Logger.exception(exc)
+            Logger.exception(err_msg)
+            return
+        
+        # give the collection to the CollectionGrid, which will in turn
+        # display the images on the screen
+        self.GRID.set_collection(self.CURRENT_COLLECTION)
+
+        # initialize CollectionPanel
+        self.PANEL.initialize(self.PROJECT_DIRECTORY)
+        self.PANEL.set_image(self.CURRENT_COLLECTION.get_collection()[0])
+
+        # initialize ComparisonScreen
+        self.SCREENS['COMPARE'].initialize(self.PROJECT_DIRECTORY)
 
         # switch to the collection screen
         self.SCREEN_MANAGER.switch_to(
@@ -123,17 +145,17 @@ class ArtyApp(App):
             file_path : str
                 Path to the file that was dragged on the window
         """
+        # clean the path given by the file drop
         file_path = str(file_path.decode('utf-8'))
         if file_path.startswith("b'") and file_path.endswith("'"):
             file_path = file_path[2:-1]
 
         # load a collection when it is dragged on the app, or when the
-        # app is opened by clicking on an Arty meta file
-        if self.SCREEN_MANAGER.current == self.SCREENS["START"].name:
-            if file_path.endswith(CollectionManager.META_EXTENSION):
-                Logger.info("Loading collection from drop...")
-                self.load_collection(os.path.dirname(file_path))
-                return
+        # app is opened by clicking on an Arty meta file (at least on mac)
+        if file_path.endswith(CollectionManager.META_EXTENSION):
+            Logger.info("Loading collection from drop...")
+            self.load_collection(os.path.dirname(file_path))
+            return
                 
         # make it so that one can only drop a file if the current screen
         # is the collection screen
@@ -148,6 +170,7 @@ class ArtyApp(App):
             self.CURRENT_COLLECTION.add_image(file_path)
             # refresh the CollectionGrid
             self.GRID.set_collection(self.CURRENT_COLLECTION)
+
         except ValueError as err:
             err_msg = "The file %s couldn't be added to the collection." % file_path
             PopupMessage(message=err_msg).open()
@@ -158,7 +181,8 @@ class ArtyApp(App):
         """ Summary
             -------
             Method that runs when the user requests to close the
-            application
+            application.
+            We try to save the collection before the app exits.
         """
         # save the metadata in the CollectionPanel in case there are
         # unregistered changes
@@ -174,12 +198,3 @@ class ArtyApp(App):
             CollectionManager.save(self.CURRENT_COLLECTION)
 
         return False
-
-    def on_pause(self):
-        """
-            Method called when the app is in pause mode (the user
-            has minimized the window or moved it to the background)
-            Just to be sure, we'll save the collection at that moment.
-        """
-        CollectionManager.save(self.CURRENT_COLLECTION)
-        return True
