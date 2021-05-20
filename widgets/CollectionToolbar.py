@@ -66,6 +66,9 @@ class CollectionToolbar(BoxLayout):
         CollectionManager().save(collection)
     
     def select_all(self):
+        """
+            TODO: show active checkboxes
+        """
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION.get_collection()
 
@@ -85,16 +88,6 @@ class CollectionToolbar(BoxLayout):
         except Exception:
             #show popup if the wrong amount of images is selected
             PopupMessage(message = "Please select 2 to 4 images").open()
-            # popup_content = PopupMessage(message = "Please select 2 to 4 images")
-            # popup_window = Popup(
-            #     title = "Error",
-            #     content = popup_content,
-            #     size_hint = (0.3, 0.25)
-            # )
-
-            # popup_content.ids.popup_btn.bind(on_press = popup_window.dismiss)
-
-            # popup_window.open()
 
     def export(self):
         """
