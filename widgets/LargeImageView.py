@@ -73,6 +73,6 @@ class LargeImageView(ModalView):
     def _on_resize(self, window, *_args):
         new_size = self._get_size(window.width, window.height)
         self.size = new_size
-        # resize the image insize the ZoomableImage widget (which is a
+        # resize the image inside the ZoomableImage widget (which is a
         # ScatterPlane !)
         self.children[0].children[0].size = new_size

@@ -156,5 +156,16 @@ class CollectionToolbar(BoxLayout):
         # 2. generate the powerpoint and save it to the selected path
         path = str(selection[0])
         app = App.get_running_app()
-        Logger.info("Arty: exporting selection to pptx")
-        Powerpoint.create_presentation(self.selected_images, app.PROJECT_DIRECTORY, path)
+        Logger.info("Arty: exporting selection to pptx...")
+
+        try:
+            Powerpoint.create_presentation(
+                self.selected_images,
+                app.PROJECT_DIRECTORY,
+                path
+            )
+        except Exception as exc:
+            Logger.exception(exc)
+            PopupMessage(
+                message="An error occurred while generating the presentation"
+            ).open()

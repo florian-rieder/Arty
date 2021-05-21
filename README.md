@@ -41,6 +41,10 @@ from kivy.tools.packaging.pyinstaller_hooks import get_deps_minimal, hookspath, 
 dependencies = get_deps_minimal(window=True, image=True, audio=None, camera=None, video=None)
 dependencies['hiddenimports'] += ["plyer.platforms.macosx.filechooser"]
 
+added_files = [
+    ('/path/to/this/repo/venv/lib/python3.9/site-packages/pptx/templates', 'pptx/templates')
+]
+
 a = Analysis(['main.py'],
              pathex=['/path/to/this/repo'],
              cipher=block_cipher,
@@ -48,6 +52,7 @@ a = Analysis(['main.py'],
              win_private_assemblies=False,
              hookspath=hookspath(),
              runtime_hooks=runtime_hooks(),
+             datas=added_files,
              **dependencies)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)

@@ -75,9 +75,6 @@ class Palette(Widget):
             image_path : str
                 Absolute path to the image of which the palette is
                 wanted.
-            resize : int default=150
-                dimensions to resize the image to (lower improves
-                performance)
 
             Returns
             -------
