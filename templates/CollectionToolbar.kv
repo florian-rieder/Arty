@@ -18,6 +18,11 @@
             on_release: root.save_coll()
 
         Button:
+            id: select_all
+            text: 'Select All'
+            on_release: root.select_all()
+
+        Button:
             id: compare_btn
             text: 'Compare Selection'
             on_release: root.compare()

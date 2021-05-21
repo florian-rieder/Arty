@@ -36,3 +36,14 @@ class FilterDropdown(DropDown):
         
         app.TOOLBAR.displayed_images = displayed_images
         app.GRID.set_display_list(displayed_images)
+        app.TOOLBAR.selected_images = list()
+    
+    def reset_grid(self):
+        app = App.get_running_app()
+        collection = app.CURRENT_COLLECTION.get_collection()
+
+        self.ids.title_input.text = ""
+        self.ids.artist_input.text = ""
+        self.ids.technique_input.text = ""
+
+        app.GRID.set_display_list(collection)
