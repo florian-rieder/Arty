@@ -5,10 +5,8 @@
 
 # pylint: disable=no-name-in-module
 from kivy.graphics.transformation import Matrix
-from kivy.uix.scatter import ScatterPlane
-from kivy.uix.image import Image
 from kivy.core.window import Window
-import kivy.properties as kyprops
+from kivy.uix.scatter import ScatterPlane
 
 class ZoomablePicture(ScatterPlane):
     """ Summary
@@ -27,40 +25,23 @@ class ZoomablePicture(ScatterPlane):
         on_touch_up(touch)
             Callback for handling zooming on scroll event
     """
-    source = kyprops.StringProperty("")
-    image_width = kyprops.NumericProperty(0)
-    image_height = kyprops.NumericProperty(0)
     is_zoomed = False
-
-    def __init__(self, **kwargs):
-        super(ZoomablePicture, self).__init__(**kwargs)
-
-        self.do_rotation = False
-        self.do_translation = (False, False)
-
-        # setup image
-        image = Image(
-            source=self.source,
-            height=self.image_height,
-            width=self.image_width,
-            allow_stretch=True
-        )
-
-        self.add_widget(image)
-
 
     def on_touch_up(self, touch):
         """
             Callback for handling zooming on scroll event
         """
+        #pos = self.to_widget(*touch.pos)
+        pos = touch.pos
+
         # override Scatter's `on_touch_up` behavior for mouse scroll
-        if self.collide_point(*touch.pos):
+        if self.collide_point(*pos):
             if touch.is_mouse_scrolling:
                 if touch.button == 'scrollup':
                     # unzoom
                     if self.scale > 1:
                         mat = Matrix().scale(.9, .9, .9)
-                        self.apply_transform(mat, anchor=touch.pos)
+                        self.apply_transform(mat, anchor=pos)
                     else:
                         # move the image back to the center of the
                         # screen when it reaches a scale of <= 1
@@ -71,7 +52,7 @@ class ZoomablePicture(ScatterPlane):
                     # zoom
                     if self.scale < 10:
                         mat = Matrix().scale(1.1, 1.1, 1.1)
-                        self.apply_transform(mat, anchor=touch.pos)
+                        self.apply_transform(mat, anchor=pos)
 
         # allow translating the image on both axis only when it is
         # zoomed

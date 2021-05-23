@@ -186,6 +186,7 @@ class CollectionPanel(BoxLayout):
         image_path = self.get_image_source()
 
         # update preview image
+        self.ids.preview.legend = image.to_legend()
         self.ids.preview.source = image_path
 
         # update palette

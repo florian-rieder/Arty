@@ -1,7 +1,10 @@
 from PIL import Image
 
-from kivy.uix.modalview import ModalView
 from kivy.core.window import Window
+from kivy.lang.builder import Builder
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.modalview import ModalView
+from kivy.uix.label import Label
 import kivy.properties as kyprops
 
 from widgets.ZoomablePicture import ZoomablePicture
@@ -9,29 +12,24 @@ from widgets.ZoomablePicture import ZoomablePicture
 
 class LargeImageView(ModalView):
     source = kyprops.StringProperty("")
+    legend = kyprops.StringProperty("")
+
     WINDOW_MARGIN = 75 #px
+
+
+    Builder.load_file('templates/LargeImageView.kv')
+
 
     def __init__(self, **kwargs):
         super(LargeImageView, self).__init__(**kwargs)
         Window.bind(on_resize=self._on_resize)
 
-        # ModalView parameters
-        self.size_hint=(None, None)
-        self.background_color=(0,0,0,0)
-        self.auto_dismiss=True
-
-        # size the modal in function of the window size
         modal_size = self._get_size(Window.width, Window.height)
         self.size = modal_size
 
-        # populate the view with the image
-        self.add_widget(
-            ZoomablePicture(
-                source=self.source,
-                image_width=modal_size[0],
-                image_height=modal_size[1]
-            )
-        )
+        img = self.ids.realimage
+        img.width = modal_size[0]
+        img.height = modal_size[1]
 
 
     def _get_size(self, window_width, window_height):
@@ -66,7 +64,7 @@ class LargeImageView(ModalView):
             height = width / image_ratio
 
         modal_size = (width, height)
-        
+
         return modal_size
 
 
@@ -75,4 +73,4 @@ class LargeImageView(ModalView):
         self.size = new_size
         # resize the image inside the ZoomableImage widget (which is a
         # ScatterPlane !)
-        self.children[0].children[0].size = new_size
+        self.ids.zoomableimage.children[0].size = new_size

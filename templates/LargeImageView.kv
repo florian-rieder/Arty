@@ -1,0 +1,22 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<LargeImageView>:
+    size_hint: (None, None)
+    background_color: (0,0,0,0.1)
+    auto_dismiss: True
+
+    ZoomablePicture:
+        id: zoomableimage
+        do_rotation: False
+        do_translation: (False, False)
+
+        Image:
+            id: realimage
+            source: root.source
+            allow_stretch: True
+
+    # Label:
+    #     id: root.legend
+    #     size_hint: (0.8, 0.15)
+    #     markup: True

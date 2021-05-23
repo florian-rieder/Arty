@@ -538,6 +538,7 @@ class CollectionImage():
         formatting = {
             "artist": self.artist,
             "title": self.title if self.title else "Untitled",
+            "title_italic": "[i]" + self.title + "[/i]"  if self.title else "[i]Untitled[/i]",
             "datation": self.datation,
             "technique": self.technique,
             "material": self.material,
@@ -599,10 +600,10 @@ class CollectionUtils():
 
     LEGEND_STYLES = {
         "SIMPLE": """
-            {artist}{title}{datation}
+            {artist}{title_italic}{datation}
         """,
         "CHICAGO": """
-            {artist}{title}{production_site_if_no_artist}
+            {artist}{title_italic}{production_site_if_no_artist}
             {datation}{material}{dimensions}{conservation_site}
         """,
     }

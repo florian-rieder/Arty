@@ -67,7 +67,7 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         blank_checkbox = 'resources/blank-check-box.png'
 
         # convert window position to local position
-        rel_pos = self.to_widget(pos[0], pos[1])
+        rel_pos = self.to_widget(*pos)
 
         # if the mouse position is over the image
         if self.collide_point(*rel_pos):

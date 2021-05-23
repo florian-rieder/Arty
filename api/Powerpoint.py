@@ -7,6 +7,7 @@
 """
 
 import os
+import re
 
 import PIL
 from pptx import Presentation
@@ -83,7 +84,27 @@ class Powerpoint():
             # paragraph
             text_frame.clear()
             # so we can write in this one paragraph
-            text_frame.paragraphs[0].text = image.to_legend()
+            paragraph = text_frame.paragraphs[0]
+
+            legend = image.to_legend()
+
+            # format italics
+            # NOTE: supports only ONE set of tags
+            italics = re.search(r"\[i\](.*)\[/i\]", legend)
+            if italics:
+                start_run = paragraph.add_run()
+                start_run.text = legend[:italics.start()]
+                
+                italics_run = paragraph.add_run()
+                italics_run.text = italics.group(1)
+                font = italics_run.font
+                font.italic = True
+
+                end_run = paragraph.add_run()
+                end_run.text = legend[italics.end():]
+            
+            else:
+                text_frame.paragraphs[0].text = image.to_legend()
 
             # autofit text to the text box
             # text_frame.fit_text(
@@ -178,7 +199,7 @@ if __name__ == "__main__":
         CollectionImage(
             filename="Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.JPG",
             artist="Sandro Botticelli",
-            title="La Naissance de Vénus Mais avec un très long titre en espérant que ça va wrap",
+            title="La Naissance de Vénus",
             datation="c. 1485",
             technique="Tempera sur toile",
             conservation_site="Gallerie Uffizi, Florence"

@@ -8,9 +8,13 @@ from widgets.LargeImageView import LargeImageView
 
 class ImagePreview(ButtonBehavior, Image):
     source = kyprops.StringProperty("")
+    legend = kyprops.StringProperty("")
+
     is_hovered = False
     large_view_open = False
+
     app = None
+
 
     def __init__(self, **kwargs):
         super(ImagePreview, self).__init__(**kwargs)
@@ -28,7 +32,7 @@ class ImagePreview(ButtonBehavior, Image):
             view the image in a larger format
         """
         # open a modal view to see the image in full size
-        large_view = LargeImageView(source=self.source)
+        large_view = LargeImageView(source=self.source, legend=self.legend)
 
         # pylint: disable=no-member
         large_view.bind(on_dismiss=self._on_large_view_dismissed)
@@ -42,8 +46,8 @@ class ImagePreview(ButtonBehavior, Image):
     def on_mouse_pos(self, window, pos):
         # if the mouse position is over the image
         if (
-            self.collide_point(*pos) 
-            and not self.large_view_open 
+            self.collide_point(*pos)
+            and not self.large_view_open
             and self.app.SCREEN_MANAGER.current == "Collection"
         ):
             if not self.is_hovered:
@@ -71,7 +75,7 @@ class ImagePreview(ButtonBehavior, Image):
             Workaround is yet to be found.
         """
         # prevent closing the modal if the image is zoomed
-        if instance.children[0].scale > 1:
+        if instance.ids.zoomableimage.scale > 1:
             # prevent closing the modal
             return True
         else:
