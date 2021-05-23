@@ -1,5 +1,4 @@
 from kivy.uix.button import ButtonBehavior
-from kivy.uix.modalview import ModalView
 from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.app import App
@@ -37,6 +36,7 @@ class ImagePreview(ButtonBehavior, Image):
         # open the modal
         large_view.open()
         self.large_view_open = True
+        Window.set_system_cursor("arrow")
 
 
     def on_mouse_pos(self, window, pos):

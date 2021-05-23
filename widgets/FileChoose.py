@@ -2,7 +2,6 @@
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.button import Button
-import kivy.properties as kyprops
 from plyer import filechooser
 
 
@@ -11,8 +10,6 @@ class FileChoose(Button):
         Button that triggers 'filechooser.choose_dir()' and processes
         the data response from filechooser Activity.
     """
-
-    selection = kyprops.ListProperty(list())
 
     def choose(self):
         """
@@ -24,15 +21,8 @@ class FileChoose(Button):
         """
             Callback function for handling the selection response from Activity.
         """
-        self.selection = selection
-
-    def on_selection(self, *a, **k):
-        """
-            Update TextInput.text after FileChoose.selection is changed
-            via FileChoose.handle_selection.
-        """
-        # open the first directory selected (comes as an array)
-        path = str(self.selection[0])
-        app = App.get_running_app()
         Logger.info("Loading collection from chooser...")
+        # open the first directory selected (comes as an array)
+        path = str(selection[0])
+        app = App.get_running_app()
         app.load_collection(path)

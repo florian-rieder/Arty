@@ -83,7 +83,7 @@ class Powerpoint():
             # paragraph
             text_frame.clear()
             # so we can write in this one paragraph
-            text_frame.paragraphs[0].text = image.to_reference()
+            text_frame.paragraphs[0].text = image.to_legend()
 
             # autofit text to the text box
             # text_frame.fit_text(

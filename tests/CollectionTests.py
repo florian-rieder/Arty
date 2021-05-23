@@ -18,18 +18,18 @@ class TestCollectionImage(unittest.TestCase):
         self.assertNotEqual(img1, img2)
 
 
-    def test_to_reference(self):
+    def test_to_legend(self):
         test_image1 = CollectionImage(
             filename ="48224.jpg",
             artist="Leonardo de Vinci",
             title="Mona Lisa (Joconde)",
             datation="1503-1506",
-            technique="Huile sur toile",
+            material="Huile sur toile",
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
             )
         expected_ref1 = "Leonardo de Vinci, Mona Lisa (Joconde), 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
-        self.assertEqual(test_image1.to_reference(), expected_ref1)
+        self.assertEqual(test_image1.to_legend(), expected_ref1)
 
         test_image2 = CollectionImage(
             filename ="48224.jpg",
@@ -37,25 +37,25 @@ class TestCollectionImage(unittest.TestCase):
             production_site="test",
             title="Mona Lisa (Joconde)",
             datation="1503-1506",
-            technique="Huile sur toile",
+            material="Huile sur toile",
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
             )
         expected_ref2 = "Leonardo de Vinci, Mona Lisa (Joconde), 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
-        self.assertEqual(test_image2.to_reference(), expected_ref2)
+        self.assertEqual(test_image2.to_legend(), expected_ref2)
 
         test_image3 = CollectionImage(
             filename ="48224.jpg",
-            artist=None,
+            artist="",
             production_site="test",
             title="Mona Lisa (Joconde)",
             datation="1503-1506",
-            technique="Huile sur toile",
+            material="Huile sur toile",
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
             )
         expected_ref3 = "Mona Lisa (Joconde), test, 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
-        self.assertEqual(test_image3.to_reference(), expected_ref3)
+        self.assertEqual(test_image3.to_legend(), expected_ref3)
 
 
 class TestCollection(unittest.TestCase):
@@ -136,9 +136,9 @@ class TestCollection(unittest.TestCase):
             #"1ère moitié du XVIème siècle": 1550 # not implemented yet
         }
 
-        for key, value in tests.items():
-            result = CollectionUtils._datation_to_numeric(key)
-            self.assertEqual(result, value)
+        for test_case, expected_result in tests.items():
+            result = CollectionUtils._datation_to_numeric(test_case)
+            self.assertEqual(result, expected_result)
 
 
     def test_sort(self):

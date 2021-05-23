@@ -107,13 +107,13 @@ class ArtyApp(App):
             Logger.exception(err_msg)
             return
 
-        except KeyError as exc:
+        except Exception as exc:
             err_msg = "Collection couldn't be loaded due to an old or corrupted .arty file"
             PopupMessage(message=err_msg).open()
             Logger.exception(exc)
             Logger.exception(err_msg)
             return
-        
+
         # give the collection to the CollectionGrid, which will in turn
         # display the images on the screen
         self.GRID.set_collection(self.CURRENT_COLLECTION)

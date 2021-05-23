@@ -45,7 +45,9 @@ class CollectionManager():
                 - drags an image from the work directory to the window
     """
 
-    AUTHORIZED_IMAGE_FORMATS = (".jpg", ".jpeg", ".png", ".webp", ".tiff")
+    AUTHORIZED_IMAGE_FORMATS = (
+        ".jpg", ".jpeg", ".png", ".webp", ".tiff", ".psd"
+    )
     META_EXTENSION = ".arty"
     VERSION = "Alpha-1.0"
 
@@ -94,7 +96,7 @@ class CollectionManager():
         # and meta
         collection = cls.__check_files(collection)
         cls.__write_meta(collection)
-        Logger.info("Collection: collection loaded")
+        Logger.info("Collection: Collection loaded")
 
         return collection
 
@@ -110,7 +112,7 @@ class CollectionManager():
                 the Collection object to save
         """
         cls.__write_meta(collection)
-        Logger.info("Collection: collection saved")
+        Logger.info("Collection: Collection saved")
 
 
     @classmethod
@@ -219,6 +221,10 @@ class CollectionManager():
             json_data = json.loads(collection.to_json())
             # convert to string and minify JSON file
             formatted_json = json.dumps(json_data, separators=(',', ':'))
+
+            if not formatted_json:
+                # prevent data from being erased
+                raise RuntimeError("Tried to write an empty Collection")
 
             meta_file.write(formatted_json)
 
@@ -460,7 +466,7 @@ class CollectionImage():
 
         Methods
         -------
-        to_reference()
+        to_legend()
             generates a reference string (legend)
 
         NOTE
@@ -509,28 +515,47 @@ class CollectionImage():
                                 metadata=config(field_name="n"), default=""
                             )
 
-    def to_reference(self):
-        """ Formats the image metadata according to the guidelines at :
-            https://www.unil.ch/files/live/sites/hart/files/shared/Espace_Etudiants/GPS_Guide_du_proseminaire.pdf
+    def to_legend(self, style_name="CHICAGO"):
+        """ Summary
+            -------
+            Formats the image metadata according to the guidelines in
+            the "Guide du proséminaire" [1]
 
-            NOTE
-            ----
-            Maybe allow for using different formattings ?
-            This code assumes all fields are filled correctly
+            Arguments
+            ---------
+            style_name : key in CollectionUtils.LEGEND_STYLES
+
+            Notes
+            -----
+            TODO: allow for more text formatting (italics, bold...)
+
+            References
+            ----------
+            [1] https://www.unil.ch/files/live/sites/hart/files/shared/Espace_Etudiants/GPS_Guide_du_proseminaire.pdf
         """
 
-        reference = "{artist_if_artist}{title}{production_site_if_no_artist}"\
-            "{date}{technique}{dimensions}{conservation_site}".format(
-            artist_if_artist = self.artist + ", " if self.artist else "",
-            title = self.title + ", " if self.title else "Untitled,",
-            production_site_if_no_artist = self.production_site + ", " if not self.artist else "",
-            date = self.datation + ", " if self.datation else "",
-            technique = self.technique + ", " if self.technique else "",
-            dimensions = self.dimensions + ", " if self.dimensions else "",
-            conservation_site = self.conservation_site
-        )
+        # rules for replacing style tokens
+        formatting = {
+            "artist": self.artist,
+            "title": self.title if self.title else "Untitled",
+            "datation": self.datation,
+            "technique": self.technique,
+            "material": self.material,
+            "dimensions": self.dimensions,
+            "conservation_site": self.conservation_site,
+            "production_site": self.production_site,
+            "production_site_if_no_artist": self.production_site if not self.artist else "",
+        }
 
-        return reference
+        style = CollectionUtils.LEGEND_STYLES["CHICAGO"]
+
+        tokens = [m.group(1) for m in re.finditer(r"{(\w+)}", style)]
+        # replace tokens if the formatted value exists, else skip
+        formatted_tokens = [formatting[t] for t in tokens if formatting[t]]
+
+        legend = ", ".join(formatted_tokens)
+
+        return legend
 
 
     def __eq__(self, other):
@@ -554,7 +579,33 @@ class CollectionUtils():
             Filters a list of CollectionImages based on metadata
         sort(img_list, attribute)
             Sorts the images in a list of CollectionImages
+        
+        Attributes
+        ----------
+        LEGEND_STYLES : dict
+            List of available legend styles. Key is the style name and
+            the value is the formattable string.
+
+            Available tokens:
+            artist, title, datation, production_site, technique,
+            material, dimensions, conservation_site,
+            production_site_if_no_artist
+
+            Text modifiers:
+            *** Not implemented yet ! ***
+            [i][/i]: text between these tags will be rendered as italic
+            [b][/b]: bold
     """
+
+    LEGEND_STYLES = {
+        "SIMPLE": """
+            {artist}{title}{datation}
+        """,
+        "CHICAGO": """
+            {artist}{title}{production_site_if_no_artist}
+            {datation}{material}{dimensions}{conservation_site}
+        """,
+    }
 
     @staticmethod
     def filter(img_list, mode="any", **kwargs):
@@ -626,12 +677,12 @@ class CollectionUtils():
                     unidecode(value).lower() in unidecode(getattr(image, attr)).lower()
                     # ...but only if the attribute is filled in the
                     # current image
-                    if getattr(image, attr) != "" else False
+                    if getattr(image, attr) else False
                     # ...for each attribute we're filtering for...
                     for attr, value in kwargs.items()
                     # but only if we are actually filtering for that
                     # attribute
-                    if value.strip() != ""
+                    if value.strip()
                 ]
             )
         ]
@@ -688,6 +739,7 @@ class CollectionUtils():
             key=lambda i: getattr(i, attribute).lower(),
             reverse=reverse
         )
+
 
     @classmethod
     def _datation_to_numeric(cls, datation_string):
@@ -779,6 +831,7 @@ class CollectionUtils():
 
         # here we add the sign indicated by AP/AD
         return values[0] * apad
+
 
     @classmethod
     def _roman_to_int(cls, roman_numeral):
