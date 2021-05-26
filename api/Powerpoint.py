@@ -61,8 +61,10 @@ class Powerpoint():
             blank_slide_layout = prs.slide_layouts[6]
             slide = prs.slides.add_slide(blank_slide_layout)
 
-            # create image
+            # compute layout parameters
             params = cls._get_layout_params(img_path)
+
+            # create an image using these parameters
 
             left    =   params["image"]["left"]
             top     =   params["image"]["top"]
@@ -70,7 +72,8 @@ class Powerpoint():
 
             slide.shapes.add_picture(img_path, left, top, height=height)
 
-            # create text box
+            # create a legend text box using these parameters
+
             left    =   params["text"]["left"]
             top     =   params["text"]["top"]
             height  =   params["text"]["height"]
@@ -78,6 +81,9 @@ class Powerpoint():
 
             text_box = slide.shapes.add_textbox(left, top, width, height)
 
+            # here the pptx interface is a bit ugly to use.
+            # but basically our text frame contains all the text
+            # separated in paragraphs
             text_frame = text_box.text_frame
             text_frame.word_wrap = True
             # this removes all paragraphs present except one empty
@@ -88,8 +94,11 @@ class Powerpoint():
 
             legend = image.to_legend()
 
+            # to apply formatting such as italics defined between [i][/i]
+            # tags, we must decompose the text and reassemble the segments
+            # as pptx' run to be able to apply italics 
             # format italics
-            # NOTE: supports only ONE set of tags
+            # NOTE: supports only ONE set of italics tags
             italics = re.search(r"\[i\](.*)\[/i\]", legend)
             if italics:
                 start_run = paragraph.add_run()

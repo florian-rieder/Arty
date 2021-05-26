@@ -24,6 +24,4 @@ build
 *.spec
 *.egg
 *.egg-info/
-
-# application specific ignores
-.collection
+*.iss

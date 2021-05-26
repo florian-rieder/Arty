@@ -13,10 +13,12 @@ from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
 from widgets.CollectionToolbar import CollectionToolbar
 from widgets.PopupMessage import PopupMessage
+
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.ComparisonScreen import ComparisonScreen
-from api.Collection import CollectionManager, Collection
+
+from api.Collection import CollectionManager
 
 
 class ArtyApp(App):
@@ -29,12 +31,17 @@ class ArtyApp(App):
         load_collection(path)
             Load a collection from a path
     """
+
+    # Global variables
     PROJECT_DIRECTORY = ""
-    CURRENT_COLLECTION = None
+    CURRENT_COLLECTION = None # this shouldn't be a constant
+
+    # Reference to particular UI elements
     SCREENS = dict()
     SCREEN_MANAGER = None
     GRID = None
     PANEL = None
+
 
     def build(self):
         Logger.info("Platform: System: %s" % platform.system())
@@ -78,6 +85,7 @@ class ArtyApp(App):
         # keep reference to the ScreenManager
         self.SCREEN_MANAGER = screen_manager
 
+        # select the screen manager as root of the application
         return screen_manager
     
 
@@ -150,8 +158,9 @@ class ArtyApp(App):
         if file_path.startswith("b'") and file_path.endswith("'"):
             file_path = file_path[2:-1]
 
-        # load a collection when it is dragged on the app, or when the
-        # app is opened by clicking on an Arty meta file (at least on mac)
+        # load a collection when it is dragged on the app
+        # It also works when the app is opened by clicking on an Arty 
+        # meta file (but only on MacOS it seems.)
         if file_path.endswith(CollectionManager.META_EXTENSION):
             Logger.info("Loading collection from drop...")
             self.load_collection(os.path.dirname(file_path))
@@ -160,6 +169,7 @@ class ArtyApp(App):
         # make it so that one can only drop a file if the current screen
         # is the collection screen
         if not self.SCREEN_MANAGER.current == self.SCREENS["COLLECTION"].name:
+            # to localize
             err_msg = "Can only drop files on collection screen."
             PopupMessage(message=err_msg).open()
             Logger.exception(err_msg)
@@ -198,3 +208,15 @@ class ArtyApp(App):
             CollectionManager.save(self.CURRENT_COLLECTION)
 
         return False
+
+    def on_pause(self):
+        """
+            Method called when the app is in pause mode (the user
+            has minimized the window or moved it to the background).
+            Probably only works on mobiles but just in case....
+            Just to be sure, we'll save the collection at that moment.
+        """
+        Logger.info("Arty is paused.")
+        CollectionManager.save(self.CURRENT_COLLECTION)
+
+        return True

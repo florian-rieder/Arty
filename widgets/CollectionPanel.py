@@ -71,29 +71,32 @@ class CollectionPanel(BoxLayout):
         # clear container
         container.clear_widgets()
 
-        attributes = [
-            'artist',
-            'title',
-            'datation',
-            'dimensions',
-            'material',
-            'technique',
-            'production_site',
-            'conservation_site',
-            'notes',
-        ]
+        # values to eventually replace with _() gettext for localization
+        attributes = {
+            'artist'            :       "Artist",
+            'title'             :       "Title",
+            'datation'          :       "Datation",
+            'dimensions'        :       "Dimensions",
+            'material'          :       "Material",
+            'technique'         :       "Technique",
+            'style'             :       "Style",
+            'production_site'   :       "Production site",
+            'conservation_site' :       "Conservation site",
+            'source'            :       "Source",
+            'notes'             :       "Notes",
+        } 
 
         # calculate height of metadataitems so the notes cell will be
         # twice as high as the other fields
         base_hint_y = 1 / (len(attributes) + 1)
 
         # generate all text fields
-        for attribute in attributes:
+        for attribute, name in attributes.items():
             item = MetadataItem(size_hint_y = base_hint_y)
             item.field_name = attribute
             # TODO: find a way to write a "nice" attribute name, without
             # bloating the save file
-            item.ids.label.text = attribute.replace("_", " ").title()
+            item.ids.label.text = name
             item.ids.text_input.text = getattr(self.current_image, attribute)
 
             if attribute == "notes":

@@ -1,6 +1,11 @@
 # Arty
 Arty is an image viewer designed for the needs of Art Historians.
 
+# Hardware Requirements
+- RAM: at least 8GB
+- CPU: NA
+- Storage space : 218.4MB
+
 # Installation
 
 1. create a virtual environment:
@@ -31,7 +36,7 @@ For better compatibility, build with the oldest version of the OS you want to su
 
 ## MacOS
 `main.spec`
-```
+```python
 # -*- mode: python -*-
 
 block_cipher = None
@@ -95,7 +100,7 @@ Once the main.spec file is created, running the build script with `. build.sh` s
 
 ## Windows
 `main.spec`
-```
+```python
 # -*- mode: python ; coding: utf-8 -*-
 
 from kivy_deps import sdl2, glew
@@ -141,7 +146,75 @@ coll = COLLECT(exe, Tree('C:\\path\\to\\this\\repo'),
                name='Arty')
 ```
 
-Once the main.spec file is created, you can build an executable of Arty. The build script for Windows requires an extra installation step to be able to generate an installer package. The software [Inno Setup 6](https://jrsoftware.org/isinfo.php) is used. You then generate a winsetup.iss file and run the build script with `build.bat` in `cmd` should take care of the entire build process, generating a folder with the .exe and dependencies and an installer package in the `dist` folder.
+Once the main.spec file is created, you can build an executable of Arty with pyinstaller. The batch build script for Windows requires an extra installation step to be able to generate an installer package: [Inno Setup 6](https://jrsoftware.org/isinfo.php)
+
+After Inno Setup is installed on your system, you can either create your own `winsetup.iss` Inno Setup installer script using their wizard, or copy ours and change the paths where appropriate.
+
+`winsetup.iss`
+```
+#define MyAppName "Arty"
+#define MyAppVersion "Alpha-1.0"
+#define MyAppPublisher "Florian Rieder, Paul Zignani, Caroline Roxana Rohrbach"
+#define MyAppURL "https://www.example.com/"
+#define MyAppExeName "Arty.exe"
+#define MyAppAssocName MyAppName + " Collection"
+#define MyAppAssocExt ".arty"
+#define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
+
+[Setup]
+; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
+; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
+AppId={{07F606D5-BB0D-4D8D-AD21-6D6CA95F2C37}
+AppName={#MyAppName}
+AppVersion={#MyAppVersion}
+;AppVerName={#MyAppName} {#MyAppVersion}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppURL}
+AppSupportURL={#MyAppURL}
+AppUpdatesURL={#MyAppURL}
+DefaultDirName={autopf}\{#MyAppName}
+ChangesAssociations=yes
+DisableProgramGroupPage=yes
+; Remove the following line to run in administrative install mode (install for all users.)
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
+OutputDir=C:\Path\to\this\repo\dist
+OutputBaseFilename=Arty setup
+Compression=lzma
+SolidCompression=yes
+WizardStyle=modern
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "french"; MessagesFile: "compiler:Languages\French.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
+[Files]
+Source: "C:\Path\to\this\repo\dist\Arty\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Path\to\this\repo\dist\Arty\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Registry]
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\SupportedTypes"; ValueType: string; ValueName: ".myp"; ValueData: ""
+
+[Icons]
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+```
+
+Once the `winsetup.iss` script is ready, run the build script with `build.bat` in `cmd` should take care of the entire build process, generating a folder with the .exe and dependencies and an installer package in the `dist` folder.
+
+
+
 
 # Unit testing
 Use the command `python -m tests.Tests` to run unit tests.

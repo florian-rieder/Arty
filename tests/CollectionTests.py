@@ -120,7 +120,7 @@ class TestCollection(unittest.TestCase):
             "60 après JC": 60,
             "60 après J-C": 60,
             "60 après j.-C.": 60,
-            "60 après J.c.": 60,
+            "60 avant J.c.": -60,
             "1620-1630": 1620,
             "c. 1600": 1600,
             "circa 320": 320,

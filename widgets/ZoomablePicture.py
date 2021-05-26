@@ -15,10 +15,12 @@ class ZoomablePicture(ScatterPlane):
 
         Attributes
         ----------
-        source : str
-            Absolute path to the image to display
-        image_width, image_height : int
-            Dimensions of the image in px
+        is_hovered : bool
+            True if the mouse is hovering the picture
+        MIN_ZOOM : int
+            Minimal zoom factor
+        MAX_ZOOM : int
+            Maximal zoom factor
 
         Methods
         -------
@@ -26,6 +28,9 @@ class ZoomablePicture(ScatterPlane):
             Callback for handling zooming on scroll event
     """
     is_zoomed = False
+
+    MIN_ZOOM = 1
+    MAX_ZOOM = 12
 
     def on_touch_up(self, touch):
         """
@@ -39,23 +44,27 @@ class ZoomablePicture(ScatterPlane):
             if touch.is_mouse_scrolling:
                 if touch.button == 'scrollup':
                     # unzoom
-                    if self.scale > 1:
+                    if self.scale > self.MIN_ZOOM:
                         mat = Matrix().scale(.9, .9, .9)
                         self.apply_transform(mat, anchor=pos)
                     else:
                         # move the image back to the center of the
                         # screen when it reaches a scale of <= 1
-                        self.scale = 1
+                        # a little hack because translating the image
+                        # while zoomed-in would change the center of the
+                        # widget when zooming back out, plus the min zoom
+                        # could be < 1 due to fast scrolling
+                        self.scale = self.MIN_ZOOM
                         self.center = Window.center
 
                 elif touch.button == 'scrolldown':
                     # zoom
-                    if self.scale < 10:
+                    if self.scale < self.MAX_ZOOM:
                         mat = Matrix().scale(1.1, 1.1, 1.1)
                         self.apply_transform(mat, anchor=pos)
 
-        # allow translating the image on both axis only when it is
-        # zoomed
+
+        # restrict translating the image unless it is zoomed
         if self.scale <= 1 and self.do_translation == (True, True):
             self.do_translation = (False, False)
         elif self.scale > 1 and self.do_translation == (False, False):

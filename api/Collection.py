@@ -469,8 +469,8 @@ class CollectionImage():
         to_legend()
             generates a reference string (legend)
 
-        NOTE
-        ----
+        Notes
+        -----
         - filename is deliberately a relative path, this prevents
           everything from breaking in the case the directory is moved.
           To get the absolute path, use:
@@ -481,6 +481,7 @@ class CollectionImage():
         - Date format to discuss.
         - Other fields ?
         - Tag system ?
+        - To add fields, remember to also add them in CollectionPanel !
     """
     # the whole field(metadata=config(field_name=...)) shenanigans are
     # there to create aliases for the attribute's name in order for the
@@ -510,6 +511,12 @@ class CollectionImage():
                             )
     dimensions :            Optional[str] = field(
                                 metadata=config(field_name="x"), default=""
+                            )
+    style :                 Optional[str] = field(
+                                metadata=config(field_name="S"), default=""
+                            )
+    source :                Optional[str] = field(
+                                metadata=config(field_name="s"), default=""
                             )
     notes:                  Optional[str] = field(
                                 metadata=config(field_name="n"), default=""
