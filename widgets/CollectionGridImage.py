@@ -54,10 +54,11 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         app = App.get_running_app()
 
         if is_checked:
-            app.TOOLBAR.selected_images.append(self.collection_image)
+            if self.collection_image not in app.TOOLBAR.selected_images:
+                app.TOOLBAR.selected_images.append(self.collection_image)
         else:
-            app.TOOLBAR.selected_images.remove(self.collection_image)
-    
+            if self.collection_image in app.TOOLBAR.selected_images:
+                app.TOOLBAR.selected_images.remove(self.collection_image)
     
     def on_mouse_pos(self, window, pos):
         # TODO: figure out how to make it work also on the first element

@@ -6,6 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.logger import Logger
 import kivy.properties as kyprops
+from pptx.package import _ImageParts
 
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterDropdown import FilterDropdown
@@ -73,8 +74,9 @@ class CollectionToolbar(BoxLayout):
         collection = app.CURRENT_COLLECTION.get_collection()
 
         for image in collection:
-            self.selected_images.append(image)
-
+            if image not in  self.selected_images:
+                CollectionGridImage(collection_image = image).ids.select_image.active = True
+                # CollectionGridImage(collection_image = image).ids.select_image.background_checkbox_down='resources/check-box.png'
     def compare(self):
         """
             TODO: docstring
