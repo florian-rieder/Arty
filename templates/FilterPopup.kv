@@ -1,12 +1,13 @@
 #:kivy 1.0
 #:import kivy kivy
 
-<FilterDropdown>:
+<FilterPopup>:
     id: filter_box
     auto_dismiss: True
-    size_hint: 0.6,0.5
+    size_hint: 0.6,0.3
     pos_hint: {"top":0.8}
     title: 'Filter by:'
+    padding: dp(10)
 
     BoxLayout:
         orientation: 'vertical'
@@ -16,6 +17,7 @@
         TextInput:
             id: title_input
             hint_text: 'title'
+            text: root.title_art
             multiline: False
             size_hint_y: None
             height: dp(33)
@@ -23,6 +25,7 @@
         TextInput:
             id: artist_input
             hint_text: 'artist'
+            text: root.artist
             multiline: False
             size_hint_y: None
             height: dp(33)
@@ -30,6 +33,7 @@
         TextInput:
             id: technique_input
             hint_text: 'technique'
+            text: root.technique
             multiline: False
             size_hint_y: None
             height: dp(33)
@@ -37,10 +41,11 @@
             orientation: 'horizontal'
             height: dp(32)
             size_hint_y: None
+            spacing: dp(4)
 
             Label:
                 id: mode_lbl
-                text: 'mode'
+                text: 'mode :'
                 height: dp(33)
 
             ToggleButton:
@@ -53,6 +58,7 @@
             orientation: 'horizontal'
             height: dp(32)
             size_hint_y: None
+            spacing: dp(4)
 
             Button:
                 id: filter_btn
@@ -60,7 +66,7 @@
                 size_hint_y: None
                 height: dp(33)
                 on_release: root.filter_by()
-                on_release: root.dismiss()
+                on_release: root.save_values()
             
             Button:
                 id: reset_btn

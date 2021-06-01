@@ -6,7 +6,7 @@ from kivy.logger import Logger
 import kivy.properties as kyprops
 
 from widgets.PopupMessage import PopupMessage
-from widgets.FilterDropdown import FilterDropdown
+from widgets.FilterPopup import FilterPopup
 from api.Collection import CollectionUtils
 from api.Collection import CollectionManager
 from api.Powerpoint import Powerpoint
@@ -44,7 +44,10 @@ class CollectionToolbar(BoxLayout):
                             'Artist [A-Z]','Artist [Z-A]',
                             'Datation Increasing','Datation Decreasing']
                             )
-
+    
+    title_filter = kyprops.StringProperty('')
+    artist_filter = kyprops.StringProperty('')
+    technique_filter = kyprops.StringProperty('')
 
     def to_home_screen(self):
         """
@@ -128,7 +131,6 @@ class CollectionToolbar(BoxLayout):
         """
             TODO: docstring
         """
-        # TODO: replace with CollectionToolbar current image list
         
         app = App.get_running_app()
         
@@ -157,14 +159,13 @@ class CollectionToolbar(BoxLayout):
         """
             TODO: docstring
         """
-        FilterDropdown().open()
 
-        # filter_dropdown = FilterDropdown()
-        # mainbutton = self.ids.filter_select
+        FilterPopup(
+            title_art = self.title_filter,
+            artist = self.artist_filter,
+            technique = self.technique_filter
+        ).open()
 
-        # mainbutton.bind(on_press = filter_dropdown.open)
-
-        # filter_dropdown.ids.filter_btn.bind(on_release = filter_dropdown.dismiss)
 
     def handle_selection(self, selection):
         """
