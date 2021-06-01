@@ -157,12 +157,14 @@ class CollectionToolbar(BoxLayout):
         """
             TODO: docstring
         """
-        filter_dropdown = FilterDropdown()
-        mainbutton = self.ids.filter_select
+        FilterDropdown().open()
 
-        mainbutton.bind(on_press = filter_dropdown.open)
+        # filter_dropdown = FilterDropdown()
+        # mainbutton = self.ids.filter_select
 
-        filter_dropdown.ids.filter_btn.bind(on_release = filter_dropdown.dismiss)
+        # mainbutton.bind(on_press = filter_dropdown.open)
+
+        # filter_dropdown.ids.filter_btn.bind(on_release = filter_dropdown.dismiss)
 
     def handle_selection(self, selection):
         """

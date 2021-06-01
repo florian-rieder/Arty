@@ -4,38 +4,68 @@
 <FilterDropdown>:
     id: filter_box
     auto_dismiss: True
+    size_hint: 0.6,0.5
+    pos_hint: {"top":0.8}
+    title: 'Filter by:'
 
-    TextInput:
-        id: title_input
-        hint_text: 'title'
-        multiline: False
-        size_hint_y: None
-        height: dp(33)
+    BoxLayout:
+        orientation: 'vertical'
+        halign: 'center'
+        size:  root.width, root.height
 
-    TextInput:
-        id: artist_input
-        hint_text: 'artist'
-        multiline: False
-        size_hint_y: None
-        height: dp(33)
+        TextInput:
+            id: title_input
+            hint_text: 'title'
+            multiline: False
+            size_hint_y: None
+            height: dp(33)
 
-    TextInput:
-        id: technique_input
-        hint_text: 'technique'
-        multiline: False
-        size_hint_y: None
-        height: dp(33)
+        TextInput:
+            id: artist_input
+            hint_text: 'artist'
+            multiline: False
+            size_hint_y: None
+            height: dp(33)
 
-    Button:
-        id: filter_btn
-        text: 'Filter'
-        size_hint_y: None
-        height: dp(33)
-        on_press: root.filter_by()
+        TextInput:
+            id: technique_input
+            hint_text: 'technique'
+            multiline: False
+            size_hint_y: None
+            height: dp(33)
+        BoxLayout:
+            orientation: 'horizontal'
+            height: dp(32)
+            size_hint_y: None
 
-    Button:
-        id: reset_btn
-        text: 'Reset'
-        size_hint_y: None
-        height: dp(33)
-        on_press: root.reset_grid()
+            Label:
+                id: mode_lbl
+                text: 'mode'
+                height: dp(33)
+
+            ToggleButton:
+                id: mode_btn
+                text: 'all'
+                height: dp(33)
+                on_state: root.select_mode()
+
+        BoxLayout:
+            orientation: 'horizontal'
+            height: dp(32)
+            size_hint_y: None
+
+            Button:
+                id: filter_btn
+                text: 'Filter'
+                size_hint_y: None
+                height: dp(33)
+                on_release: root.filter_by()
+                on_release: root.dismiss()
+            
+            Button:
+                id: reset_btn
+                text: 'Reset'
+                size_hint_y: None
+                height: dp(33)
+                on_release: root.reset_grid()
+                on_release: root.dismiss()
