@@ -18,11 +18,19 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         ----------
         source: StringProperty
             source of the image
+        is_hovered: Boolean
+            True if the mouse is on the widget
         collection_image: ObjectProperty(CollectionImage)
             the CollectionImage represented by this widget
 
         Methods
         -------
+        on_press():
+            displays the panel for the image when pressed
+        checkbox_click():
+            selects the image if the checkbox is clicked
+        on_mouse_pos:
+            displays the checkbox if the mouse is on the image
 
     """
     Builder.load_file('templates/CollectionGridImage.kv')
@@ -50,6 +58,10 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         app.PANEL.set_image(self.collection_image)
 
     def checkbox_click(self, _instance, is_checked):
+        """ Summary
+            -------
+            Saves the image in a list when it's checkbox is clicked
+        """
 
         app = App.get_running_app()
 
@@ -61,8 +73,10 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
                 app.TOOLBAR.selected_images.remove(self.collection_image)
     
     def on_mouse_pos(self, window, pos):
-        # TODO: figure out how to make it work also on the first element
-        # displayed... weird
+        """ Summary
+            -------
+            Displays the checkbox when the mouse hovers the image
+        """
 
         empty = 'resources/empty.png'
         blank_checkbox = 'resources/blank-check-box.png'

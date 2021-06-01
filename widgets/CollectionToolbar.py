@@ -19,20 +19,39 @@ class CollectionToolbar(BoxLayout):
 
         Attributes
         ----------
-        selected_images
-        save_destination
+        selected_images: ListProperty
+            List of the selected images
+        save_destination: ListProperty
+
+        displayed_images: ListProperty
+            List of the current displayed images
+        sorting_attributes: ListProperty
+            List of the sorting attributes
+        title_filter: StringProperty
+            Current title in filter
+        artist_filter: StringProperty
+            Current artist in filter
+        technique_filter:
+            Current technique in filter
 
         Methods
         -------
+        to_home_screen()
+            on_press home button, return to the start screen
+        save_coll()
+            on_press save button, saves the current collection
+        select_all()
+            on_press select all button, select all the images of the collection
         compare()
             on_press compare button, switches to ComparisonScreen and
             send selected images
         export()
             on_press export button, exports selection to pptx
+        sort_by()
+            on_press sort by button, sorts the collection
+        open_filter()
+            on_press filter button, opens the filter window
 
-        TODO
-        ----
-        Remember the list of currently displayed images
     """
     Builder.load_file('templates/CollectionToolbar.kv')
 
@@ -61,8 +80,9 @@ class CollectionToolbar(BoxLayout):
 
 
     def save_coll(self):
-        """
-            TODO: docstring
+        """ Summary
+            -------
+            Saves the current collection
         """
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
@@ -70,8 +90,9 @@ class CollectionToolbar(BoxLayout):
 
 
     def select_all(self):
-        """
-            TODO: show active checkboxes
+        """ Summary
+            -------
+            Selects all the images from the collection
         """
 
         app = App.get_running_app()
@@ -92,8 +113,9 @@ class CollectionToolbar(BoxLayout):
 
 
     def compare(self):
-        """
-            TODO: docstring
+        """ Summary
+            -------
+            Opens the comparaison screen fi 2 to 4 images are selected
         """
         # get selected images
         # send them to the compare screen
@@ -128,8 +150,9 @@ class CollectionToolbar(BoxLayout):
 
 
     def sort_by(self, value):
-        """
-            TODO: docstring
+        """ Summary
+            -------
+            Sorts the collection with the selected paramter
         """
         
         app = App.get_running_app()
@@ -156,8 +179,9 @@ class CollectionToolbar(BoxLayout):
         self.selected_images = list()
 
     def open_filter(self):
-        """
-            TODO: docstring
+        """ Summary
+            -------
+            Opens the filter window with the current filters
         """
 
         FilterPopup(
