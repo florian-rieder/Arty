@@ -1,12 +1,9 @@
-import collections
 from plyer import filechooser
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.popup import Popup
 from kivy.logger import Logger
 import kivy.properties as kyprops
-from pptx.package import _ImageParts
 
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterDropdown import FilterDropdown
@@ -47,16 +44,18 @@ class CollectionToolbar(BoxLayout):
                             'Artist [A-Z]','Artist [Z-A]',
                             'Datation Increasing','Datation Decreasing']
                             )
-    
+
+
     def to_home_screen(self):
         """
             TODO: docstring
         """
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
-        
+
         CollectionManager.save(collection)
         app.SCREEN_MANAGER.switch_to(app.SCREENS["START"], direction ='right')
+
 
     def save_coll(self):
         """
@@ -65,18 +64,30 @@ class CollectionToolbar(BoxLayout):
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
         CollectionManager().save(collection)
-    
+
+
     def select_all(self):
         """
             TODO: show active checkboxes
         """
-        app = App.get_running_app()
-        collection = app.CURRENT_COLLECTION.get_collection()
 
-        for image in collection:
-            if image not in  self.selected_images:
-                CollectionGridImage(collection_image = image).ids.select_image.active = True
-                # CollectionGridImage(collection_image = image).ids.select_image.background_checkbox_down='resources/check-box.png'
+        app = App.get_running_app()
+
+        # select all images if not all images are selected, or deselect
+        # all images if all images are already selected.
+        do_select = self.selected_images != self.displayed_images
+
+        # activate checkboxes
+        for grid_image in app.GRID.children:
+            grid_image.ids.select_image.active = do_select
+        
+        # update selected_images
+        if do_select:
+            self.selected_images = self.displayed_images
+        else:
+            self.selected_images = list()
+
+
     def compare(self):
         """
             TODO: docstring
@@ -87,7 +98,7 @@ class CollectionToolbar(BoxLayout):
             app = App.get_running_app()
             app.SCREENS["COMPARE"].load_images(self.selected_images)
             app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='left')
-        except Exception:
+        except ValueError:
             #show popup if the wrong amount of images is selected
             PopupMessage(message = "Please select 2 to 4 images").open()
 

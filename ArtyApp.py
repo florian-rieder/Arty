@@ -41,6 +41,7 @@ class ArtyApp(App):
     SCREEN_MANAGER = None
     GRID = None
     PANEL = None
+    TOOLBAR = None
 
 
     def build(self):
@@ -125,6 +126,7 @@ class ArtyApp(App):
         # give the collection to the CollectionGrid, which will in turn
         # display the images on the screen
         self.GRID.set_collection(self.CURRENT_COLLECTION)
+        self.TOOLBAR.displayed_images = self.CURRENT_COLLECTION.get_collection()
 
         # initialize CollectionPanel
         self.PANEL.initialize(self.PROJECT_DIRECTORY)

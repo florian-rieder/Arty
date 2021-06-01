@@ -47,3 +47,5 @@ class FilterDropdown(DropDown):
         self.ids.technique_input.text = ""
 
         app.GRID.set_display_list(collection)
+        # reset CollectionToolbar selection
+        self.parent.selected_images = list()
