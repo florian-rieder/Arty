@@ -1,10 +1,19 @@
 # Arty
-Arty is an image viewer designed for the needs of Art Historians.
+Arty is an image viewer designed for the needs of Art Historians. It allow for organizing a collection of images, annotate their metadata, compare them and view them in detail.
+
+The current version of the application was developed by Florian Rieder, Caroline Roxana Rohrbach and Paul Zignani under the direction of Davide Picca, during the spring semester 2021 at the University of Lausanne (CH).
+
+## Features
+
+- Organize a corpus of images. Every image file is in one folder on your computer.
+- Annotate the metadata of an image (artist, title, datation, etc)
+- Sort and filter your collection based on the images metadata.
+- Compare 2 to 4 images together.
+- Export your corpus to Powerpoint, with automatic legend generation based on the images' metadata.
 
 # Hardware Requirements
-- RAM: at least 8GB
-- CPU: NA
-- Storage space : 218.4MB
+- RAM: at least 8 GB
+- Storage space : 220 MB
 
 # Installation
 
