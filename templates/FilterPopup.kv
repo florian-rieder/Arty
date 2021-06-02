@@ -4,7 +4,7 @@
 <FilterPopup>:
     id: filter_box
     auto_dismiss: True
-    size_hint: 0.6,0.3
+    size_hint: 0.6,0.4
     pos_hint: {"top":0.8}
     title: 'Filter by:'
     padding: dp(10)
@@ -29,6 +29,14 @@
             multiline: False
             size_hint_y: None
             height: dp(33)
+        
+        TextInput:
+            id: style_input
+            hint_text: 'style'
+            text: root.style
+            multiline: False
+            size_hint_y: None
+            height: dp(33)
 
         TextInput:
             id: technique_input
@@ -50,7 +58,8 @@
 
             ToggleButton:
                 id: mode_btn
-                text: 'all'
+                text: root.mode_text
+                state: root.mode
                 height: dp(33)
                 on_state: root.select_mode()
 

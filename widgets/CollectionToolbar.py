@@ -65,7 +65,10 @@ class CollectionToolbar(BoxLayout):
     
     title_filter = kyprops.StringProperty('')
     artist_filter = kyprops.StringProperty('')
+    style_filter = kyprops.StringProperty('')
     technique_filter = kyprops.StringProperty('')
+    mode_filter = kyprops.StringProperty('normal')
+    mode_text_filter = kyprops.StringProperty('all')
 
     def to_home_screen(self):
         """
@@ -186,7 +189,10 @@ class CollectionToolbar(BoxLayout):
         FilterPopup(
             title_art = self.title_filter,
             artist = self.artist_filter,
-            technique = self.technique_filter
+            style = self.style_filter,
+            technique = self.technique_filter,
+            mode = self.mode_filter,
+            mode_text = self.mode_text_filter
         ).open()
 
 
