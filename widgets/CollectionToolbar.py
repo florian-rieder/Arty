@@ -69,7 +69,7 @@ class CollectionToolbar(BoxLayout):
     style_filter = kyprops.StringProperty('')
     technique_filter = kyprops.StringProperty('')
     mode_filter = kyprops.StringProperty('normal')
-    mode_text_filter = kyprops.StringProperty('all')
+    mode_text_filter = kyprops.StringProperty('and')
 
     def to_home_screen(self):
         """ Summary

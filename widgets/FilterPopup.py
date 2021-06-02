@@ -46,17 +46,17 @@ class FilterPopup(Popup):
     style = kyprops.StringProperty('')
     technique = kyprops.StringProperty('')
     mode = kyprops.StringProperty('normal')
-    mode_text = kyprops.StringProperty('all')
+    mode_text = kyprops.StringProperty('and')
 
     def select_mode(self):
         """ Summary
             -------
             Changes the text of the mode togglebutton according to state
         """
-        self.ids.mode_btn.text = 'all'
+        self.ids.mode_btn.text = 'and'
 
         if self.ids.mode_btn.state == 'down':
-            self.ids.mode_btn.text = 'any'
+            self.ids.mode_btn.text = 'or'
 
     def filter_by(self):
         """ Summary
@@ -73,11 +73,15 @@ class FilterPopup(Popup):
         self.technique = self.ids.technique_input.text
         self.mode_text = self.ids.mode_btn.text
 
+        true_mode = 'all'
+        if self.mode_text == 'or':
+            true_mode = 'any'
+
         displayed_images = app.CURRENT_COLLECTION.get_collection()
 
         # filter with the textinput values
         displayed_images = CollectionUtils.filter(displayed_images,
-                                               mode= self.mode_text,
+                                               mode= true_mode,
                                                title = self.title_art,
                                                artist = self.artist,
                                                style = self.style,
