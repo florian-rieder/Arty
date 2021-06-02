@@ -17,23 +17,9 @@
             text: 'Save'
             on_release: root.save_coll()
 
-        Button:
-            id: select_all
-            text: 'Select All'
-            on_release: root.select_all()
-
-        Button:
-            id: compare_btn
-            text: 'Compare Selection'
-            on_release: root.compare()
-        Button:
-            id: export_btn
-            text: 'Export Selection'
-            on_release: root.export()
-
         Spinner:
             id: select_sort
-            text: 'Sort by:'
+            text: 'Sort'
             values: root.sorting_attributes
             on_text: root.sort_by(select_sort.text)
         
@@ -41,3 +27,17 @@
             id: filter_select
             text: 'Filter'
             on_release: root.open_filter()
+
+        Button:
+            id: select_all
+            text: 'Select all'
+            on_release: root.select_all()
+
+        Button:
+            id: compare_btn
+            text: 'Compare'
+            on_release: root.compare()
+        Button:
+            id: export_btn
+            text: 'Export PPTX'
+            on_release: root.export()

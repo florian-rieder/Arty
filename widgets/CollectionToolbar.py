@@ -56,7 +56,6 @@ class CollectionToolbar(BoxLayout):
     Builder.load_file('templates/CollectionToolbar.kv')
 
     selected_images = kyprops.ListProperty(list())
-    save_destination = kyprops.ListProperty(list())
     displayed_images = kyprops.ListProperty(list())
     sorting_attributes = kyprops.ListProperty(
                             ['Title [A-Z]', 'Title [Z-A]',
@@ -138,7 +137,7 @@ class CollectionToolbar(BoxLayout):
         try:
             filechooser.save_file(
                 on_selection=self.handle_selection,
-                #filters=["*pptx"] # crashes on replace existing file...
+                filters=["*pptx"] # crashes on replace existing file...
             )
         except Exception:
             Logger.exception(
