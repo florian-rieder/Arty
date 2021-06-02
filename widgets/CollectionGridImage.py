@@ -13,7 +13,7 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         Summary
         -------
         Displays a clickable an selectable image of the collection.
-        
+
         Attributes
         ----------
         source: StringProperty
@@ -61,21 +61,38 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         """ Summary
             -------
             Saves the image in a list when it's checkbox is clicked
+
+            Arguments
+            ---------
+            _instance: (unused)
+                reference to the current instance
+            is_checked: bool
+                states if the checkbox is checked
         """
 
         app = App.get_running_app()
 
+        # appends the image to the selection
         if is_checked:
             if self.collection_image not in app.TOOLBAR.selected_images:
                 app.TOOLBAR.selected_images.append(self.collection_image)
+        # removes the image from the selection
         else:
             if self.collection_image in app.TOOLBAR.selected_images:
                 app.TOOLBAR.selected_images.remove(self.collection_image)
-    
+
     def on_mouse_pos(self, window, pos):
         """ Summary
             -------
             Displays the checkbox when the mouse hovers the image
+
+            Arguments
+            ---------
+            window (unused)
+                reference the app window
+            pos: tuple
+                position of the cursor
+
         """
 
         empty = 'resources/empty.png'
