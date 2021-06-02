@@ -18,33 +18,42 @@
             id: title_input
             hint_text: 'title'
             text: root.title_art
-            multiline: False
             size_hint_y: None
             height: dp(33)
+            write_tab: False
+            multiline: False
+            cursor_color: (0, 0, 0, 1)
 
         TextInput:
             id: artist_input
             hint_text: 'artist'
             text: root.artist
-            multiline: False
             size_hint_y: None
             height: dp(33)
-        
+            write_tab: False
+            multiline: False
+            cursor_color: (0, 0, 0, 1)
+
         TextInput:
             id: style_input
             hint_text: 'style'
             text: root.style
-            multiline: False
             size_hint_y: None
             height: dp(33)
+            write_tab: False
+            multiline: False
+            cursor_color: (0, 0, 0, 1)
 
         TextInput:
             id: technique_input
             hint_text: 'technique'
             text: root.technique
-            multiline: False
             size_hint_y: None
             height: dp(33)
+            write_tab: False
+            multiline: False
+            cursor_color: (0, 0, 0, 1)
+
         BoxLayout:
             orientation: 'horizontal'
             height: dp(32)
@@ -76,7 +85,7 @@
                 height: dp(33)
                 on_release: root.filter_by()
                 on_release: root.save_values()
-            
+
             Button:
                 id: reset_btn
                 text: 'Reset'
