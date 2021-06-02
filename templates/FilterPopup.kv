@@ -4,7 +4,8 @@
 <FilterPopup>:
     id: filter_box
     auto_dismiss: True
-    size_hint: 0.6,0.4
+    size_hint: 0.6,0.35
+    height: dp(250)
     pos_hint: {"top":0.8}
     title: 'Filter by:'
     padding: dp(10)
@@ -12,6 +13,7 @@
     BoxLayout:
         orientation: 'vertical'
         halign: 'center'
+        valign: 'center'
         size:  root.width, root.height
 
         TextInput:

@@ -7,10 +7,8 @@ import kivy.properties as kyprops
 
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterPopup import FilterPopup
-from api.Collection import CollectionUtils
-from api.Collection import CollectionManager
+from api.Collection import CollectionUtils, CollectionManager
 from api.Powerpoint import Powerpoint
-from widgets.CollectionGridImage import CollectionGridImage
 
 class CollectionToolbar(BoxLayout):
     """ Summary
@@ -31,8 +29,12 @@ class CollectionToolbar(BoxLayout):
             Current title in filter
         artist_filter: StringProperty
             Current artist in filter
-        technique_filter:
+        technique_filter: StringProperty
             Current technique in filter
+        mode_filter: StringProperty
+            Current filter mode
+        mode_text_filter: StringProperty
+            Current filter mode name
 
         Methods
         -------
@@ -62,7 +64,6 @@ class CollectionToolbar(BoxLayout):
                             'Artist [A-Z]','Artist [Z-A]',
                             'Datation Increasing','Datation Decreasing']
                             )
-    
     title_filter = kyprops.StringProperty('')
     artist_filter = kyprops.StringProperty('')
     style_filter = kyprops.StringProperty('')
@@ -71,12 +72,14 @@ class CollectionToolbar(BoxLayout):
     mode_text_filter = kyprops.StringProperty('all')
 
     def to_home_screen(self):
-        """
-            TODO: docstring
+        """ Summary
+            -------
+            Returns to the start screen
         """
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
 
+        # switches to start screen
         CollectionManager.save(collection)
         app.SCREEN_MANAGER.switch_to(app.SCREENS["START"], direction ='right')
 
@@ -88,6 +91,8 @@ class CollectionToolbar(BoxLayout):
         """
         app = App.get_running_app()
         collection = app.CURRENT_COLLECTION
+
+        # saves curent collection
         CollectionManager().save(collection)
 
 
@@ -106,7 +111,7 @@ class CollectionToolbar(BoxLayout):
         # activate checkboxes
         for grid_image in app.GRID.children:
             grid_image.ids.select_image.active = do_select
-        
+
         # update selected_images
         if do_select:
             self.selected_images = self.displayed_images
@@ -156,27 +161,26 @@ class CollectionToolbar(BoxLayout):
             -------
             Sorts the collection with the selected paramter
         """
-        
         app = App.get_running_app()
-        
+
+        # sorts the whole collection if it is the displayed one
         if len(self.displayed_images) == 0:
             self.displayed_images = app.CURRENT_COLLECTION.get_collection()
-        
+
         val_to_sort = value.split()
+        reverse = True
+        # checks sorting order
+        if val_to_sort[1] in ('[A-Z]', 'Increasing'):
+            reverse = False
+
         # sort the image list
-        if val_to_sort[1] == '[A-Z]' or 'Increasing':
-            print(val_to_sort[1])
-            self.displayed_images = CollectionUtils.sort(
-                                            self.displayed_images,
-                                            val_to_sort[0].lower()
-                                            )
-        else:
-            print(val_to_sort[1])
-            self.displayed_images = CollectionUtils.sort(
-                                            self.displayed_images,
-                                            val_to_sort[0].lower(),
-                                            reverse= True
-                                            )
+        self.displayed_images = CollectionUtils.sort(
+                                        self.displayed_images,
+                                        val_to_sort[0].lower(),
+                                        reverse=reverse
+                                        )
+
+        # sets the grid with the sorted collection
         app.GRID.set_display_list(self.displayed_images)
         self.selected_images = list()
 
@@ -186,6 +190,7 @@ class CollectionToolbar(BoxLayout):
             Opens the filter window with the current filters
         """
 
+        # opens the filter class with saved inputs
         FilterPopup(
             title_art = self.title_filter,
             artist = self.artist_filter,
