@@ -21,8 +21,14 @@ class FileChoose(Button):
         """
             Callback function for handling the selection response from Activity.
         """
-        Logger.info("Loading collection from chooser...")
+
+        if not selection:
+            Logger.info("Arty: No path selected.")
+            return
+
+        Logger.info("Arty: Loading collection from chooser...")
         # open the first directory selected (comes as an array)
         path = str(selection[0])
+
         app = App.get_running_app()
         app.load_collection(path)

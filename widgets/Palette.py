@@ -49,16 +49,18 @@ class Palette(Widget):
             Takes a palette and displays it using the canvas.
         """
         self.canvas.clear()
+        rectangle_width = self.width / self.NUM_COLORS
+
         for idx, color in enumerate(self.current_palette):
             with self.canvas:
                 Color(*color)
                 Rectangle(
-                    pos = (
-                        self.pos[0] + (self.width / self.NUM_COLORS * idx),
+                    pos=(
+                        self.pos[0] + (rectangle_width * idx),
                         self.pos[1]
                         ),
-                    size = (
-                        self.width / self.NUM_COLORS,
+                    size=(
+                        rectangle_width,
                         self.height
                         )
                     )
