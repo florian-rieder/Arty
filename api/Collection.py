@@ -48,8 +48,13 @@ class CollectionManager():
     AUTHORIZED_IMAGE_FORMATS = (
         ".jpg", ".jpeg", ".png", ".webp", ".tiff", ".psd"
     )
+
     META_EXTENSION = ".arty"
-    VERSION = "Alpha-1.0"
+
+    ### IMPORTANT
+    # When doing changes to the .arty file :
+    # Change the version number
+    VERSION = "Alpha-1.1"
 
     @classmethod
     def load(cls, path):
@@ -116,6 +121,71 @@ class CollectionManager():
 
 
     @classmethod
+    def fix_version_conflict(cls, json_string):
+        """ Summary
+            -------
+            Rules for upgrading older versions of a collection's meta
+            to the current one.
+
+            Arguments
+            ---------
+            json_string : str
+                Outdated JSON string collected from the meta file
+        """
+        # turn the JSON into a dictionary for easy modifications
+        coll_dict = json.loads(json_string)
+
+        try:
+            version = coll_dict["version"]
+        except KeyError:
+            version = coll_dict["v"]
+
+        if version == "Alpha-1.0":
+            # upgrade the save file to the next version
+
+            # rename a key :
+            # mydict[k_new] = mydict.pop(k_old)
+
+            # revert minification
+            coll_dict["work_directory"] = coll_dict.pop("w")
+
+            coll_dict["version"] = "Alpha-1.0.1"
+            coll_dict.pop("v")
+
+            updated_coll = list()
+            for image_meta in coll_dict["c"]:
+                updated_image_meta = {
+                    "filename": image_meta["f"],
+                    "title": image_meta["t"],
+                    "artist": image_meta["a"],
+                    "datation": image_meta["d"],
+                    "technique": image_meta["e"],
+                    "material": image_meta["m"],
+                    "conservation_site": image_meta["c"],
+                    "production_site": image_meta["p"],
+                    "dimensions": image_meta["x"],
+                    "style": image_meta["S"],
+                    "source": image_meta["s"],
+                    "notes": image_meta["n"],
+                }
+                updated_coll.append(updated_image_meta)
+            
+            coll_dict.pop("c")
+            coll_dict["collection"] = updated_coll
+
+
+        if version == "Alpha-1.0.1":
+            # upgrade the save file to the next version
+            pass
+
+
+        # turn the dictionary back to a JSON string
+        json_string = json.dumps(coll_dict)
+
+        return json_string
+
+
+    @classmethod
     def __load_meta(cls, path):
         """ Summary
             -------
@@ -131,11 +201,14 @@ class CollectionManager():
 
         # retrieve the version of the collection
         try:
-            version = coll_dict["v"]
+            version = coll_dict["version"]
         except KeyError as exc:
-            raise KeyError(
-                "Couldn't retrieve version from collection meta file"
-            ) from exc
+            try:
+                version = coll_dict["v"]
+            except KeyError as exc:
+                raise KeyError(
+                    "Couldn't retrieve version from collection meta file"
+                ) from exc
 
         if version != cls.VERSION:
             coll_json = cls.fix_version_conflict(coll_json)
@@ -144,13 +217,13 @@ class CollectionManager():
 
         # now we are sure the data is clean, we can load the collection
 
-        version = coll_dict["v"]
+        version = coll_dict["version"]
 
         # retrieve the collection list
         collection = [
             # cast each object in the JSON list to a CollectionImage
             # pylint: disable=no-member
-            CollectionImage.from_dict(item) for item in coll_dict["c"]
+            CollectionImage.from_dict(item) for item in coll_dict["collection"]
         ]
 
         return Collection(path, version, collection)
@@ -220,9 +293,11 @@ class CollectionManager():
             # convert the collection to JSON
             json_data = json.loads(collection.to_json())
             # convert to string and minify JSON file
-            formatted_json = json.dumps(json_data, separators=(',', ':'))
+            #formatted_json = json.dumps(json_data, separators=(',', ':'))
+            #prettified
+            formatted_json = json.dumps(json_data, indent=4)
 
-            if not formatted_json:
+            if not formatted_json.strip():
                 # prevent data from being erased
                 raise RuntimeError("Tried to write an empty Collection")
 
@@ -247,32 +322,6 @@ class CollectionManager():
                 return fname
         # if no collection meta file is found
         return False
-
-
-    @classmethod
-    def fix_version_conflict(cls, json_string):
-        """ Summary
-            -------
-            Rules for upgrading older versions of a collection's meta
-            to the current one.
-
-            Arguments
-            ---------
-            json_string : str
-                Outdated JSON string collected from the meta file
-        """
-        # turn the JSON into a dictionary for easy modifications
-        coll_dict = json.loads(json_string)
-        version = coll_dict["v"]
-
-        if version == "Alpha-1.0":
-            # upgrade the save file to the next version
-            pass
-
-        # turn the dictionary back to a JSON string
-        json_string = json.dumps(coll_dict)
-
-        return json_string
 
 ### end class CollectionManager
 
@@ -311,16 +360,9 @@ class Collection():
     # there to create aliases for the attribute's name in order for the
     # JSON file generated to save metadata to take less space on the
     # user's disk.
-    work_directory :    str = field(
-                            metadata=config(field_name="w"), default=""
-                        )
-    version :           str = field(
-                            metadata=config(field_name="v"), default=""
-                        )
-    collection:         list = field(
-                            metadata=config(field_name="c"),
-                            default_factory=list
-                        )
+    work_directory :    str
+    version :           str
+    collection:         list = field(default_factory=list)
 
     def get_collection(self):
         """getter for the collection list"""
@@ -487,40 +529,18 @@ class CollectionImage():
     # there to create aliases for the attribute's name in order for the
     # JSON file generated to save metadata to take less space on the
     # user's disk.
-    filename :              str = field(metadata=config(field_name="f"))
-    title :                 Optional[str] = field(
-                                metadata=config(field_name="t"), default=""
-                            )
-    artist :                Optional[str] = field(
-                                metadata=config(field_name="a"), default=""
-                            )
-    datation :              Optional[str] = field(
-                                metadata=config(field_name="d"), default=""
-                            )
-    technique :             Optional[str] = field(
-                                metadata=config(field_name="e"), default=""
-                            )
-    material :              Optional[str] = field(
-                                metadata=config(field_name="m"), default=""
-                            )
-    conservation_site :     Optional[str] = field(
-                                metadata=config(field_name="c"), default=""
-                            )
-    production_site :       Optional[str] = field(
-                                metadata=config(field_name="p"), default=""
-                            )
-    dimensions :            Optional[str] = field(
-                                metadata=config(field_name="x"), default=""
-                            )
-    style :                 Optional[str] = field(
-                                metadata=config(field_name="S"), default=""
-                            )
-    source :                Optional[str] = field(
-                                metadata=config(field_name="s"), default=""
-                            )
-    notes:                  Optional[str] = field(
-                                metadata=config(field_name="n"), default=""
-                            )
+    filename :              str
+    title :                 Optional[str] = ""
+    artist :                Optional[str] = ""
+    datation :              Optional[str] = ""
+    technique :             Optional[str] = ""
+    material :              Optional[str] = ""
+    conservation_site :     Optional[str] = ""
+    production_site :       Optional[str] = ""
+    dimensions :            Optional[str] = ""
+    style :                 Optional[str] = ""
+    source :                Optional[str] = ""
+    notes:                  Optional[str] = ""
 
     def to_legend(self, style_name="CHICAGO"):
         """ Summary
@@ -681,7 +701,7 @@ class CollectionUtils():
                 # (with the in keyword)
                 [
                     # check if the value we're looking for is in this
-                    # image's value (accent and case insensitive)...
+                    # image's attribute (accent and case insensitive)...
                     unidecode(value).lower() in unidecode(getattr(image, attr)).lower()
                     # ...but only if the attribute is filled in the
                     # current image

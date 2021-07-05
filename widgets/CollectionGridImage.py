@@ -8,6 +8,9 @@ import kivy.properties as kyprops
 
 from api.Collection import CollectionImage
 
+EMPTY = 'resources/empty.png'
+BLANK_CHECKBOX = 'resources/blank-check-box.png'
+
 class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
     """
         Summary
@@ -92,11 +95,7 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
                 reference the app window
             pos: tuple
                 position of the cursor
-
         """
-
-        empty = 'resources/empty.png'
-        blank_checkbox = 'resources/blank-check-box.png'
 
         # convert window position to local position
         rel_pos = self.to_widget(*pos)
@@ -105,8 +104,8 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         if self.collide_point(*rel_pos):
             if not self.is_hovered:
                 self.is_hovered = True
-                self.ids.select_image.background_checkbox_normal = blank_checkbox
+                self.ids.select_image.background_checkbox_normal = BLANK_CHECKBOX
         else:
             if self.is_hovered:
                 self.is_hovered = False
-                self.ids.select_image.background_checkbox_normal = empty
+                self.ids.select_image.background_checkbox_normal = EMPTY

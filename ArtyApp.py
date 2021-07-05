@@ -117,7 +117,7 @@ class ArtyApp(App):
             return
 
         except Exception as exc:
-            err_msg = "Collection couldn't be loaded due to an old or corrupted .arty file"
+            err_msg = "Collection couldn't be loaded due to an old or corrupted {meta} file".format(meta=CollectionManager.META_EXTENSION)
             PopupMessage(message=err_msg).open()
             Logger.exception(exc)
             Logger.exception(err_msg)
