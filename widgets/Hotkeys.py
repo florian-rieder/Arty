@@ -58,9 +58,21 @@ class Hotkeys(FloatLayout):
 
                 self.super = []
                 return False
+
+            elif "super" in self.super and keycode[1] == 'a':
+                # Cmd + A -> select all images
+
+                if app.SCREEN_MANAGER.current != "Collection":
+                    return False
+
+                app.TOOLBAR.select_all()
+
+                return False
+
             elif "super" not in self.super and keycode[1] in ["super"]:
                 self.super.append(keycode[1])
                 return False
+
             else:
                 #Logger.info("key {} pressed.".format(keycode))
                 return False
@@ -78,9 +90,20 @@ class Hotkeys(FloatLayout):
 
                 self.super = []
                 return False
+            elif 'lctrl' in self.super and keycode[1] == 'a':
+                # Ctrl + A -> select all images
+
+                if app.SCREEN_MANAGER.current != "Collection":
+                    return False
+
+                app.TOOLBAR.select_all()
+
+                return False
+
             elif 'lctrl' not in self.super and keycode[1] in ["lctrl"]:
                 self.super.append(keycode[1])
                 return False
+
             else:
                 #Logger.info("key {} pressed.".format(keycode))
                 return False
