@@ -28,7 +28,7 @@ class TestCollectionImage(unittest.TestCase):
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
             )
-        expected_ref1 = "Leonardo de Vinci, Mona Lisa (Joconde), 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
+        expected_ref1 = "Leonardo de Vinci, [i]Mona Lisa (Joconde)[/i], 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
         self.assertEqual(test_image1.to_legend(), expected_ref1)
 
         test_image2 = CollectionImage(
@@ -41,7 +41,7 @@ class TestCollectionImage(unittest.TestCase):
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
             )
-        expected_ref2 = "Leonardo de Vinci, Mona Lisa (Joconde), 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
+        expected_ref2 = "Leonardo de Vinci, [i]Mona Lisa (Joconde)[/i], 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
         self.assertEqual(test_image2.to_legend(), expected_ref2)
 
         test_image3 = CollectionImage(
@@ -54,7 +54,7 @@ class TestCollectionImage(unittest.TestCase):
             conservation_site="Musée du Louvre, Paris",
             dimensions="77 x 53 cm"
             )
-        expected_ref3 = "Mona Lisa (Joconde), test, 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
+        expected_ref3 = "[i]Mona Lisa (Joconde)[/i], test, 1503-1506, Huile sur toile, 77 x 53 cm, Musée du Louvre, Paris"
         self.assertEqual(test_image3.to_legend(), expected_ref3)
 
 

@@ -26,49 +26,47 @@ class Hotkeys(FloatLayout):
         keyboard = Window.request_keyboard(self._keyboard_released, self)
         keyboard.bind(on_key_down=self._keyboard_on_key_down, on_key_up=self._keyboard_released)
 
-
-    def _keyboard_released(self, *args):
-        """
-            Reset key combination when the keyboard is released
-        """
-        self.super = []
+        self.app = App.get_running_app()
+        self.system_name = platform.system()
 
 
-    def _keyboard_on_key_down(self, window, keycode, text, super):
+    def _keyboard_released(self, _keyboard, keycode):
         """
-            Handle keystrokes (Cmd+S, Ctrl+S)
+            Reset key combination when the Ctrl/Cmd key is released
         """
-        app = App.get_running_app()
-        collection = app.CURRENT_COLLECTION
-        system_name = platform.system()
 
+        if keycode[1] in ['super', 'lctrl'] :
+            self.super = []
+
+
+    def _keyboard_on_key_down(self, _window, keycode, _text, _super):
+        """ Summary
+            -------
+            Handle keystrokes:
+            Ctrl/Cmd + S : save the current collection
+            Ctrl/Cmd + A : select all images
+
+            Arguments
+            ---------
+            keycode : tuple
+                Tuple (keycode : int, keycode : str) indicating the key
+                pressed.
+        """
+
+        ###
         # MacOSX hotkeys definition
-        if system_name == "Darwin":
+        if self.system_name == "Darwin":
             # "super" is the keycode for the Command key
+
+            # Cmd + S -> save collection
             if "super" in self.super and keycode[1] == 's':
-                # Cmd + S -> save collection
+                return self.save()
 
-                if not collection:
-                    return False
-
-                # save the contents of the panel, in case there are
-                # unregistered modifications
-                app.PANEL.save()
-                CollectionManager.save(collection)
-
-                self.super = []
-                return False
-
+            # Cmd + A -> select all images
             elif "super" in self.super and keycode[1] == 'a':
-                # Cmd + A -> select all images
+                return self.select_all()
 
-                if app.SCREEN_MANAGER.current != "Collection":
-                    return False
-
-                app.TOOLBAR.select_all()
-
-                return False
-
+            # remember if cmd is pressed
             elif "super" not in self.super and keycode[1] in ["super"]:
                 self.super.append(keycode[1])
                 return False
@@ -76,30 +74,22 @@ class Hotkeys(FloatLayout):
             else:
                 #Logger.info("key {} pressed.".format(keycode))
                 return False
+        # End MacOSX hotkeys definition
+        ###
 
+
+        ###
         # Windows hotkeys definition
-        if system_name == "Windows":
+        elif self.system_name == "Windows":
+            # Ctrl + S -> save collection
             if 'lctrl' in self.super and keycode[1] == 's':
-                # Ctrl + S -> save collection
+                return self.save()
 
-                if not collection:
-                    return False
-
-                app.PANEL.save()
-                CollectionManager.save(collection)
-
-                self.super = []
-                return False
+            # Ctrl + A -> select all images
             elif 'lctrl' in self.super and keycode[1] == 'a':
-                # Ctrl + A -> select all images
+                return self.select_all()
 
-                if app.SCREEN_MANAGER.current != "Collection":
-                    return False
-
-                app.TOOLBAR.select_all()
-
-                return False
-
+            # remember if lctrl is pressed
             elif 'lctrl' not in self.super and keycode[1] in ["lctrl"]:
                 self.super.append(keycode[1])
                 return False
@@ -107,3 +97,50 @@ class Hotkeys(FloatLayout):
             else:
                 #Logger.info("key {} pressed.".format(keycode))
                 return False
+        # End Windows hotkeys definition
+        ###
+
+
+    def select_all(self):
+        """ Summary
+            -------
+            Selects all images via the toolbar
+
+            Returns
+            -------
+            bool
+                Always False. It has got something to do with the kivy
+                _on_keyboard_key_down callback.
+        """
+        # check that we are in the collection screen
+        if self.app.SCREEN_MANAGER.current != "Collection":
+            return False
+
+        # select all images via the toolbar
+        self.app.TOOLBAR.select_all()
+
+        return False
+
+
+    def save(self):
+        """ Summary
+            -------
+            Save the collection
+
+            Returns
+            -------
+            bool
+                Always False. It has got something to do with the kivy
+                _on_keyboard_key_down callback.
+        """
+        collection = self.app.CURRENT_COLLECTION
+
+        # check that there is a collection to save
+        if not collection:
+            return False
+
+        # save the collection
+        self.app.PANEL.save()
+        CollectionManager.save(collection)
+
+        return False
