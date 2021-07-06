@@ -18,10 +18,13 @@ htmlcov/
 .coverage.*
 *,cover
 
-# build ignores
+# Build ignores
 dist
 build
 *.spec
 *.egg
 *.egg-info/
 *.iss
+
+# Application-specific ignores
+*.arty
