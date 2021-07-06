@@ -3,6 +3,7 @@ from PIL import Image
 from kivy.graphics import Rectangle, Color
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
+from kivy.logger import Logger
 
 class Palette(Widget):
     """ Summary
@@ -104,9 +105,19 @@ class Palette(Widget):
         color_counts = sorted(paletted.getcolors(), reverse=True)
         colors = list()
         for i in range(cls.NUM_COLORS):
-            palette_index = color_counts[i][1]
-            dominant_color = palette[palette_index*3:palette_index*3+3]
-            colors.append(tuple(dominant_color))
+            try:
+                palette_index = color_counts[i][1]
+                dominant_color = palette[palette_index*3:palette_index*3+3]
+                colors.append(tuple(dominant_color))
+            except IndexError:
+                Logger.exception(
+                    "{image_path} has less than {num_colors} colors."
+                    .format(
+                        image_path = image_path,
+                        num_colors = cls.NUM_COLORS
+                    )
+                )
+                break
 
         return colors
 
