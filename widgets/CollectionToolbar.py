@@ -71,6 +71,7 @@ class CollectionToolbar(BoxLayout):
     mode_filter = kyprops.StringProperty('normal')
     mode_text_filter = kyprops.StringProperty('and')
 
+
     def to_home_screen(self):
         """ Summary
             -------
@@ -134,27 +135,6 @@ class CollectionToolbar(BoxLayout):
             #show popup if the wrong amount of images is selected
             PopupMessage(message = "Please select 2 to 4 images").open()
 
-    def export(self):
-        """
-            Call plyer filechooser API to run a filechooser Activity.
-        """
-        if len(self.selected_images) == 0:
-            PopupMessage(message="Please select at least one image").open()
-            return
-        # 1. select a file to save to
-        try:
-            filechooser.save_file(
-                on_selection=self.handle_selection,
-                filters=["*pptx"] # crashes on replace existing file...
-            )
-        except Exception:
-            Logger.exception(
-                "An error occurred when selecting save destination"
-            )
-            PopupMessage(
-                message = "An error occurred when selecting save destination"
-            ).open()
-
 
     def sort_by(self, value):
         """ Summary
@@ -184,6 +164,7 @@ class CollectionToolbar(BoxLayout):
         app.GRID.set_display_list(self.displayed_images)
         self.selected_images = list()
 
+
     def open_filter(self):
         """ Summary
             -------
@@ -199,6 +180,29 @@ class CollectionToolbar(BoxLayout):
             mode = self.mode_filter,
             mode_text = self.mode_text_filter
         ).open()
+
+
+    def export(self):
+        """
+            Call plyer filechooser API to run a filechooser Activity.
+        """
+        if len(self.selected_images) == 0:
+            PopupMessage(message="Please select at least one image").open()
+            return
+        # 1. select a file to save to
+        try:
+            filechooser.save_file(
+                on_selection=self.handle_selection,
+                filters=["*.pptx"], # FIXME: crashes on replace existing file...
+                use_extensions=True
+            )
+        except Exception:
+            Logger.exception(
+                "An error occurred when selecting save destination"
+            )
+            PopupMessage(
+                message = "An error occurred when selecting save destination"
+            ).open()
 
 
     def handle_selection(self, selection):

@@ -35,7 +35,7 @@ class Hotkeys(FloatLayout):
             Reset key combination when the Ctrl/Cmd key is released
         """
 
-        if keycode[1] in ['super', 'lctrl'] :
+        if keycode[1] in ('super', 'lctrl'):
             self.super = []
 
 
@@ -66,8 +66,12 @@ class Hotkeys(FloatLayout):
             elif "super" in self.super and keycode[1] == 'a':
                 return self.select_all()
 
+            # Cmd + E -> export selection to pptx
+            elif "super" in self.super and keycode[1] == 'e':
+                return self.export()
+
             # remember if cmd is pressed
-            elif "super" not in self.super and keycode[1] in ["super"]:
+            elif "super" not in self.super and keycode[1] in ("super"):
                 self.super.append(keycode[1])
                 return False
 
@@ -89,8 +93,12 @@ class Hotkeys(FloatLayout):
             elif 'lctrl' in self.super and keycode[1] == 'a':
                 return self.select_all()
 
+            # Ctrl + E -> export selection
+            elif 'lctrl' in self.super and keycode[1] == 'e':
+                return self.export()
+
             # remember if lctrl is pressed
-            elif 'lctrl' not in self.super and keycode[1] in ["lctrl"]:
+            elif 'lctrl' not in self.super and keycode[1] in ("lctrl"):
                 self.super.append(keycode[1])
                 return False
 
@@ -99,6 +107,30 @@ class Hotkeys(FloatLayout):
                 return False
         # End Windows hotkeys definition
         ###
+
+
+    def save(self):
+        """ Summary
+            -------
+            Save the collection
+
+            Returns
+            -------
+            bool
+                Always False. It has got something to do with the kivy
+                _on_keyboard_key_down callback.
+        """
+        collection = self.app.CURRENT_COLLECTION
+
+        # check that there is a collection to save
+        if not collection:
+            return False
+
+        # save the collection
+        self.app.PANEL.save()
+        CollectionManager.save(collection)
+
+        return False
 
 
     def select_all(self):
@@ -122,7 +154,7 @@ class Hotkeys(FloatLayout):
         return False
 
 
-    def save(self):
+    def export(self):
         """ Summary
             -------
             Save the collection
@@ -133,14 +165,11 @@ class Hotkeys(FloatLayout):
                 Always False. It has got something to do with the kivy
                 _on_keyboard_key_down callback.
         """
-        collection = self.app.CURRENT_COLLECTION
-
-        # check that there is a collection to save
-        if not collection:
+        # check that we are in the collection screen
+        if self.app.SCREEN_MANAGER.current != "Collection":
             return False
 
-        # save the collection
-        self.app.PANEL.save()
-        CollectionManager.save(collection)
+        # export selection via the toolbar
+        self.app.TOOLBAR.export()
 
         return False
