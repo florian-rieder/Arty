@@ -7,6 +7,7 @@ import kivy.properties as kyprops
 
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterPopup import FilterPopup
+from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 from api.Collection import CollectionUtils, CollectionManager
 from api.Powerpoint import Powerpoint
 
@@ -84,7 +85,6 @@ class CollectionToolbar(BoxLayout):
         CollectionManager.save(collection)
         app.SCREEN_MANAGER.switch_to(app.SCREENS["START"], direction ='right')
 
-
     def save_coll(self):
         """ Summary
             -------
@@ -95,6 +95,8 @@ class CollectionToolbar(BoxLayout):
 
         # saves curent collection
         CollectionManager().save(collection)
+        ConfirmationSnackbar().open()
+
 
 
     def select_all(self):

@@ -1,0 +1,25 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<ConfirmationSnackbar>:
+    snackbar_x: dp(10)
+    snackbar_y: dp(10)
+    size_hint: 0.3, None
+    text: 'Collection saved !'
+
+    MDSpinner:
+        size_hint: None, None
+        size: root.size[1] * 0.8, root.size[1] * 0.8
+        pos_hint: {'center_y': .5}
+
+    # MDLabel:
+    #     id: text_bar
+    #     size_hint_y: None
+    #     height: self.texture_size[1]
+    #     text: 'Collection saved !'
+    #     font_size: sp(15)
+    #     theme_text_color: 'Custom'
+    #     text_color: get_color_from_hex('ffffff')
+    #     shorten: True
+    #     shorten_from: 'right'
+    #     pos_hint: {'center_y': .5}

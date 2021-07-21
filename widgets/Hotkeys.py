@@ -10,6 +10,7 @@ from kivy.core.window import Window, Keyboard
 from kivy.logger import Logger
 
 from api.Collection import CollectionManager
+from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 
 
 class Hotkeys(FloatLayout):
@@ -30,7 +31,7 @@ class Hotkeys(FloatLayout):
         self.system_name = platform.system()
 
 
-    def _keyboard_released(self, _keyboard, keycode):
+    def _keyboard_released(self, _keyboard=None, keycode=(0, "")):
         """
             Reset key combination when the Ctrl/Cmd key is released
         """
@@ -129,6 +130,7 @@ class Hotkeys(FloatLayout):
         # save the collection
         self.app.PANEL.save()
         CollectionManager.save(collection)
+        ConfirmationSnackbar().open()
 
         return False
 
