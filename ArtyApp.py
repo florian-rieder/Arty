@@ -4,6 +4,7 @@ import os
 import platform
 
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
@@ -21,7 +22,7 @@ from screens.ComparisonScreen import ComparisonScreen
 from api.Collection import CollectionManager
 
 
-class ArtyApp(App):
+class ArtyApp(MDApp):
     """ Summary
         -------
         The main class of our app
@@ -34,7 +35,7 @@ class ArtyApp(App):
 
     # Global variables
     PROJECT_DIRECTORY = ""
-    CURRENT_COLLECTION = None # this shouldn't be a constant
+    CURRENT_COLLECTION = None
 
     # Reference to particular UI elements
     SCREENS = dict()
@@ -49,6 +50,11 @@ class ArtyApp(App):
         Logger.info("Platform: Release: %s" % platform.release())
 
         self.icon = "resources/icon.png"
+
+        # set KivyMD color palettes
+        self.theme_cls.primary_palette = "Pink"
+        self.theme_cls.accent_palette = "Red"
+        self.theme_cls.theme_style = "Dark"
 
         # bind methods to kivy events
         Window.bind(on_dropfile=self._on_file_drop)

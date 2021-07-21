@@ -2,10 +2,12 @@
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.button import Button
+
+from kivymd.uix.button import MDRoundFlatButton
 from plyer import filechooser
 
 
-class FileChoose(Button):
+class FileChoose(MDRoundFlatButton):
     """
         Button that triggers 'filechooser.choose_dir()' and processes
         the data response from filechooser Activity.
