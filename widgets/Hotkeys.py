@@ -54,6 +54,10 @@ class Hotkeys(FloatLayout):
                 pressed.
         """
 
+        if keycode[1] == 'escape':
+            self.escape()
+
+
         ###
         # MacOSX hotkeys definition
         if self.system_name == "Darwin":
@@ -77,7 +81,7 @@ class Hotkeys(FloatLayout):
                 return False
 
             else:
-                #Logger.info("key {} pressed.".format(keycode))
+                Logger.info("key {} pressed.".format(keycode))
                 return False
         # End MacOSX hotkeys definition
         ###
@@ -173,5 +177,24 @@ class Hotkeys(FloatLayout):
 
         # export selection via the toolbar
         self.app.TOOLBAR.export()
+
+        return False
+
+
+    def escape(self):
+        """ Summary
+            -------
+            Escape behavior.
+
+            On Comparison Screen:
+                return to collection
+        """
+
+        # Comparison Screen
+        if self.app.SCREEN_MANAGER.current == "Compare":
+            # switch to collection screen
+            self.app.SCREEN_MANAGER.switch_to(
+                self.app.SCREENS["COLLECTION"],
+                direction='right')
 
         return False

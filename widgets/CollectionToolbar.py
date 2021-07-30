@@ -132,7 +132,9 @@ class CollectionToolbar(BoxLayout):
         try:
             app = App.get_running_app()
             app.SCREENS["COMPARE"].load_images(self.selected_images)
-            app.SCREEN_MANAGER.switch_to(app.SCREENS["COMPARE"], direction ='left')
+            app.SCREEN_MANAGER.switch_to(
+                app.SCREENS["COMPARE"],
+                direction ='left')
         except ValueError:
             #show popup if the wrong amount of images is selected
             PopupMessage(message = "Please select 2 to 4 images").open()
