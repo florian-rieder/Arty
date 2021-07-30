@@ -575,7 +575,7 @@ class CollectionImage():
             "production_site_if_no_artist": self.production_site if not self.artist else "",
         }
 
-        style = CollectionUtils.LEGEND_STYLES["CHICAGO"]
+        style = CollectionUtils.LEGEND_STYLES[style_name]
 
         tokens = [m.group(1) for m in re.finditer(r"{(\w+)}", style)]
         # replace tokens if the formatted value exists, else skip

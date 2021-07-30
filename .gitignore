@@ -5,6 +5,7 @@
 *.pyo
 venv/
 venv*
+__pycache__
 
 _mailinglist
 .tox/
