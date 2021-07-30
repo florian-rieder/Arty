@@ -4,13 +4,13 @@ import os
 import platform
 
 from kivy.app import App
-from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 
+from kivymd.app import MDApp
+
 from widgets.Hotkeys import Hotkeys
-from widgets.CollectionGrid import CollectionGrid
 from widgets.CollectionPanel import CollectionPanel
 from widgets.CollectionToolbar import CollectionToolbar
 from widgets.PopupMessage import PopupMessage
@@ -116,7 +116,7 @@ class ArtyApp(MDApp):
             self.CURRENT_COLLECTION = CollectionManager.load(self.PROJECT_DIRECTORY)
 
         except FileNotFoundError as exc:
-            err_msg = "Collection couldn't be loaded at %s" % self.PROJECT_DIRECTORY
+            err_msg = "Folder not found: %s" % self.PROJECT_DIRECTORY
             PopupMessage(message=err_msg).open()
             Logger.exception(exc)
             Logger.exception(err_msg)

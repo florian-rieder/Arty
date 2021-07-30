@@ -1,21 +1,21 @@
-from kivy.lang import Builder
-from kivy.app import App
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.behaviors import ButtonBehavior
+from kivy.lang.builder import Builder
 from kivy.core.window import Window
-from kivy.uix.image import Image
+from kivy.app import App
+from kivy.uix.behaviors.button import ButtonBehavior
 import kivy.properties as kyprops
 
-from api.Collection import CollectionImage
+from kivymd.uix.imagelist import SmartTileWithLabel
+
 
 EMPTY = 'resources/empty.png'
 BLANK_CHECKBOX = 'resources/blank-check-box.png'
 
-class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
+
+class CollectionGridTile(SmartTileWithLabel, ButtonBehavior):
     """
         Summary
         -------
-        Displays a clickable an selectable image of the collection.
+        Displays a clickable and selectable image of the collection.
 
         Attributes
         ----------
@@ -36,21 +36,21 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
             displays the checkbox if the mouse is on the image
 
     """
-    Builder.load_file('templates/CollectionGridImage.kv')
 
-    source = kyprops.StringProperty("")
+    source = kyprops.StringProperty(None)
+    collection_image = kyprops.ObjectProperty(None)
     is_hovered = False
-    # the default collection prevents getting errors and warnings before
-    # the widget is fully initialized, but then, it does throw an other
-    # error down the line (which is caught so everything is fine)
-    collection_image = kyprops.ObjectProperty(CollectionImage("shadow32.png"))
+
+    Builder.load_file("templates/CollectionGridTile.kv")
+
 
     def __init__(self, **kwargs):
-        super(CollectionGridImage, self).__init__(**kwargs)
+        super(CollectionGridTile, self).__init__(**kwargs)
         # bind mouse position updates so we can check when the cursor
         # hovers over the image
         # note: had to do it in the init, otherwise it doesn't work
         Window.bind(mouse_pos=self.on_mouse_pos)
+
 
     def on_press(self):
         """ Summary
@@ -60,10 +60,11 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         app = App.get_running_app()
         app.PANEL.set_image(self.collection_image)
 
+
     def checkbox_click(self, _instance, is_checked):
         """ Summary
             -------
-            Saves the image in a list when it's checkbox is clicked
+            Saves the image in a list when its checkbox is clicked on
 
             Arguments
             ---------
@@ -84,14 +85,15 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
             if self.collection_image in app.TOOLBAR.selected_images:
                 app.TOOLBAR.selected_images.remove(self.collection_image)
 
-    def on_mouse_pos(self, window, pos):
+
+    def on_mouse_pos(self, _window, pos):
         """ Summary
             -------
             Displays the checkbox when the mouse hovers the image
 
             Arguments
             ---------
-            window (unused)
+            _window (unused)
                 reference the app window
             pos: tuple
                 position of the cursor
@@ -100,7 +102,7 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
         # convert window position to local position
         rel_pos = self.to_widget(*pos)
 
-        # if the mouse position is over the image
+        # if the mouse position is over the image, make checkbox visible
         if self.collide_point(*rel_pos):
             if not self.is_hovered:
                 self.is_hovered = True
@@ -109,3 +111,6 @@ class CollectionGridImage(AnchorLayout, ButtonBehavior, Image):
             if self.is_hovered:
                 self.is_hovered = False
                 self.ids.select_image.background_checkbox_normal = EMPTY
+
+    def on_collection_image(self, _instance, value):
+        self.text = value.to_legend(style_name="SIMPLE")

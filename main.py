@@ -1,11 +1,6 @@
 import os
 import sys
 
-from kivy.config import Config
-from kivy.logger import Logger
-
-from ArtyApp import ArtyApp
-
 # I don't really know what it does, but it could be useful later
 # def reset():
 #     import kivy.core.window as window
@@ -19,6 +14,8 @@ from ArtyApp import ArtyApp
 
 if __name__ == '__main__':
     #reset()
+    from kivy.config import Config
+
     log_dir = os.path.join(os.path.expanduser("~/Documents"), "Arty", "logs")
 
     #========================= Configuration =========================#
@@ -45,6 +42,9 @@ if __name__ == '__main__':
     Config.write()
 
     #======================= End Configuration =======================#
+
+    from ArtyApp import ArtyApp
+    from kivy.logger import Logger
 
     print(sys.argv)
     Logger.info("Arguments" + str(sys.argv))
