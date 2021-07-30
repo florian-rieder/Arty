@@ -1,15 +1,16 @@
-from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
-from kivy.lang import Builder
+from kivy.lang.builder import Builder
 from kivy.logger import Logger
+from kivy.metrics import dp
+
+from kivymd.uix.gridlayout import MDGridLayout
 
 from api.Collection import Collection
-from widgets.CollectionGridImage import CollectionGridImage
+from widgets.CollectionGridTile import CollectionGridTile
 from widgets.PopupMessage import PopupMessage
 
-class CollectionGrid(GridLayout):
-    """
-        Summary
+
+class CollectionImageList(MDGridLayout):
+    """ Summary
         -------
         Displays the collection in grid format.
 
@@ -24,7 +25,15 @@ class CollectionGrid(GridLayout):
     """
     CURRENT_COLLECTION = None
 
-    Builder.load_file('templates/CollectionGrid.kv')
+
+    def __init__(self, **kwargs):
+        super(CollectionImageList, self).__init__(**kwargs)
+
+        self.cols = 3
+        self.adaptive_height = True
+        self.padding = (dp(4), dp(4))
+        self.spacing = dp(4)
+
 
     def set_collection(self, collection):
         if not isinstance(collection, Collection):
@@ -65,13 +74,13 @@ class CollectionGrid(GridLayout):
 
             try:
                 # create an image widget
-                image_widget = CollectionGridImage(
+                tile = CollectionGridTile(
                     source=absolute_path,
                     collection_image=collection_image
                 )
 
                 # add it to the grid
-                self.add_widget(image_widget)
+                self.add_widget(tile)
 
             except ValueError:
                 Logger.exception(
