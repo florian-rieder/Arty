@@ -4,10 +4,11 @@ import os
 import platform
 
 from kivy.app import App
-from kivymd.app import MDApp
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
+
+from kivymd.app import MDApp
 
 from widgets.Hotkeys import Hotkeys
 from widgets.CollectionGrid import CollectionGrid
