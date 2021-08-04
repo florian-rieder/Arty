@@ -81,7 +81,7 @@ class Hotkeys(FloatLayout):
                 return False
 
             else:
-                Logger.info("key {} pressed.".format(keycode))
+                #Logger.info("key {} pressed.".format(keycode))
                 return False
         # End MacOSX hotkeys definition
         ###

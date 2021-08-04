@@ -77,31 +77,25 @@ class CollectionPanel(BoxLayout):
             'title'             :       "Title",
             'datation'          :       "Datation",
             'dimensions'        :       "Dimensions",
-            'material'          :       "Material",
+            'material'          :       "Medium",
             'technique'         :       "Technique",
             'style'             :       "Style",
             'production_site'   :       "Production site",
             'conservation_site' :       "Conservation site",
             'source'            :       "Source",
             'notes'             :       "Notes",
-        } 
-
-        # calculate height of metadataitems so the notes cell will be
-        # twice as high as the other fields
-        base_hint_y = 1 / (len(attributes) + 1)
+        }
 
         # generate all text fields
         for attribute, name in attributes.items():
-            item = MetadataItem(size_hint_y = base_hint_y)
+            item = MetadataItem()
             item.field_name = attribute
-            # TODO: find a way to write a "nice" attribute name, without
-            # bloating the save file
-            item.ids.label.text = name
-            item.ids.text_input.text = getattr(self.current_image, attribute)
+            item.title = name
+            item.text = getattr(self.current_image, attribute)
 
             if attribute == "notes":
-                item.size_hint_y = base_hint_y * 2
-                item.ids.text_input.multiline = True
+                item.multiline = True
+                item.height = "80dp"
 
             # add the widget
             container.add_widget(item)
@@ -164,7 +158,7 @@ class CollectionPanel(BoxLayout):
 
         for metadata_item in self.ids.metadata_container.children:
             # read the value from TextInput
-            field_value = metadata_item.ids.text_input.text
+            field_value = metadata_item.text
 
             # save the value to memory
             setattr(self.current_image, metadata_item.field_name, field_value)
@@ -172,6 +166,8 @@ class CollectionPanel(BoxLayout):
         # update the image in the collection (in RAM).
         app = App.get_running_app()
         app.CURRENT_COLLECTION.update_image(self.current_image)
+
+        # TODO: update legend in collection grid tile
 
 
     def on_current_image(self, _instance, image):
@@ -201,4 +197,4 @@ class CollectionPanel(BoxLayout):
             field_value = getattr(image, metadata_item.field_name)
 
             # display the value in TextInput
-            metadata_item.ids.text_input.text = field_value
+            metadata_item.text = field_value
