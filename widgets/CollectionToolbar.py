@@ -193,6 +193,7 @@ class CollectionToolbar(BoxLayout):
         if len(self.selected_images) == 0:
             PopupMessage(message="Please select at least one image").open()
             return
+
         # 1. select a file to save to
         try:
             filechooser.save_file(
@@ -200,6 +201,7 @@ class CollectionToolbar(BoxLayout):
                 filters=["*.pptx"], # FIXME: crashes on replace existing file...
                 use_extensions=True
             )
+
         except Exception:
             Logger.exception(
                 "An error occurred when selecting save destination"
@@ -214,15 +216,17 @@ class CollectionToolbar(BoxLayout):
         Callback function for handling the selection response from Activity.
         """
         # 2. generate the powerpoint and save it to the selected path
-        path = str(selection[0])
+        export_path = str(selection[0])
         app = App.get_running_app()
+
         Logger.info("Arty: exporting selection to pptx...")
+        ConfirmationSnackbar(text="Exporting to PowerPoint...").open()
 
         try:
             Powerpoint.create_presentation(
                 self.selected_images,
                 app.PROJECT_DIRECTORY,
-                path
+                export_path
             )
         except Exception as exc:
             Logger.exception(exc)

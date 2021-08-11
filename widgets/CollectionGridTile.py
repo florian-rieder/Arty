@@ -116,4 +116,3 @@ class CollectionGridTile(SmartTileWithLabel, ButtonBehavior):
     def set_collection_image(self, collection_image):
         self.collection_image = collection_image
         self.text = collection_image.to_legend(style_name="SIMPLE")
-        print("Collection Image Updated", collection_image)
