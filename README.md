@@ -232,6 +232,7 @@ Use the command `python tests.py` to run unit tests. Individual tests can be pla
 ## Dependencies
 - Python 3
 - Kivy
+- KivyMD
 - Plyer
 - Pillow (PIL)
 - Pyinstaller
