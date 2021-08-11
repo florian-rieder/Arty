@@ -24,6 +24,7 @@ class CollectionImageList(MDGridLayout):
             list. set_collection() must have been called prior.
     """
     CURRENT_COLLECTION = None
+    display_list = list()
 
 
     def __init__(self, **kwargs):
@@ -36,6 +37,15 @@ class CollectionImageList(MDGridLayout):
 
 
     def set_collection(self, collection):
+        """ Summary
+            -------
+            Initialize the widget with the current collection
+
+            Arguments
+            ---------
+            collection : Collection
+                The current collection opened in the app
+        """
         if not isinstance(collection, Collection):
             raise ValueError("collection must by of type Collection")
 
@@ -88,3 +98,29 @@ class CollectionImageList(MDGridLayout):
                 )
                 PopupMessage(
                     message = "Unable to load <%s>" % collection_image).open()
+
+        self.display_list = collection_list
+
+
+    def update_image(self, collection_image):
+        """ Summary
+            -------
+            Update an image in the grid
+
+            Arguments
+            ---------
+            collection_image : CollectionImage
+                The updated image
+        """
+        try:
+            # find this image in the display list
+            # NOTE: I really don't know why it's reversed ¯\_(ツ)_/¯
+            idx = list(reversed(self.display_list)).index(collection_image)
+
+            # update the image
+            self.children[idx].set_collection_image(collection_image)
+
+        except ValueError:
+            # this image is not currently displayed -> no need to update
+            Logger.exception("The image is not currently displayed")
+            pass

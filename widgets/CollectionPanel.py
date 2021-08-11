@@ -166,6 +166,8 @@ class CollectionPanel(BoxLayout):
         # update the image in the collection (in RAM).
         app = App.get_running_app()
         app.CURRENT_COLLECTION.update_image(self.current_image)
+        app.GRID.update_image(self.current_image)
+        
 
         # TODO: update legend in collection grid tile
 

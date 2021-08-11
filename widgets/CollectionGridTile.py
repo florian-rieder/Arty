@@ -50,6 +50,7 @@ class CollectionGridTile(SmartTileWithLabel, ButtonBehavior):
         # hovers over the image
         # note: had to do it in the init, otherwise it doesn't work
         Window.bind(mouse_pos=self.on_mouse_pos)
+        self.text = self.collection_image.to_legend(style_name="SIMPLE")
 
 
     def on_press(self):
@@ -112,5 +113,7 @@ class CollectionGridTile(SmartTileWithLabel, ButtonBehavior):
                 self.is_hovered = False
                 self.ids.select_image.background_checkbox_normal = EMPTY
 
-    def on_collection_image(self, _instance, value):
-        self.text = value.to_legend(style_name="SIMPLE")
+    def set_collection_image(self, collection_image):
+        self.collection_image = collection_image
+        self.text = collection_image.to_legend(style_name="SIMPLE")
+        print("Collection Image Updated", collection_image)
