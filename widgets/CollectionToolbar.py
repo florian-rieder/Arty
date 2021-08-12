@@ -72,6 +72,16 @@ class CollectionToolbar(BoxLayout):
     mode_filter = kyprops.StringProperty('normal')
     mode_text_filter = kyprops.StringProperty('and')
 
+    # NOT WORKING
+    # toolbar_icon = kyprops.ListProperty([
+    #     ["sort-ascending", lambda x: open_filter(), 'Sort the collection'],
+    #     ['filter-variant', lambda x:open_filter(), 'Filter the images'],
+    #     ['check-all', lambda x: select_all(), 'Select all the images, Ctrl+A'],
+    #     ["content-save", lambda x: save_coll(), 'Save the collection, Ctrl+S'],
+    #     ['compare', lambda x: compare(), 'Compare the selected images'],
+    #     ["microsoft-powerpoint", lambda x: export(), 'Create a .pptx with selected images, Ctrl+E']
+    #     ]
+    # )
 
     def to_home_screen(self):
         """ Summary
