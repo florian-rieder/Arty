@@ -73,7 +73,7 @@ class CollectionToolbar(BoxLayout):
     technique_filter = kyprops.StringProperty('')
     mode_filter = kyprops.StringProperty('normal')
     mode_text_filter = kyprops.StringProperty('and')
-
+    viewclass = kyprops.StringProperty('IconListItem')
     # NOT WORKING
     # toolbar_icon = kyprops.ListProperty([
     #     ["sort-ascending", lambda x: open_filter(), 'Sort the collection'],
@@ -84,12 +84,14 @@ class CollectionToolbar(BoxLayout):
     #     ["microsoft-powerpoint", lambda x: export(), 'Create a .pptx with selected images, Ctrl+E']
     #     ]
     # )
-    def build_sort_drop(self):
+    
+    def sort_drop(self, button):
+
         sort_items = [
             {'viewclass': 'OneLineListItem',
             'icon': 'sort-alphabetical-ascending',
             'text': 'Title [A-Z]',
-            'on_release': lambda x = 'Title [A-Z]': self.sort_by(x)},
+            'on_release': lambda x = 'Title [A-Z]': self.sort_by(x),},
             {'viewclass': 'OneLineListItem',
             'icon': 'sort-alphabetical-descending',
             'text': 'Title [Z-A]',
@@ -116,15 +118,12 @@ class CollectionToolbar(BoxLayout):
             items= sort_items,
             width_mult= 3,
             position= 'bottom',
-            max_height= 300
+            max_height= 300,
+            ver_growth= 'down'
         )
-        return self.sort_menu
-    
-    def sort_drop(self, button):
-        self.menu = self.build_sort_drop()
 
-        self.menu.caller = button
-        self.menu.open()
+        self.sort_menu.caller = button
+        self.sort_menu.open()
 
     def to_home_screen(self):
         """ Summary
