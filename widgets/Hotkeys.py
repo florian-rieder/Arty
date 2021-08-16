@@ -6,7 +6,7 @@ import platform
 
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
-from kivy.core.window import Window, Keyboard
+from kivy.core.window import Window
 from kivy.logger import Logger
 
 from api.Collection import CollectionManager
@@ -46,6 +46,7 @@ class Hotkeys(FloatLayout):
             Handle keystrokes:
             Ctrl/Cmd + S : save the current collection
             Ctrl/Cmd + A : select all images
+            Ctrl/Cmd + E : export selection to PowerPoint
 
             Arguments
             ---------
