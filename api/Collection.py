@@ -687,7 +687,10 @@ class CollectionUtils():
                 raise ValueError("CollectionImage has no attribute %s" % attr)
 
         # pre-filter for datation
-        img_list = [i for i in img_list if datation_min <= cls._datation_to_numeric(i.datation) <= datation_max]
+        img_list = [
+            i for i in img_list if 
+            datation_min <= cls._datation_to_numeric(i.datation) <= datation_max
+        ]
 
         # for each image in the collection, retain if at least one of
         # the arguments matches (with the in keyword)
