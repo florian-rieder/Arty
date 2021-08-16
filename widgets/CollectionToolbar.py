@@ -251,16 +251,17 @@ class CollectionToolbar(BoxLayout):
                         on_release=self.filter
                     ),
                     MDFlatButton(
-                        text="RESET",
+                        text="CANCEL",
                         text_color=self.app.theme_cls.primary_color,
-                        on_release=self.reset_filter
+                        on_release=self.dismiss_dialog
                     ),
                 ],
             )
+
         self.dialog.open()
 
 
-    def filter(self, instance):
+    def filter(self, _instance):
         """ Summary
             -------
            Filters the collection with chosen parameters and saves the new
@@ -269,13 +270,17 @@ class CollectionToolbar(BoxLayout):
         field_ids = self.dialog.content_cls.ids
 
         # retrieves text from the textinput
-        title_art   = field_ids.title_input.text
-        artist      = field_ids.artist_input.text
-        style       = field_ids.style_input.text
-        technique   = field_ids.technique_input.text
-        medium   = field_ids.medium_input.text
+        title_art       = field_ids.title_input.text
+        artist          = field_ids.artist_input.text
+        style           = field_ids.style_input.text
+        technique       = field_ids.technique_input.text
+        medium          = field_ids.medium_input.text
+        datation_min    = int(field_ids.datation_min_input.text)
+        datation_max    = int(field_ids.datation_max_input.text)
+
+        print(datation_min, datation_max)
         
-        # find toggled down button
+        # find toggled down button for mode
         mode_text = ''
         for btn in field_ids.mode_btn.children:
             if btn.state == 'down':
@@ -288,14 +293,15 @@ class CollectionToolbar(BoxLayout):
         displayed_images = self.app.CURRENT_COLLECTION.get_collection()
 
         # filter with the textinput values
-        displayed_images = CollectionUtils.filter(
-            displayed_images,
+        displayed_images = CollectionUtils.filter(displayed_images,
             mode = true_mode,
             title = title_art,
             artist = artist,
             style = style,
             technique = technique,
-            material = medium
+            material = medium,
+            datation_min = datation_min,
+            datation_max = datation_max
         )
 
         # saves the filtered collection in a list and displays it
@@ -307,9 +313,10 @@ class CollectionToolbar(BoxLayout):
         self.dialog.dismiss()
 
 
-    def reset_filter(self):
-        # TODO
-        pass
+    def dismiss_dialog(self, _instance):
+        if self.dialog:
+            # close the popup
+            self.dialog.dismiss()
 
 
     def export(self):

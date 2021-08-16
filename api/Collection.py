@@ -635,8 +635,8 @@ class CollectionUtils():
         """,
     }
 
-    @staticmethod
-    def filter(img_list, mode="any", **kwargs):
+    @classmethod
+    def filter(cls, img_list, mode="any", datation_min=-5000, datation_max=5000, **kwargs):
         """ Summary
             -------
             Filters a list of CollectionImages based on metadata
@@ -685,6 +685,9 @@ class CollectionUtils():
         for attr in kwargs:
             if not hasattr(CollectionImage, attr):
                 raise ValueError("CollectionImage has no attribute %s" % attr)
+
+        # pre-filter for datation
+        img_list = [i for i in img_list if datation_min <= cls._datation_to_numeric(i.datation) <= datation_max]
 
         # for each image in the collection, retain if at least one of
         # the arguments matches (with the in keyword)

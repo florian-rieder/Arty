@@ -5,7 +5,7 @@
     orientation: "vertical"
     spacing: "12dp"
     size_hint_y: None
-    height: "380dp"
+    height: "450dp"
 
     MDTextField:
         id: title_input
@@ -31,6 +31,24 @@
         orientation: 'horizontal'
 
         MDLabel:
+            text: 'Datation :'
+
+        MDTextField:
+            id: datation_min_input
+            input_filter: 'int'
+            text: '-5000'
+            pos_hint: {'center_y': 0.5}
+
+        MDTextField:
+            id: datation_max_input
+            input_filter: 'int'
+            text: '5000'
+            pos_hint: {'center_y': 0.5}
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        MDLabel:
             text: 'Mode :'
 
         # Toggle Buttons
@@ -43,8 +61,12 @@
                 text: 'AND'
                 state: 'down'
                 group: 'x'
+                size_hint_x: None
+                width: dp(20)
 
             ToggleButtonWidget:
                 text: 'OR'
                 state: 'normal'
                 group: 'x'
+                size_hint_x: None
+                width: dp(20)
