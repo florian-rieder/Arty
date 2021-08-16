@@ -1,9 +1,11 @@
+from types import BuiltinFunctionType
 from plyer import filechooser
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.logger import Logger
 import kivy.properties as kyprops
+from kivymd.uix.menu import MDDropdownMenu
 
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterPopup import FilterPopup
@@ -71,7 +73,57 @@ class CollectionToolbar(BoxLayout):
     technique_filter = kyprops.StringProperty('')
     mode_filter = kyprops.StringProperty('normal')
     mode_text_filter = kyprops.StringProperty('and')
+    viewclass = kyprops.StringProperty('IconListItem')
+    # NOT WORKING
+    # toolbar_icon = kyprops.ListProperty([
+    #     ["sort-ascending", lambda x: open_filter(), 'Sort the collection'],
+    #     ['filter-variant', lambda x:open_filter(), 'Filter the images'],
+    #     ['check-all', lambda x: select_all(), 'Select all the images, Ctrl+A'],
+    #     ["content-save", lambda x: save_coll(), 'Save the collection, Ctrl+S'],
+    #     ['compare', lambda x: compare(), 'Compare the selected images'],
+    #     ["microsoft-powerpoint", lambda x: export(), 'Create a .pptx with selected images, Ctrl+E']
+    #     ]
+    # )
+    
+    def sort_drop(self, button):
 
+        sort_items = [
+            {'viewclass': 'OneLineListItem',
+            'icon': 'sort-alphabetical-ascending',
+            'text': 'Title [A-Z]',
+            'on_release': lambda x = 'Title [A-Z]': self.sort_by(x),},
+            {'viewclass': 'OneLineListItem',
+            'icon': 'sort-alphabetical-descending',
+            'text': 'Title [Z-A]',
+            'on_release': lambda x = 'Title [Z-A]': self.sort_by(x)},
+            {'viewclass': 'OneLineListItem',
+            'icon': 'sort-alphabetical-ascending',
+            'text': 'Artist [A-Z]',
+            'on_release': lambda x = 'Artist [A-Z]': self.sort_by(x)},
+            {'viewclass': 'OneLineListItem',
+            'icon': 'sort-alphabetical-descending',
+            'text': 'Artist [Z-A]',
+            'on_release': lambda x = 'Artist [Z-A]': self.sort_by(x)},
+            {'viewclass': 'OneLineListItem',
+            'icon': 'sort-numerical-ascending',
+            'text': 'Datation Increasing',
+            'on_release': lambda x = 'Datation Increasing': self.sort_by(x)},
+            {'viewclass': 'OneLineListItem',
+            'icon': 'sort-numerical-descending',
+            'text': 'Datation Decreasing',
+            'on_release': lambda x = 'Datation Decreasing': self.sort_by(x)}
+            ]
+
+        self.sort_menu = MDDropdownMenu(
+            items= sort_items,
+            width_mult= 3,
+            position= 'bottom',
+            max_height= 300,
+            ver_growth= 'down'
+        )
+
+        self.sort_menu.caller = button
+        self.sort_menu.open()
 
     def to_home_screen(self):
         """ Summary
