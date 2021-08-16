@@ -11,8 +11,8 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 
 from widgets.FilterDialogContent import FilterDialogContent
+from widgets.ToggleButtonWidget import ToggleButtonWidget
 from widgets.PopupMessage import PopupMessage
-from widgets.FilterPopup import FilterPopup
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 from api.Collection import CollectionUtils, CollectionManager
 from api.Powerpoint import Powerpoint
@@ -266,19 +266,20 @@ class CollectionToolbar(BoxLayout):
            Filters the collection with chosen parameters and saves the new
            collection in a list
         """
-
-        print(instance)
-
         field_ids = self.dialog.content_cls.ids
-
-        print(field_ids)
 
         # retrieves text from the textinput
         title_art   = field_ids.title_input.text
         artist      = field_ids.artist_input.text
         style       = field_ids.style_input.text
         technique   = field_ids.technique_input.text
-        mode_text   = field_ids.mode_btn.text # TODO: toggle button
+        medium   = field_ids.medium_input.text
+        
+        # find toggled down button
+        mode_text = ''
+        for btn in field_ids.mode_btn.children:
+            if btn.state == 'down':
+                mode_text = btn.text.lower()
 
         true_mode = 'all'
         if mode_text == 'or':
@@ -287,12 +288,15 @@ class CollectionToolbar(BoxLayout):
         displayed_images = self.app.CURRENT_COLLECTION.get_collection()
 
         # filter with the textinput values
-        displayed_images = CollectionUtils.filter(displayed_images,
-                                               mode = true_mode,
-                                               title = title_art,
-                                               artist = artist,
-                                               style = style,
-                                               technique = technique)
+        displayed_images = CollectionUtils.filter(
+            displayed_images,
+            mode = true_mode,
+            title = title_art,
+            artist = artist,
+            style = style,
+            technique = technique,
+            material = medium
+        )
 
         # saves the filtered collection in a list and displays it
         self.app.TOOLBAR.displayed_images = displayed_images

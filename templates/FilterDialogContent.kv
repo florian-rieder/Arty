@@ -1,0 +1,50 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<FilterDialogContent>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "380dp"
+
+    MDTextField:
+        id: title_input
+        hint_text: 'Title'
+
+    MDTextField:
+        id: artist_input
+        hint_text: 'Artist'
+
+    MDTextField:
+        id: style_input
+        hint_text: 'Style'
+
+    MDTextField:
+        id: technique_input
+        hint_text: 'Technique'
+    
+    MDTextField:
+        id: medium_input
+        hint_text: 'Medium'
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        MDLabel:
+            text: 'Mode :'
+
+        # Toggle Buttons
+        MDBoxLayout:
+            id: mode_btn
+            adaptive_size: True
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+            ToggleButtonWidget:
+                text: 'AND'
+                state: 'down'
+                group: 'x'
+
+            ToggleButtonWidget:
+                text: 'OR'
+                state: 'normal'
+                group: 'x'
