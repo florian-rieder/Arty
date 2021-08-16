@@ -5,8 +5,12 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.logger import Logger
 import kivy.properties as kyprops
-from kivymd.uix.menu import MDDropdownMenu
 
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+
+from widgets.FilterDialogContent import FilterDialogContent
 from widgets.PopupMessage import PopupMessage
 from widgets.FilterPopup import FilterPopup
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
@@ -60,6 +64,8 @@ class CollectionToolbar(BoxLayout):
     """
     Builder.load_file('templates/CollectionToolbar.kv')
 
+    app = None
+
     selected_images = kyprops.ListProperty(list())
     displayed_images = kyprops.ListProperty(list())
     sorting_attributes = kyprops.ListProperty(
@@ -67,13 +73,12 @@ class CollectionToolbar(BoxLayout):
                             'Artist [A-Z]','Artist [Z-A]',
                             'Datation Increasing','Datation Decreasing']
                             )
-    title_filter = kyprops.StringProperty('')
-    artist_filter = kyprops.StringProperty('')
-    style_filter = kyprops.StringProperty('')
-    technique_filter = kyprops.StringProperty('')
-    mode_filter = kyprops.StringProperty('normal')
-    mode_text_filter = kyprops.StringProperty('and')
     viewclass = kyprops.StringProperty('IconListItem')
+
+    # reference to the dialog currently being displayed. None if no
+    # dialog is active
+
+    dialog = None
     # NOT WORKING
     # toolbar_icon = kyprops.ListProperty([
     #     ["sort-ascending", lambda x: open_filter(), 'Sort the collection'],
@@ -84,6 +89,10 @@ class CollectionToolbar(BoxLayout):
     #     ["microsoft-powerpoint", lambda x: export(), 'Create a .pptx with selected images, Ctrl+E']
     #     ]
     # )
+
+    def __init__(self, **kwargs):
+        super(CollectionToolbar, self).__init__(**kwargs)
+        self.app = App.get_running_app()
     
     def sort_drop(self, button):
 
@@ -130,20 +139,18 @@ class CollectionToolbar(BoxLayout):
             -------
             Returns to the start screen
         """
-        app = App.get_running_app()
-        collection = app.CURRENT_COLLECTION
+        collection = self.app.CURRENT_COLLECTION
 
         # switches to start screen
         CollectionManager.save(collection)
-        app.SCREEN_MANAGER.switch_to(app.SCREENS["START"], direction ='right')
+        self.app.SCREEN_MANAGER.switch_to(self.app.SCREENS["START"], direction ='right')
 
     def save_coll(self):
         """ Summary
             -------
             Saves the current collection
         """
-        app = App.get_running_app()
-        collection = app.CURRENT_COLLECTION
+        collection = self.app.CURRENT_COLLECTION
 
         # saves curent collection
         CollectionManager().save(collection)
@@ -157,14 +164,12 @@ class CollectionToolbar(BoxLayout):
             Selects all the images from the collection
         """
 
-        app = App.get_running_app()
-
         # select all images if not all images are selected, or deselect
         # all images if all images are already selected.
         do_select = self.selected_images != self.displayed_images
 
         # activate checkboxes
-        for grid_image in app.GRID.children:
+        for grid_image in self.app.GRID.children:
             grid_image.ids.select_image.active = do_select
 
         # update selected_images
@@ -182,10 +187,9 @@ class CollectionToolbar(BoxLayout):
         # get selected images
         # send them to the compare screen
         try:
-            app = App.get_running_app()
-            app.SCREENS["COMPARE"].load_images(self.selected_images)
-            app.SCREEN_MANAGER.switch_to(
-                app.SCREENS["COMPARE"],
+            self.app.SCREENS["COMPARE"].load_images(self.selected_images)
+            self.app.SCREEN_MANAGER.switch_to(
+                self.app.SCREENS["COMPARE"],
                 direction ='left')
         except ValueError:
             #show popup if the wrong amount of images is selected
@@ -197,11 +201,9 @@ class CollectionToolbar(BoxLayout):
             -------
             Sorts the collection with the selected paramter
         """
-        app = App.get_running_app()
-
         # sorts the whole collection if it is the displayed one
         if len(self.displayed_images) == 0:
-            self.displayed_images = app.CURRENT_COLLECTION.get_collection()
+            self.displayed_images = self.app.CURRENT_COLLECTION.get_collection()
 
         val_to_sort = value.split()
         reverse = True
@@ -217,7 +219,7 @@ class CollectionToolbar(BoxLayout):
                                         )
 
         # sets the grid with the sorted collection
-        app.GRID.set_display_list(self.displayed_images)
+        self.app.GRID.set_display_list(self.displayed_images)
         self.selected_images = list()
 
 
@@ -228,14 +230,82 @@ class CollectionToolbar(BoxLayout):
         """
 
         # opens the filter class with saved inputs
-        FilterPopup(
-            title_art = self.title_filter,
-            artist = self.artist_filter,
-            style = self.style_filter,
-            technique = self.technique_filter,
-            mode = self.mode_filter,
-            mode_text = self.mode_text_filter
-        ).open()
+        # FilterPopup(
+        #     title_art = self.title_filter,
+        #     artist = self.artist_filter,
+        #     style = self.style_filter,
+        #     technique = self.technique_filter,
+        #     mode = self.mode_filter,
+        #     mode_text = self.mode_text_filter
+        # ).open()
+
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title="Filter",
+                type="custom",
+                content_cls=FilterDialogContent(),
+                buttons=[
+                    MDFlatButton(
+                        text="FILTER",
+                        text_color=self.app.theme_cls.primary_color,
+                        on_release=self.filter
+                    ),
+                    MDFlatButton(
+                        text="RESET",
+                        text_color=self.app.theme_cls.primary_color,
+                        on_release=self.reset_filter
+                    ),
+                ],
+            )
+        self.dialog.open()
+
+
+    def filter(self, instance):
+        """ Summary
+            -------
+           Filters the collection with chosen parameters and saves the new
+           collection in a list
+        """
+
+        print(instance)
+
+        field_ids = self.dialog.content_cls.ids
+
+        print(field_ids)
+
+        # retrieves text from the textinput
+        title_art   = field_ids.title_input.text
+        artist      = field_ids.artist_input.text
+        style       = field_ids.style_input.text
+        technique   = field_ids.technique_input.text
+        mode_text   = field_ids.mode_btn.text # TODO: toggle button
+
+        true_mode = 'all'
+        if mode_text == 'or':
+            true_mode = 'any'
+
+        displayed_images = self.app.CURRENT_COLLECTION.get_collection()
+
+        # filter with the textinput values
+        displayed_images = CollectionUtils.filter(displayed_images,
+                                               mode = true_mode,
+                                               title = title_art,
+                                               artist = artist,
+                                               style = style,
+                                               technique = technique)
+
+        # saves the filtered collection in a list and displays it
+        self.app.TOOLBAR.displayed_images = displayed_images
+        self.app.GRID.set_display_list(displayed_images)
+        self.app.TOOLBAR.selected_images = list()
+
+        # close the popup
+        self.dialog.dismiss()
+
+
+    def reset_filter(self):
+        # TODO
+        pass
 
 
     def export(self):
@@ -269,7 +339,6 @@ class CollectionToolbar(BoxLayout):
         """
         # 2. generate the powerpoint and save it to the selected path
         export_path = str(selection[0])
-        app = App.get_running_app()
 
         Logger.info("Arty: exporting selection to pptx...")
         ConfirmationSnackbar(text="Exporting to PowerPoint...").open()
@@ -277,7 +346,7 @@ class CollectionToolbar(BoxLayout):
         try:
             Powerpoint.create_presentation(
                 self.selected_images,
-                app.PROJECT_DIRECTORY,
+                self.app.PROJECT_DIRECTORY,
                 export_path
             )
         except Exception as exc:
