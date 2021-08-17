@@ -193,7 +193,7 @@ class CollectionToolbar(BoxLayout):
                 direction ='left')
         except ValueError:
             #show popup if the wrong amount of images is selected
-            PopupMessage(message = "Please select 2 to 4 images").open()
+            PopupMessage().show_error(message = "Please select 2 to 4 images")
 
 
     def sort_by(self, value):

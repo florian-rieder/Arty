@@ -1,9 +1,12 @@
+from kivy import app
 from kivy.lang import Builder
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.popup import Popup
+from kivy.app import App
 import kivy.properties as kyprops
+from kivymd.uix import dialog
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.dialog import MDDialog
 
-class PopupMessage(Popup):
+class PopupMessage():
     """ Summary
         -------
         Error popup
@@ -20,4 +23,25 @@ class PopupMessage(Popup):
     """
 
     Builder.load_file('templates/PopupMessage.kv')
-    message = kyprops.StringProperty("")
+    dialog = None
+
+    def show_error(self, message):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title = 'ERROR',
+                text = message,
+                type = 'alert',
+                buttons = [
+                    MDRaisedButton(
+                        text = 'OK',
+                        on_release= self.dismiss_dialog
+
+                    )
+                ],
+            )
+        self.dialog.open()
+
+    def dismiss_dialog(self, _instance):
+        if self.dialog:
+            # close the popup
+            self.dialog.dismiss()
