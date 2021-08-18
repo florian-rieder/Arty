@@ -9,6 +9,7 @@ import kivy.properties as kyprops
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
+#from kivymd.uix.textfield import MDTextField
 
 from widgets.FilterDialogContent import FilterDialogContent
 from widgets.ToggleButtonWidget import ToggleButtonWidget
@@ -233,6 +234,10 @@ class CollectionToolbar(BoxLayout):
                         on_release=self.filter
                     ),
                     MDRaisedButton(
+                        text="RESET",
+                        on_release=self.reset_filter
+                    ),
+                    MDRaisedButton(
                         text="CANCEL",
                         on_release=self.dismiss_dialog
                     ),
@@ -297,6 +302,18 @@ class CollectionToolbar(BoxLayout):
         if self.dialog:
             # close the popup
             self.dialog.dismiss()
+
+
+    def reset_filter(self, _instance):
+        field_ids = self.dialog.content_cls.ids
+        
+        field_ids.title_input.text = ""
+        field_ids.artist_input.text = ""
+        field_ids.style_input.text = ""
+        field_ids.technique_input.text = ""
+        field_ids.medium_input.text = ""
+        field_ids.datation_min_input.text = "-5000"
+        field_ids.datation_max_input.text = "5000"
 
 
     def export(self):
