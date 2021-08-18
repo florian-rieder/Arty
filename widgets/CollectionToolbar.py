@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.logger import Logger
+from kivy.metrics import dp
 import kivy.properties as kyprops
 
 from kivymd.uix.menu import MDDropdownMenu
@@ -92,27 +93,27 @@ class CollectionToolbar(BoxLayout):
     def sort_drop(self, button):
         sort_items = [
             {'viewclass': 'IconListItem',
-            'icon': 'sort-alphabetical-ascending',
+            'icon': 'order-alphabetical-ascending',
             'text': 'Title',
             'on_release': lambda x = 'title': self.sort_by(x, rev=False)},
             {'viewclass': 'IconListItem',
-            'icon': 'sort-alphabetical-descending',
+            'icon': 'order-alphabetical-descending',
             'text': 'Title',
             'on_release': lambda x = 'title': self.sort_by(x, rev=True)},
             {'viewclass': 'IconListItem',
-            'icon': 'sort-alphabetical-ascending',
+            'icon': 'order-alphabetical-ascending',
             'text': 'Artist',
             'on_release': lambda x = 'artist': self.sort_by(x, rev=False)},
             {'viewclass': 'IconListItem',
-            'icon': 'sort-alphabetical-descending',
+            'icon': 'order-alphabetical-descending',
             'text': 'Artist',
             'on_release': lambda x = 'artist': self.sort_by(x, rev=True)},
             {'viewclass': 'IconListItem',
-            'icon': 'sort-numeric-ascending',
+            'icon': 'order-numeric-ascending',
             'text': 'Date',
             'on_release': lambda x = 'datation': self.sort_by(x, rev=False)},
             {'viewclass': 'IconListItem',
-            'icon': 'sort-numeric-descending',
+            'icon': 'order-numeric-descending',
             'text': 'Date',
             'on_release': lambda x = 'datation': self.sort_by(x, rev=True)}
             ]
@@ -121,7 +122,7 @@ class CollectionToolbar(BoxLayout):
             items= sort_items,
             width_mult= 2.5,
             position= 'bottom',
-            max_height= 300,
+            max_height= dp(300),
             ver_growth= 'down'
         )
 
