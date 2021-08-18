@@ -14,6 +14,7 @@ from kivymd.uix.button import MDRaisedButton
 from widgets.FilterDialogContent import FilterDialogContent
 from widgets.ToggleButtonWidget import ToggleButtonWidget
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
+from widgets.IconListItem import IconListItem
 from api.Collection import CollectionUtils, CollectionManager
 from api.Powerpoint import Powerpoint
 
@@ -68,12 +69,6 @@ class CollectionToolbar(BoxLayout):
 
     selected_images = kyprops.ListProperty(list())
     displayed_images = kyprops.ListProperty(list())
-    sorting_attributes = kyprops.ListProperty(
-                            ['Title [A-Z]', 'Title [Z-A]',
-                            'Artist [A-Z]','Artist [Z-A]',
-                            'Datation Increasing','Datation Decreasing']
-                            )
-    viewclass = kyprops.StringProperty('IconListItem')
 
     # reference to the dialog currently being displayed. None if no
     # dialog is active
@@ -96,35 +91,35 @@ class CollectionToolbar(BoxLayout):
     
     def sort_drop(self, button):
         sort_items = [
-            {'viewclass': 'OneLineListItem',
+            {'viewclass': 'IconListItem',
             'icon': 'sort-alphabetical-ascending',
-            'text': 'Title [A-Z]',
-            'on_release': lambda x = 'Title [A-Z]': self.sort_by(x),},
-            {'viewclass': 'OneLineListItem',
+            'text': 'Title',
+            'on_release': lambda x = 'title': self.sort_by(x, rev=False)},
+            {'viewclass': 'IconListItem',
             'icon': 'sort-alphabetical-descending',
-            'text': 'Title [Z-A]',
-            'on_release': lambda x = 'Title [Z-A]': self.sort_by(x)},
-            {'viewclass': 'OneLineListItem',
+            'text': 'Title',
+            'on_release': lambda x = 'title': self.sort_by(x, rev=True)},
+            {'viewclass': 'IconListItem',
             'icon': 'sort-alphabetical-ascending',
-            'text': 'Artist [A-Z]',
-            'on_release': lambda x = 'Artist [A-Z]': self.sort_by(x)},
-            {'viewclass': 'OneLineListItem',
+            'text': 'Artist',
+            'on_release': lambda x = 'artist': self.sort_by(x, rev=False)},
+            {'viewclass': 'IconListItem',
             'icon': 'sort-alphabetical-descending',
-            'text': 'Artist [Z-A]',
-            'on_release': lambda x = 'Artist [Z-A]': self.sort_by(x)},
-            {'viewclass': 'OneLineListItem',
-            'icon': 'sort-numerical-ascending',
-            'text': 'Datation Increasing',
-            'on_release': lambda x = 'Datation Increasing': self.sort_by(x)},
-            {'viewclass': 'OneLineListItem',
-            'icon': 'sort-numerical-descending',
-            'text': 'Datation Decreasing',
-            'on_release': lambda x = 'Datation Decreasing': self.sort_by(x)}
+            'text': 'Artist',
+            'on_release': lambda x = 'artist': self.sort_by(x, rev=True)},
+            {'viewclass': 'IconListItem',
+            'icon': 'sort-numeric-ascending',
+            'text': 'Date',
+            'on_release': lambda x = 'datation': self.sort_by(x, rev=False)},
+            {'viewclass': 'IconListItem',
+            'icon': 'sort-numeric-descending',
+            'text': 'Date',
+            'on_release': lambda x = 'datation': self.sort_by(x, rev=True)}
             ]
 
         self.sort_menu = MDDropdownMenu(
             items= sort_items,
-            width_mult= 3,
+            width_mult= 2.5,
             position= 'bottom',
             max_height= 300,
             ver_growth= 'down'
@@ -195,26 +190,26 @@ class CollectionToolbar(BoxLayout):
             self.app.show_error(message = "Please select 2 to 4 images")
 
 
-    def sort_by(self, value):
+    def sort_by(self, value, rev):
         """ Summary
             -------
             Sorts the collection with the selected paramter
         """
         # sorts the whole collection if it is the displayed one
-        if len(self.displayed_images) == 0:
-            self.displayed_images = self.app.CURRENT_COLLECTION.get_collection()
+        # if len(self.displayed_images) == 0:
+        #     self.displayed_images = self.app.CURRENT_COLLECTION.get_collection()
 
-        val_to_sort = value.split()
-        reverse = True
-        # checks sorting order
-        if val_to_sort[1] in ('[A-Z]', 'Increasing'):
-            reverse = False
+        # val_to_sort = value.split()
+        # reverse = True
+        # # checks sorting order
+        # if val_to_sort[1] in ('[A-Z]', 'Increasing'):
+        #     reverse = False
 
         # sort the image list
         self.displayed_images = CollectionUtils.sort(
                                         self.displayed_images,
-                                        val_to_sort[0],
-                                        reverse=reverse
+                                        value,
+                                        reverse=rev
                                         )
 
         # sets the grid with the sorted collection
