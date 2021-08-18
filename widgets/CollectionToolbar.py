@@ -12,7 +12,6 @@ from kivymd.uix.button import MDRaisedButton
 
 from widgets.FilterDialogContent import FilterDialogContent
 from widgets.ToggleButtonWidget import ToggleButtonWidget
-from widgets.PopupMessage import PopupMessage
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 from api.Collection import CollectionUtils, CollectionManager
 from api.Powerpoint import Powerpoint
@@ -192,7 +191,7 @@ class CollectionToolbar(BoxLayout):
                 direction ='left')
         except ValueError:
             #show popup if the wrong amount of images is selected
-            PopupMessage().show_error(message = "Please select 2 to 4 images")
+            self.app.show_error(message = "Please select 2 to 4 images")
 
 
     def sort_by(self, value):
@@ -213,7 +212,7 @@ class CollectionToolbar(BoxLayout):
         # sort the image list
         self.displayed_images = CollectionUtils.sort(
                                         self.displayed_images,
-                                        val_to_sort[0].lower(),
+                                        val_to_sort[0],
                                         reverse=reverse
                                         )
 
@@ -310,7 +309,7 @@ class CollectionToolbar(BoxLayout):
             Call plyer filechooser API to run a filechooser Activity.
         """
         if len(self.selected_images) == 0:
-            PopupMessage().show_error("Please select at least one image")
+            self.app.show_error("Please select at least one image")
             return
 
         # 1. select a file to save to
@@ -325,9 +324,7 @@ class CollectionToolbar(BoxLayout):
             Logger.exception(
                 "An error occurred when selecting save destination"
             )
-            PopupMessage(
-                message = "An error occurred when selecting save destination"
-            ).open()
+            self.app.show_error("An error occurred when selecting save destination")
 
 
     def handle_selection(self, selection):
@@ -348,6 +345,4 @@ class CollectionToolbar(BoxLayout):
             )
         except Exception as exc:
             Logger.exception(exc)
-            PopupMessage(
-                message="An error occurred while generating the presentation"
-            ).open()
+            self.app.show_error("An error occurred while generating the presentation")

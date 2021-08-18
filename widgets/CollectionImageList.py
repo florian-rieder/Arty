@@ -1,3 +1,4 @@
+from kivy.app import App
 from kivy.lang.builder import Builder
 from kivy.logger import Logger
 from kivy.metrics import dp
@@ -6,7 +7,6 @@ from kivymd.uix.gridlayout import MDGridLayout
 
 from api.Collection import Collection
 from widgets.CollectionGridTile import CollectionGridTile
-from widgets.PopupMessage import PopupMessage
 
 
 class CollectionImageList(MDGridLayout):
@@ -96,8 +96,7 @@ class CollectionImageList(MDGridLayout):
                 Logger.exception(
                     'CollectionGrid: Unable to load <%s>' % collection_image
                 )
-                PopupMessage(
-                    message = "Unable to load <%s>" % collection_image).open()
+                App.get_running_app().show_error("Unable to load <%s>" % collection_image)
 
         self.display_list = collection_list
 

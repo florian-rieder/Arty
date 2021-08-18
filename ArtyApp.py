@@ -3,17 +3,17 @@
 import os
 import platform
 
-from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 
 from kivymd.app import MDApp
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.dialog import MDDialog
 
 from widgets.Hotkeys import Hotkeys
 from widgets.CollectionPanel import CollectionPanel
 from widgets.CollectionToolbar import CollectionToolbar
-from widgets.PopupMessage import PopupMessage
 
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
@@ -43,6 +43,8 @@ class ArtyApp(MDApp):
     GRID = None
     PANEL = None
     TOOLBAR = None
+
+    dialog = None
 
 
     def build(self):
@@ -117,14 +119,14 @@ class ArtyApp(MDApp):
 
         except FileNotFoundError as exc:
             err_msg = "Folder not found: %s" % self.PROJECT_DIRECTORY
-            PopupMessage(message=err_msg).open()
+            self.show_error(err_msg)
             Logger.exception(exc)
             Logger.exception(err_msg)
             return
 
         except Exception as exc:
             err_msg = "Collection couldn't be loaded due to an old or corrupted {meta} file".format(meta=CollectionManager.META_EXTENSION)
-            PopupMessage(message=err_msg).open()
+            self.show_error(err_msg)
             Logger.exception(exc)
             Logger.exception(err_msg)
             return
@@ -179,7 +181,7 @@ class ArtyApp(MDApp):
         if not self.SCREEN_MANAGER.current == self.SCREENS["COLLECTION"].name:
             # to localize
             err_msg = "Can only drop files on collection screen."
-            PopupMessage(message=err_msg).open()
+            self.show_error(err_msg)
             Logger.exception(err_msg)
             return
 
@@ -191,7 +193,7 @@ class ArtyApp(MDApp):
 
         except ValueError as err:
             err_msg = "The file %s couldn't be added to the collection." % file_path
-            PopupMessage(message=err_msg).open()
+            self.show_error(err_msg)
             Logger.exception(err)
 
 
@@ -228,3 +230,26 @@ class ArtyApp(MDApp):
         CollectionManager.save(self.CURRENT_COLLECTION)
 
         return True
+
+
+    def show_error(self, message):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title = 'Error',
+                text = message,
+                type = 'alert',
+                buttons = [
+                    MDRaisedButton(
+                        text='OK',
+                        on_release=self.dismiss_dialog
+                    )
+                ],
+            )
+        self.dialog.open()
+
+
+    def dismiss_dialog(self, _instance):
+        if self.dialog:
+            # close the popup
+            self.dialog.dismiss()
+            self.dialog = None
