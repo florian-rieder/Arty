@@ -8,7 +8,7 @@ import kivy.properties as kyprops
 
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDRaisedButton
 
 from widgets.FilterDialogContent import FilterDialogContent
 from widgets.ToggleButtonWidget import ToggleButtonWidget
@@ -95,7 +95,6 @@ class CollectionToolbar(BoxLayout):
         self.app = App.get_running_app()
     
     def sort_drop(self, button):
-
         sort_items = [
             {'viewclass': 'OneLineListItem',
             'icon': 'sort-alphabetical-ascending',
@@ -229,30 +228,18 @@ class CollectionToolbar(BoxLayout):
             Opens the filter window with the current filters
         """
 
-        # opens the filter class with saved inputs
-        # FilterPopup(
-        #     title_art = self.title_filter,
-        #     artist = self.artist_filter,
-        #     style = self.style_filter,
-        #     technique = self.technique_filter,
-        #     mode = self.mode_filter,
-        #     mode_text = self.mode_text_filter
-        # ).open()
-
         if not self.dialog:
             self.dialog = MDDialog(
                 title="Filter",
                 type="custom",
                 content_cls=FilterDialogContent(),
                 buttons=[
-                    MDFlatButton(
+                    MDRaisedButton(
                         text="FILTER",
-                        text_color=self.app.theme_cls.primary_color,
                         on_release=self.filter
                     ),
-                    MDFlatButton(
+                    MDRaisedButton(
                         text="CANCEL",
-                        text_color=self.app.theme_cls.primary_color,
                         on_release=self.dismiss_dialog
                     ),
                 ],
@@ -269,7 +256,7 @@ class CollectionToolbar(BoxLayout):
         """
         field_ids = self.dialog.content_cls.ids
 
-        # retrieves text from the textinput
+        # retrieves text from the text fields
         title_art       = field_ids.title_input.text
         artist          = field_ids.artist_input.text
         style           = field_ids.style_input.text
@@ -277,17 +264,16 @@ class CollectionToolbar(BoxLayout):
         medium          = field_ids.medium_input.text
         datation_min    = int(field_ids.datation_min_input.text)
         datation_max    = int(field_ids.datation_max_input.text)
-
-        print(datation_min, datation_max)
         
         # find toggled down button for mode
         mode_text = ''
         for btn in field_ids.mode_btn.children:
             if btn.state == 'down':
-                mode_text = btn.text.lower()
+                mode_text = btn.text
+                break
 
         true_mode = 'all'
-        if mode_text == 'or':
+        if mode_text == 'OR':
             true_mode = 'any'
 
         displayed_images = self.app.CURRENT_COLLECTION.get_collection()
@@ -324,7 +310,7 @@ class CollectionToolbar(BoxLayout):
             Call plyer filechooser API to run a filechooser Activity.
         """
         if len(self.selected_images) == 0:
-            PopupMessage(message="Please select at least one image").open()
+            PopupMessage().show_error("Please select at least one image")
             return
 
         # 1. select a file to save to

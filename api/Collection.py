@@ -803,6 +803,7 @@ class CollectionUtils():
             int
                 The estimated value of the input string. Returns 0 if
                 nothing could be found
+
             Notes
             -----
             We could make it so that when we have two values, return the
