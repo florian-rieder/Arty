@@ -1,0 +1,50 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<StartScreen>:
+    # change the background color to white
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        padding: dp(50)
+        spacing: dp(100)
+
+        Image:
+            # canvas.before:
+            #     Color:
+            #         rgba: 1, 0, 0, 1
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
+            source: 'resources/icon_alpha.png'
+            size_hint_y: 1
+            size: dp(150), dp(150)
+
+        MDLabel:
+            # canvas.before:
+            #     Color:
+            #         rgba: 0, 1, 0, 1
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
+            # Pour commencer à travailler avec Arty, sélectionnez un dossier contenant vos images.
+            text: 'To start working with Arty, select a folder containing your images.'
+            text_size: root.width/2, None
+            halign: 'center'
+            valign: 'middle'
+            font_size: sp(30)
+
+        FileChoose:
+            pos_hint: {'center_x': 0.5}
+            size_hint: 0.5, 0.3
+            text: 'Select a folder'
+            font_size: sp(20)
+            on_release: self.choose()

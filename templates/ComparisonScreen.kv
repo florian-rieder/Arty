@@ -1,0 +1,80 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<ComparisonScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    RelativeLayout:
+        size_hint: 0.98, 0.98
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        BoxLayout:
+            id: layout_container
+            pos_hint: {'right': 0, 'top': 0}
+            size_hint: 1, 1
+
+        MDRoundFlatButton:
+            text: 'Back'
+            size_hint: 0.2, 0.07
+            on_release: root.on_back_released()
+            pos_hint: {'left': 1, 'bottom': 1}
+
+
+<Layout2>: 
+    BoxLayout:
+        id: layout_2
+        size: root.width, root.height
+        Image: 
+            id : image_1
+            allow_strech : True
+            size_hint_y: 1
+            keep_ratio : True  
+        Image: 
+            id : image_2
+            allow_strech : True
+            size_hint_y: 1
+            keep_ratio : True
+
+<Layout3>:
+    BoxLayout:    
+        id: layout_3
+        size: root.width, root.height
+        Image: 
+            id : image_1
+            allow_strech : True
+            keep_ratio : True
+        Image: 
+            id : image_2
+            allow_strech : True
+            keep_ratio : True
+        Image: 
+            id : image_3
+            allow_strech : True
+            keep_ratio : True
+
+<Layout4>:
+    GridLayout:
+        id: layout_4
+        size: root.width, root.height
+        cols: 2
+        Image: 
+            id : image_1
+            allow_strech : True
+            keep_ratio : True
+        Image: 
+            id : image_2
+            allow_strech : True
+            keep_ratio : True
+        Image: 
+            id : image_3
+            allow_strech : True
+            keep_ratio : True      
+        Image: 
+            id : image_4
+            allow_strech : True
+            keep_ratio : True

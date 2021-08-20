@@ -1,0 +1,36 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<CollectionPanel>:
+    orientation: 'vertical'
+
+    # canvas.before:
+    #     Color:
+    #         rgba: 0, 0, 0, 0.7
+    #     Rectangle:
+    #         pos: self.pos
+    #         size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: 0.5
+
+        ImagePreview:
+            id: preview
+            allow_stretch: True
+        
+        Palette:
+            id: palette
+            size_hint_y: 0.1
+
+    ScrollView:
+        size_hint_y: 0.5
+        do_scroll_x: False
+        do_scroll_y: True
+
+        BoxLayout:
+            id: metadata_container
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            padding: dp(20)

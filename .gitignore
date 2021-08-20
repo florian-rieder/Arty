@@ -1,0 +1,31 @@
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+venv/
+venv*
+__pycache__
+
+_mailinglist
+.tox/
+.cache/
+.pytest_cache/
+.vscode
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*,cover
+
+# Build ignores
+dist
+build
+*.spec
+*.egg
+*.egg-info/
+*.iss
+
+# Application-specific ignores
+*.arty
