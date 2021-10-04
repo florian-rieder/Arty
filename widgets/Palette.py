@@ -90,6 +90,7 @@ class Palette(Widget):
         """
         # Resize image to speed up processing
         img = Image.open(image_path)
+        img = img.convert("RGB")
         img = img.copy()
         img.thumbnail((cls.RESIZE, cls.RESIZE))
 
