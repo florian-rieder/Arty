@@ -166,7 +166,7 @@ coll = COLLECT(exe, Tree('C:\\path\\to\\this\\repo'),
 `winsetup.iss`
 ```
 #define MyAppName "Arty"
-#define MyAppVersion "Alpha-1.0"
+#define MyAppVersion "Beta-1.0"
 #define MyAppPublisher "Florian Rieder, Paul Zignani, Caroline Roxana Rohrbach"
 #define MyAppURL "https://www.example.com/"
 #define MyAppExeName "Arty.exe"
