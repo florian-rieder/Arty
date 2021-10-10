@@ -16,6 +16,7 @@ from dataclasses import dataclass, field
 
 from unidecode import unidecode
 from dataclasses_json import config, dataclass_json
+
 from kivy.logger import Logger
 
 
@@ -46,7 +47,7 @@ class CollectionManager():
     """
 
     AUTHORIZED_IMAGE_FORMATS = (
-        ".jpg", ".jpeg", ".png", ".webp", ".tiff", ".psd"
+        ".jpg", ".jpeg", ".png", ".webp", ".tiff"
     )
 
     META_EXTENSION = ".arty"
@@ -55,6 +56,9 @@ class CollectionManager():
     # When doing changes to the .arty file :
     # Change the version number
     VERSION = "Alpha-1.1"
+    # By the way, I don't think using app-wide versioning nomenclature
+    # in here is the best idea. We should go back to something separate
+    # from app versioning.
 
     @classmethod
     def load(cls, path):
