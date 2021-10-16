@@ -73,25 +73,26 @@ class CollectionPanel(BoxLayout):
 
         # values to eventually replace with _() gettext for localization
         attributes = {
-            'artist'            :       "Artist",
-            'title'             :       "Title",
-            'datation'          :       "Datation",
-            'dimensions'        :       "Dimensions",
-            'material'          :       "Medium",
-            'technique'         :       "Technique",
-            'style'             :       "Style",
-            'production_site'   :       "Production site",
-            'conservation_site' :       "Conservation site",
-            'source'            :       "Source",
-            'notes'             :       "Notes",
+            'artist'            :       ["Artist","Ex: 	Rembrandt"],
+            'title'             :       ["Title","Ex The Night Watch"],
+            'datation'          :       ["Datation","Ex: 1642"],
+            'dimensions'        :       ["Dimensions","Ex: 363 cm × 437 cm"],
+            'material'          :       ["Medium","Ex: Oil on canvas"],
+            'technique'         :       ["Technique","Ex: Painting"],
+            'style'             :       ["Style","Ex: 	Baroque painting"],
+            'production_site'   :       ["Production site","Ex:"],
+            'conservation_site' :       ["Conservation site","Ex: Rijksmuseum, Amsterdam"],
+            'source'            :       ["Source","Ex: https://hart.amsterdam/"],
+            'notes'             :       ["Notes","Personal notes"],
         }
 
         # generate all text fields
         for attribute, name in attributes.items():
             item = MetadataItem()
             item.field_name = attribute
-            item.title = name
+            item.title = name[0]
             item.text = getattr(self.current_image, attribute)
+            item.helper_text = str(name[1])
 
             # mutiline
             if attribute in ("title", "notes"):
@@ -202,5 +203,7 @@ class CollectionPanel(BoxLayout):
             # read the value from memory
             field_value = getattr(image, metadata_item.field_name)
 
+            if field_value != '':
+                metadata_item.helper_text = ''
             # display the value in TextInput
             metadata_item.text = field_value
