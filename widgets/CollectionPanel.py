@@ -73,26 +73,25 @@ class CollectionPanel(BoxLayout):
 
         # values to eventually replace with _() gettext for localization
         attributes = {
-            'artist'            :       ["Artist","Ex: 	Rembrandt"],
-            'title'             :       ["Title","Ex The Night Watch"],
-            'datation'          :       ["Datation","Ex: 1642"],
-            'dimensions'        :       ["Dimensions","Ex: 363 cm × 437 cm"],
-            'material'          :       ["Medium","Ex: Oil on canvas"],
-            'technique'         :       ["Technique","Ex: Painting"],
-            'style'             :       ["Style","Ex: 	Baroque painting"],
-            'production_site'   :       ["Production site","Ex:"],
-            'conservation_site' :       ["Conservation site","Ex: Rijksmuseum, Amsterdam"],
-            'source'            :       ["Source","Ex: https://hart.amsterdam/"],
-            'notes'             :       ["Notes","Personal notes"],
+            'artist'            :       "Artist",
+            'title'             :       "Title",
+            'datation'          :       "Datation",
+            'dimensions'        :       "Dimensions",
+            'material'          :       "Medium",
+            'technique'         :       "Technique",
+            'style'             :       "Style",
+            'production_site'   :       "Production site",
+            'conservation_site' :       "Conservation site",
+            'source'            :       "Source",
+            'notes'             :       "Notes",
         }
 
         # generate all text fields
         for attribute, name in attributes.items():
             item = MetadataItem()
             item.field_name = attribute
-            item.title = name[0]
+            item.title = name
             item.text = getattr(self.current_image, attribute)
-            item.helper_text = str(name[1])
 
             # mutiline
             if attribute in ("title", "notes"):
@@ -198,12 +197,32 @@ class CollectionPanel(BoxLayout):
         # update palette
         self.ids.palette.set_image(image_path)
 
+        # dict for the texonputs helpers
+        helpers = {
+            'artist'            :       "Ex: Rembrandt",
+            'title'             :       "Ex: The Night Watch",
+            'datation'          :       "Ex: 1642",
+            'dimensions'        :       "Ex: 363 cm × 437 cm",
+            'material'          :       "Ex: Oil on canvas",
+            'technique'         :       "Ex: Painting",
+            'style'             :       "Ex: Baroque painting",
+            'production_site'   :       "Ex:",
+            'conservation_site' :       "Ex: Rijksmuseum, Amsterdam",
+            'source'            :       "Ex: https://hart.amsterdam/",
+            'notes'             :       "Personal notes",
+            }
+
         # updates text fields values
         for metadata_item in self.ids.metadata_container.children:
             # read the value from memory
+
             field_value = getattr(image, metadata_item.field_name)
 
-            if field_value != '':
+            if field_value == '':
+                helper = [example for attribute, example in helpers.items() if metadata_item.field_name == attribute]
+                metadata_item.helper_text = helper[0]
+            else:
                 metadata_item.helper_text = ''
+            
             # display the value in TextInput
             metadata_item.text = field_value
