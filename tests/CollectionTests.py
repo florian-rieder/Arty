@@ -209,7 +209,7 @@ class TestCollection(unittest.TestCase):
                 technique="Huile sur toile",
             )
 
-        coll = Collection("/", "Alpha-1.0", [test_image1, test_image2, test_image3])
+        images = [test_image1, test_image2, test_image3]
 
         result = """artist,conservation_site,datation,dimensions,material,notes,production_site,source,style,technique,title
 Leonard de Vinci,,Xe siècle,,,,,,,Huile sur toile,Mona Lisa (Joconde)
@@ -217,6 +217,4 @@ Leonard de Vinci,,1001,,,,,,,Huile sur bois,Salvator Mundi
 Leonard Baldaquin,,1525-1530,,,,,,,Huile sur toile,Portrait de Mona Rosa
 """
 
-        self.assertEqual(coll.export_csv(), result)
-        
-
+        self.assertEqual(CollectionUtils.export_csv(images), result)

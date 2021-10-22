@@ -1,0 +1,19 @@
+#:kivy 1.0
+#:import kivy kivy
+
+<ExportDialogContent>:
+    # Toggle Buttons
+    MDBoxLayout:
+        id: file_toggle
+        adaptive_size: True
+        pos_hint: {"center_x": .5, "center_y": .5}
+
+        ToggleButtonWidget:
+            text: 'PPTX'
+            state: 'down'
+            group: 'mode'
+
+        ToggleButtonWidget:
+            text: 'CSV'
+            state: 'normal'
+            group: 'mode'

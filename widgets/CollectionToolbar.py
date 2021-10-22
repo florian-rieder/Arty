@@ -13,6 +13,7 @@ from kivymd.uix.button import MDRaisedButton
 #from kivymd.uix.textfield import MDTextField
 
 from widgets.FilterDialogContent import FilterDialogContent
+from widgets.ExportDialogContent import ExportDialogContent
 from widgets.ToggleButtonWidget import ToggleButtonWidget
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 from widgets.IconListItem import IconListItem
@@ -317,30 +318,70 @@ class CollectionToolbar(BoxLayout):
         field_ids.datation_max_input.text = "5000"
 
 
-    def export(self):
+    def open_export(self):
+        """ Summary
+            -------
+            Opens the filter window with the current filters
         """
-            Call plyer filechooser API to run a filechooser Activity.
-        """
+
         if len(self.selected_images) == 0:
             self.app.show_error("Please select at least one image")
             return
 
-        # 1. select a file to save to
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title="Export",
+                type="custom",
+                content_cls=ExportDialogContent(),
+                buttons=[
+                    MDRaisedButton(
+                        text="EXPORT",
+                        on_release=self.export
+                    ),
+                    MDRaisedButton(
+                        text="CANCEL",
+                        on_release=self.dismiss_dialog
+                    ),
+                ],
+            )
+
+        self.dialog.open()
+
+
+    def export(self, _instance):
+        """
+            Call plyer filechooser API to run a filechooser Activity.
+        """
+        field_ids = self.dialog.content_cls.ids
+
+        file_type = ''
+        for btn in field_ids.file_toggle.children:
+            if btn.state == 'down':
+                file_type = btn.text
+                break
+
         try:
-            filechooser.save_file(
-                on_selection=self.handle_selection,
-                filters=["*.pptx"], # FIXME: crashes on replace existing file...
-                use_extensions=True
-            )
-
+            if file_type == "PPTX":
+                filechooser.save_file(
+                    on_selection=self.handle_selection_pptx,
+                    filters=["*.%s" % file_type], # FIXME: crashes on replace existing file...
+                    use_extensions=True
+                )
+            elif file_type == "CSV":
+                filechooser.save_file(
+                    on_selection=self.handle_selection_csv,
+                    filters=["*.%s" % file_type], # FIXME: crashes on replace existing file...
+                    use_extensions=True
+                )
         except Exception:
-            Logger.exception(
-                "An error occurred when selecting save destination"
-            )
-            self.app.show_error("An error occurred when selecting save destination")
+                    Logger.exception(
+                        "An error occurred when selecting save destination"
+                    )
+                    self.app.show_error("An error occurred when selecting save destination")
 
 
-    def handle_selection(self, selection):
+
+    def handle_selection_pptx(self, selection):
         """
         Callback function for handling the selection response from Activity.
         """
@@ -359,3 +400,13 @@ class CollectionToolbar(BoxLayout):
         except Exception as exc:
             Logger.exception(exc)
             self.app.show_error("An error occurred while generating the presentation")
+
+
+    def handle_selection_csv(self, selection):
+        export_path = str(selection[0])
+
+        ConfirmationSnackbar(text="Exporting to CSV...").open()
+        csv_data = CollectionUtils.export_csv(self.selected_images)
+
+        with open(export_path, "w") as csv_file:
+            csv_file.write(csv_data)
