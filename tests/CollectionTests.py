@@ -1,6 +1,6 @@
 import unittest
 
-from api.Collection import CollectionImage, CollectionUtils
+from api.Collection import Collection, CollectionImage, CollectionUtils
 
 class TestCollectionImage(unittest.TestCase):
 
@@ -183,3 +183,40 @@ class TestCollection(unittest.TestCase):
             [test_image2, test_image3, test_image1],
             CollectionUtils.sort(test_list, "artist", reverse=True)
         )
+    
+
+    def test_export_csv(self):
+        test_image1 = CollectionImage(
+                filename ="48224.jpg",
+                artist="Leonard de Vinci",
+                datation="Xe siècle",
+                title="Mona Lisa (Joconde)",
+                technique="Huile sur toile",
+            )
+        test_image2 = CollectionImage(
+                filename ="asjbd.jpg",
+                artist="Leonard de Vinci",
+                datation="1001",
+                title="Salvator Mundi",
+                technique="Huile sur bois",
+
+            )
+        test_image3 = CollectionImage(
+                filename ="4asdnkasjd.jpg",
+                artist="Leonard Baldaquin",
+                datation="1525-1530",
+                title="Portrait de Mona Rosa",
+                technique="Huile sur toile",
+            )
+
+        coll = Collection("/", "Alpha-1.0", [test_image1, test_image2, test_image3])
+
+        result = """artist,conservation_site,datation,dimensions,material,notes,production_site,source,style,technique,title
+Leonard de Vinci,,Xe siècle,,,,,,,Huile sur toile,Mona Lisa (Joconde)
+Leonard de Vinci,,1001,,,,,,,Huile sur bois,Salvator Mundi
+Leonard Baldaquin,,1525-1530,,,,,,,Huile sur toile,Portrait de Mona Rosa
+"""
+
+        self.assertEqual(coll.export_csv(), result)
+        
+

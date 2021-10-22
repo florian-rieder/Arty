@@ -10,6 +10,7 @@ import re
 import json
 import ntpath
 import shutil
+import inspect
 import builtins
 from typing import Optional
 from dataclasses import dataclass, field
@@ -472,6 +473,30 @@ class Collection():
             )
 
         return os.path.join(self.work_directory, collection_image.filename)
+
+
+    def export_csv(self, delimiter=","):
+        """ Summary
+            -------
+            Export the collection to CSV
+        
+        """
+        csv_string = ""
+
+        # get all attributes of CollectionImage
+        # https://stackoverflow.com/questions/9058305/getting-attributes-of-a-class
+        attributes = inspect.getmembers(CollectionImage, lambda a:not(inspect.isroutine(a)))
+        attributes = [a[0] for a in attributes if not(a[0].startswith('__') and a[0].endswith('__'))]
+
+        csv_headers = delimiter.join(a for a in attributes) + "\n"
+        csv_string += csv_headers
+
+        for image in self.collection:
+            csv_line = delimiter.join(getattr(image, a) for a in attributes) + "\n"
+            csv_string += csv_line
+
+        return csv_string
+
 
 ### end class Collection
 

@@ -197,7 +197,7 @@ class CollectionPanel(BoxLayout):
         # update palette
         self.ids.palette.set_image(image_path)
 
-        # dict for the texonputs helpers
+        # dict for the texinputs helpers
         helpers = {
             'artist'            :       "Ex: Rembrandt",
             'title'             :       "Ex: The Night Watch",
@@ -205,8 +205,8 @@ class CollectionPanel(BoxLayout):
             'dimensions'        :       "Ex: 363 cm × 437 cm",
             'material'          :       "Ex: Oil on canvas",
             'technique'         :       "Ex: Painting",
-            'style'             :       "Ex: Baroque painting",
-            'production_site'   :       "Ex:",
+            'style'             :       "Ex: Baroque",
+            'production_site'   :       "Ex: Amsterdam",
             'conservation_site' :       "Ex: Rijksmuseum, Amsterdam",
             'source'            :       "Ex: https://hart.amsterdam/",
             'notes'             :       "Personal notes",
@@ -215,7 +215,6 @@ class CollectionPanel(BoxLayout):
         # updates text fields values
         for metadata_item in self.ids.metadata_container.children:
             # read the value from memory
-
             field_value = getattr(image, metadata_item.field_name)
 
             if field_value == '':
@@ -223,6 +222,6 @@ class CollectionPanel(BoxLayout):
                 metadata_item.helper_text = helper[0]
             else:
                 metadata_item.helper_text = ''
-            
+
             # display the value in TextInput
             metadata_item.text = field_value
