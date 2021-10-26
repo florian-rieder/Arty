@@ -7,16 +7,25 @@ class Geometry():
             Computes the desired size of the content, in function of the
             ratio of the content and the size of the container
 
-            This function is 
-            All input values must be in the same unit.
+            This function is unit agnostic, but all input values must be
+            expressed in the same unit.
+
+            Arguments
+            ---------
+            content_original_size: tuple
+                tuple containing the original x and y size of the
+                content to fit (for example size of the image in pixels).
+            container_size: tuple
+                tuple containg the x and y size of the container.
+            padding: int
+                Optional padding between content and
+                container. Defaults to 0.
 
             Returns
             -------
-            modal_size : tuple
+            fitted_content_size : tuple
                 bi-dimensional tuple containing the x and y size of the
-                modal.
-            window_width : int
-            window_height : int
+                fitted content.
         """
         # size content in function of the container size
 
