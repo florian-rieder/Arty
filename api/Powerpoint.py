@@ -14,6 +14,7 @@ from pptx import Presentation
 from pptx.util import Cm
 
 from api.Collection import CollectionImage
+from api.Geometry import Geometry
 
 #pylint: disable=too-few-public-methods
 class Powerpoint():
@@ -161,26 +162,14 @@ class Powerpoint():
         prs = Presentation()
 
         image_open = PIL.Image.open(img_path)
-        image_width, image_height = image_open.size
-        # get the image aspect ratio
-        image_ratio = image_width / image_height
-
+        image_size = image_open.size
         # canvas is the slide minus the margin and space for the text
         # values in cm
         canvas_width = prs.slide_width.cm - margin * 2
         canvas_height = prs.slide_height.cm - margin * 3 - textbox_height
-        # get the canvas aspect ratio
-        canvas_ratio = canvas_width / canvas_height
 
-        if image_ratio < canvas_ratio:
-            # size by height
-            height = canvas_height
-            width = height * image_ratio
 
-        else:
-            # size by width
-            width = canvas_width
-            height = width / image_ratio
+        height, width = Geometry.fit_to_container(image_size, (canvas_width, canvas_height))
 
         top = margin + (canvas_height - height) / 2
         left = (prs.slide_width.cm - width) / 2

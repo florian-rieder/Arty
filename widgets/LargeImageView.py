@@ -7,6 +7,8 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.label import Label
 import kivy.properties as kyprops
 
+from api.Geometry import Geometry
+
 from widgets.ZoomablePicture import ZoomablePicture
 
 
@@ -24,7 +26,11 @@ class LargeImageView(ModalView):
         super(LargeImageView, self).__init__(**kwargs)
         Window.bind(on_resize=self._on_resize)
 
-        modal_size = self._get_size(Window.width, Window.height)
+        # get image size
+        with Image.open(self.source) as im:
+            image_size= im.size
+
+        modal_size = Geometry.fit_to_container(image_size, (Window.width, Window.height), padding=self.WINDOW_MARGIN)
         self.size = modal_size
 
         img = self.ids.realimage
@@ -32,44 +38,12 @@ class LargeImageView(ModalView):
         img.height = modal_size[1]
 
 
-    def _get_size(self, window_width, window_height):
-        """ Summary
-            -------
-            Computes the desired size of the modal, in function of the
-            size of the image and the size of the window
-
-            Returns
-            -------
-            modal_size : tuple
-                bi-dimensional tuple containing the x and y size of the
-                modal.
-            window_width : int
-            window_height : int
-        """
-
-        # size the modal in function of the image size
-        with Image.open(self.source) as im:
-            image_width, image_height = im.size
-        
-        image_ratio = image_width / image_height
-        window_ratio = window_width / window_height
-
-        if image_ratio < window_ratio:
-            # size by height
-            height = window_height - self.WINDOW_MARGIN
-            width = height * image_ratio
-        else:
-            # size by width
-            width = window_width - self.WINDOW_MARGIN
-            height = width / image_ratio
-
-        modal_size = (width, height)
-
-        return modal_size
-
-
     def _on_resize(self, window, *_args):
-        new_size = self._get_size(window.width, window.height)
+
+        with Image.open(self.source) as im:
+            image_size = im.size
+
+        new_size = Geometry.fit_to_container(image_size, (window.width, window.height), padding=self.WINDOW_MARGIN)
         self.size = new_size
         # resize the image inside the ZoomableImage widget (which is a
         # ScatterPlane !)

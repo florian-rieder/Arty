@@ -177,7 +177,7 @@ class Hotkeys(FloatLayout):
             return False
 
         # export selection via the toolbar
-        self.app.TOOLBAR.export()
+        self.app.TOOLBAR.open_export()
 
         return False
 
