@@ -18,6 +18,7 @@ from widgets.CollectionToolbar import CollectionToolbar
 from screens.StartScreen import StartScreen
 from screens.CollectionScreen import CollectionScreen
 from screens.ComparisonScreen import ComparisonScreen
+from screens.AboutScreen import AboutScreen
 
 from api.Collection import CollectionManager
 
@@ -68,6 +69,7 @@ class ArtyApp(MDApp):
         start_screen      =     StartScreen(name="Start")
         collection_screen =     CollectionScreen(name='Collection')
         comparison_screen =     ComparisonScreen(name="Compare")
+        about_screen      =     AboutScreen(name="About")
 
         # add hotkeys manager, we're going to use it only in the
         # collection screen for now
@@ -82,11 +84,13 @@ class ArtyApp(MDApp):
         self.SCREENS["START"]      =    start_screen
         self.SCREENS["COLLECTION"] =    collection_screen
         self.SCREENS["COMPARE"]    =    comparison_screen
+        self.SCREENS["ABOUT"]      =    about_screen
 
         # add the screens to display
         screen_manager.add_widget(start_screen)
         screen_manager.add_widget(collection_screen)
         screen_manager.add_widget(comparison_screen)
+        screen_manager.add_widget(about_screen)
 
         # select the start screen
         screen_manager.current = start_screen.name
