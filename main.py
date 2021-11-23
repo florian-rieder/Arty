@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # set default size and minimum size of the window
     Config.set('graphics',  'width',            '1200')
     Config.set('graphics',  'height',           '800')
-    Config.set('graphics',  'minimum_width',    '800')
+    Config.set('graphics',  'minimum_width',    '500')
     Config.set('graphics',  'minimum_height',   '600')
 
     # prevent quitting when ESCAPE is pressed
