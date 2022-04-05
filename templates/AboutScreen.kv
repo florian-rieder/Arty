@@ -2,5 +2,47 @@
 #:import kivy kivy
 
 <AboutScreen>:
-    MDLabel:
-        text: 'stuff'
+    MDBoxLayout:
+        orientation: 'vertical'
+        adaptative_height: True
+        padding: 100
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            Image:
+                source: 'resources/icon_alpha.png'
+                size_hint_y: 1
+                size: dp(150), dp(150)
+
+            MDLabel:
+                text: 'About'
+                halign: 'center'
+                font_style: 'H2'
+                height: 50
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDLabel:
+                    text: 'Team'
+                    halign: 'center'
+                    font_style: 'H3'
+                
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: 'Florian Rieder'
+                    MDLabel:
+                        text: 'Paul Zignani'
+                    MDLabel:
+                        text: 'Caroline Roxana Rohrbach'
+            
+            MDBoxLayout:
+                orientation: 'vertical'
+
+                MDLabel:
+                    text: 'Arty was designed and built as part of a project at the University of Lausanne (UNIL) under the supervision of prof. Davide Picca, with continued development by the team.'
+                MDLabel:
+                    text: 'The aim of the application is to provide a tool to support common activities performed in art history. Organize your pictures, tag, view and compare them.'
