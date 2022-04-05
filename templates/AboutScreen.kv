@@ -46,3 +46,18 @@
                     text: 'Arty was designed and built as part of a project at the University of Lausanne (UNIL) under the supervision of prof. Davide Picca, with continued development by the team.'
                 MDLabel:
                     text: 'The aim of the application is to provide a tool to support common activities performed in art history. Organize your pictures, tag, view and compare them.'
+
+    RelativeLayout:
+        size_hint: 0.98, 0.98
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        BoxLayout:
+            id: layout_container
+            pos_hint: {'right': 0, 'top': 0}
+            size_hint: 1, 1
+
+        MDRoundFlatButton:
+            text: 'Back'
+            size_hint: 0.2, 0.07
+            on_release: root.on_back_released()
+            pos_hint: {'left': 1, 'bottom': 1}
