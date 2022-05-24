@@ -8,12 +8,13 @@
 import os
 import re
 import json
+import csv
 import ntpath
 import shutil
 import inspect
 import builtins
 from typing import Optional
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 
 from unidecode import unidecode
 from dataclasses_json import config, dataclass_json
@@ -781,30 +782,24 @@ class CollectionUtils():
 
 
     @staticmethod
-    def export_csv(image_list, delimiter=","):
+    def export_csv(image_list, output_file ,delimiter=","):
         """ Summary
             -------
-            Export the collection to CSV
-        
+            Export the collection to CSV and save to an output file
         """
         if not all(isinstance(i, CollectionImage) for i in image_list):
             raise TypeError()
 
-        csv_string = ""
+        # get attributes names for csv headers
+        attributes = asdict(image_list[0]).keys()
 
-        # get all attributes of CollectionImage
-        # https://stackoverflow.com/questions/9058305/getting-attributes-of-a-class
-        attributes = inspect.getmembers(CollectionImage, lambda a:not(inspect.isroutine(a)))
-        attributes = [a[0] for a in attributes if not(a[0].startswith('__') and a[0].endswith('__'))]
+        with open(output_file, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=attributes, delimiter=delimiter)
+            writer.writeheader()
 
-        csv_headers = delimiter.join(a for a in attributes) + "\n"
-        csv_string += csv_headers
-
-        for image in image_list:
-            csv_line = delimiter.join(getattr(image, a) for a in attributes) + "\n"
-            csv_string += csv_line
-
-        return csv_string
+            for image in image_list:
+                dict_image = asdict(image)
+                writer.writerow(dict_image)
 
 
     @classmethod

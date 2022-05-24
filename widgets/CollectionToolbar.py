@@ -354,30 +354,31 @@ class CollectionToolbar(BoxLayout):
         """
         field_ids = self.dialog.content_cls.ids
 
+        # get the file type chosen based on the text in the selected
+        # button.
         file_type = ''
         for btn in field_ids.file_toggle.children:
             if btn.state == 'down':
-                file_type = btn.text
+                file_type = btn.text.lower()
                 break
 
         try:
-            if file_type == "PPTX":
+            if file_type == "pptx":
                 filechooser.save_file(
                     on_selection=self.handle_selection_pptx,
                     filters=["*.%s" % file_type], # FIXME: crashes on replace existing file...
                     use_extensions=True
                 )
-            elif file_type == "CSV":
+            elif file_type == "csv":
                 filechooser.save_file(
                     on_selection=self.handle_selection_csv,
                     filters=["*.%s" % file_type], # FIXME: crashes on replace existing file...
                     use_extensions=True
                 )
         except Exception:
-                    Logger.exception(
-                        "An error occurred when selecting save destination"
-                    )
-                    self.app.show_error("An error occurred when selecting save destination")
+            message = "An error occurred when selecting save destination"
+            Logger.exception(message)
+            self.app.show_error(message)
 
 
 
@@ -386,6 +387,8 @@ class CollectionToolbar(BoxLayout):
         Callback function for handling the selection response from Activity.
         """
         # 2. generate the powerpoint and save it to the selected path
+
+        # get the input export path
         export_path = str(selection[0])
 
         Logger.info("Arty: exporting selection to pptx...")
@@ -406,7 +409,9 @@ class CollectionToolbar(BoxLayout):
         export_path = str(selection[0])
 
         ConfirmationSnackbar(text="Exporting to CSV...").open()
-        csv_data = CollectionUtils.export_csv(self.selected_images)
+        CollectionUtils.export_csv(self.selected_images, export_path)
 
-        with open(export_path, "w") as csv_file:
-            csv_file.write(csv_data)
+        # close dialog
+        self.dialog.dismiss()
+        # with open(export_path, "w") as csv_file:
+        #     csv_file.write(csv_data)

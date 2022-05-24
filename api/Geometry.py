@@ -1,6 +1,9 @@
-
+"""
+    Regrouping reusable geometry math
+"""
 
 class Geometry():
+    @staticmethod
     def fit_to_container(content_original_size, container_size, padding=0):
         """ Summary
             -------
