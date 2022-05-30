@@ -18,6 +18,7 @@ class Geometry():
             content_original_size: tuple
                 tuple containing the original x and y size of the
                 content to fit (for example size of the image in pixels).
+                Units don't matter, only the ratio between x and y.
             container_size: tuple
                 tuple containg the x and y size of the container.
             padding: int
@@ -28,7 +29,7 @@ class Geometry():
             -------
             fitted_content_size : tuple
                 bi-dimensional tuple containing the x and y size of the
-                fitted content.
+                fitted content, in the units used for container_size.
         """
         # size content in function of the container size
 
@@ -39,7 +40,7 @@ class Geometry():
         content_ratio = content_width / content_height
         container_ratio = container_width / container_height
 
-        # size content based on content ratio and container size
+        # size content based on content ratio and container ratio
         if content_ratio < container_ratio:
             # size by height
             height = container_height - padding

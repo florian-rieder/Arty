@@ -404,6 +404,9 @@ class CollectionToolbar(BoxLayout):
         except Exception as exc:
             Logger.exception(exc)
             self.app.show_error("An error occurred while generating the presentation")
+        
+        # close dialog
+        self.dialog.dismiss()
 
 
     def handle_selection_csv(self, selection):

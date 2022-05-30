@@ -168,9 +168,8 @@ class Powerpoint():
         canvas_width = prs.slide_width.cm - margin * 2
         canvas_height = prs.slide_height.cm - margin * 3 - textbox_height
 
-
-        height, width = Geometry.fit_to_container(image_size, (canvas_width, canvas_height))
-
+        width, height = Geometry.fit_to_container(image_size, (canvas_width, canvas_height))
+        print(height, width, canvas_height, canvas_width)
         top = margin + (canvas_height - height) / 2
         left = (prs.slide_width.cm - width) / 2
 
@@ -195,7 +194,7 @@ if __name__ == "__main__":
     ### Tests
     images = [
         CollectionImage(
-            filename="Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.JPG",
+            filename="48224.jpg",
             artist="Sandro Botticelli",
             title="La Naissance de Vénus",
             datation="c. 1485",
