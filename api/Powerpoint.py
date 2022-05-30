@@ -169,7 +169,7 @@ class Powerpoint():
         canvas_height = prs.slide_height.cm - margin * 3 - textbox_height
 
         width, height = Geometry.fit_to_container(image_size, (canvas_width, canvas_height))
-        print(height, width, canvas_height, canvas_width)
+
         top = margin + (canvas_height - height) / 2
         left = (prs.slide_width.cm - width) / 2
 

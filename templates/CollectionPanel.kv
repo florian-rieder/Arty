@@ -18,10 +18,20 @@
         ImagePreview:
             id: preview
             allow_stretch: True
-        
+
         Palette:
             id: palette
             size_hint_y: 0.1
+
+        MDLabel:
+            id: image_size
+            text: 'test x test'
+            color: (0.348, 0.348, 0.348, 1)
+            size_hint_y: 0.05
+            halign: 'right'
+            padding: (dp(10), dp(5))
+            font_style: 'Caption'
+
 
     ScrollView:
         size_hint_y: 0.5

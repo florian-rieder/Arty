@@ -3,6 +3,7 @@
 """
 
 import os
+from PIL import Image
 
 from kivy.uix.boxlayout import BoxLayout
 #from kivy.logger import Logger
@@ -135,7 +136,6 @@ class CollectionPanel(BoxLayout):
             # Logger.exception(
             #     "Arty: Couldn't save %s" % self.current_image.filename
             # )
-
             pass
 
         self.current_image = collection_image
@@ -196,6 +196,10 @@ class CollectionPanel(BoxLayout):
 
         # update palette
         self.ids.palette.set_image(image_path)
+
+        img_width, img_height = Image.open(image_path).size
+        
+        self.ids.image_size.text = f"{img_width}x{img_height}px"
 
         # dict for the texinputs helpers
         helpers = {
