@@ -5,12 +5,12 @@
 import os
 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.logger import Logger
+#from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.app import App
 import kivy.properties as kyprops
 
-from api.Collection import CollectionImage
+from api.CollectionImage import CollectionImage
 from widgets.ImagePreview import ImagePreview
 from widgets.MetadataItem import MetadataItem
 from widgets.Palette import Palette

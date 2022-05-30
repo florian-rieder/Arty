@@ -4,7 +4,7 @@
 
 class Geometry():
     @staticmethod
-    def fit_to_container(content_original_size, container_size, padding=0):
+    def fit_to_container(content_original_size : tuple, container_size : tuple, padding=0):
         """ Summary
             -------
             Computes the desired size of the content, in function of the

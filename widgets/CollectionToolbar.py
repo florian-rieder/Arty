@@ -17,7 +17,8 @@ from widgets.ExportDialogContent import ExportDialogContent
 from widgets.ToggleButtonWidget import ToggleButtonWidget
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 from widgets.IconListItem import IconListItem
-from api.Collection import CollectionUtils, CollectionManager
+from api.CollectionUtils import CollectionUtils
+from api.CollectionManager import CollectionManager
 from api.Powerpoint import Powerpoint
 
 class CollectionToolbar(BoxLayout):

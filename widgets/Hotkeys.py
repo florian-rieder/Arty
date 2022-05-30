@@ -9,7 +9,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.logger import Logger
 
-from api.Collection import CollectionManager
+from api.CollectionManager import CollectionManager
 from widgets.ConfirmationSnackbar import ConfirmationSnackbar
 
 

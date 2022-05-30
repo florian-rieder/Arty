@@ -44,10 +44,10 @@ if __name__ == '__main__':
     #======================= End Configuration =======================#
 
     from ArtyApp import ArtyApp
-    from kivy.logger import Logger
+    #from kivy.logger import Logger
 
-    print(sys.argv)
-    Logger.info("Arguments" + str(sys.argv))
+    # print(sys.argv)
+    # Logger.info("Arguments" + str(sys.argv))
 
     # run the app
     ArtyApp().run()

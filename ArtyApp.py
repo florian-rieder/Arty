@@ -20,7 +20,7 @@ from screens.CollectionScreen import CollectionScreen
 from screens.ComparisonScreen import ComparisonScreen
 from screens.AboutScreen import AboutScreen
 
-from api.Collection import CollectionManager
+from api.CollectionManager import CollectionManager
 
 
 class ArtyApp(MDApp):

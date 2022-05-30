@@ -13,7 +13,7 @@ import PIL
 from pptx import Presentation
 from pptx.util import Cm
 
-from api.Collection import CollectionImage
+from api.CollectionImage import CollectionImage
 from api.Geometry import Geometry
 
 #pylint: disable=too-few-public-methods

@@ -1,7 +1,8 @@
 import unittest
 import os
 
-from api.Collection import Collection, CollectionImage, CollectionUtils
+from api.CollectionImage import CollectionImage
+from api.CollectionUtils import CollectionUtils
 
 class TestCollectionImage(unittest.TestCase):
 
