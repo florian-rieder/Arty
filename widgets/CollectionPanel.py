@@ -94,10 +94,6 @@ class CollectionPanel(BoxLayout):
             item.title = name
             item.text = getattr(self.current_image, attribute)
 
-            # mutiline
-            if attribute in ("title", "notes"):
-                item.multiline = True
-
             # large by default
             if attribute in ("notes"):
                 item.height = "80dp"
